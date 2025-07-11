@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es" class="transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía avanzada de Greenbone/OpenVAS: arquitectura, flujo, CLI, NASL, troubleshooting.">
+  <title>Guía de Greenbone Vulnerability Management</title>
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { primary: {50: '#f0f9ff',100: '#e0f2fe',200: '#bae6fd',300: '#7dd3fc',400: '#38bdf8',500: '#0ea5e9',600: '#0284c7',700: '#0369a1',800: '#075985',900: '#0c4a6e'} } } } };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@1.0.6/dist/heroicons.min.js"></script>
+  <!-- Mermaid for diagramas -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <!-- Highlight.js para snippets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+  <!-- Header Hero -->
+  <header class="fixed w-full z-20 bg-gradient-to-r from-primary-500 to-primary-700 text-blue py-6 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-extrabold">Greenbone Vulnerability Management</h1>
+        <p class="mt-1 text-primary-100">Guía completa con arquitectura, flujo, CLI, NASL, capturas y troubleshooting.</p>
+      </div>
+      <button id="theme-toggle" class="p-2 rounded-md bg-white bg-opacity-20 hover:bg-opacity-30 focus:outline-none" aria-label="Toggle Dark Mode">
+        <svg id="icon-light" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636"/></svg>
+        <svg id="icon-dark" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex pt-48">
+    <!-- Sidebar TOC -->
+    <nav class="hidden md:block w-1/4 p-6 sticky top-32 h-screen overflow-auto">
+      <ul class="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
+        <li><a href="#arquitectura" class="hover:text-primary-500">1. Arquitectura</a></li>
+        <li><a href="#flujo-trabajo" class="hover:text-primary-500">2. Flujo de trabajo</a></li>
+        <li><a href="#funcionalidades" class="hover:text-primary-500">3. Funcionalidades</a></li>
+        <li><a href="#ediciones" class="hover:text-primary-500">4. Ediciones</a></li>
+        <li><a href="#cli-snippet" class="hover:text-primary-500">5. Ejemplo CLI</a></li>
+        <li><a href="#screenshots" class="hover:text-primary-500">6. Capturas</a></li>
+        <li><a href="#nasl-example" class="hover:text-primary-500">7. Snippet NASL</a></li>
+        <li><a href="#troubleshooting" class="hover:text-primary-500">8. Troubleshooting</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full md:w-3/4 max-w-5xl mx-auto p-6 space-y-16">
+      <!-- 1. Arquitectura -->
+      <section id="arquitectura">
+        <h2 class="text-2xl font-bold mb-6 text-primary-600">1. Arquitectura y componentes principales</h2>
+        <div class="grid gap-8 md:grid-cols-2">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">Greenbone Security Assistant (GSA)</h3>
+            <p>Interfaz web basada en Django/Gunicorn que permite administrar targets, tareas, resultados y reportes desde el navegador (puerto 9392).</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">Greenbone Vulnerability Manager (gvmd)</h3>
+            <p>Back-end que orquesta escaneos, gestiona la base de datos PostgreSQL y prepara contenido para reportes.</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">OpenVAS Scanner (ospd-openvas)</h3>
+            <p>Motor de escaneo que ejecuta NVTs escritos en NASL, optimizado para concurrencia en redes grandes.</p>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">Greenbone Security Feed</h3>
+            <p>Repositorio de scripts NVT, base de datos de CVE y severidades. Community Feed se sincroniza cada 24h y Commercial Feed varias veces al día.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Flujo de trabajo -->
+      <section id="flujo-trabajo">
+        <h2 class="text-2xl font-bold mb-6 text-primary-600">2. Flujo de trabajo básico</h2>
+        <ol class="list-decimal list-inside space-y-6 text-gray-700 dark:text-gray-300">
+          <li>
+            <h4 class="font-semibold mb-1">Sincronizar el feed</h4>
+            <pre class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 overflow-auto"><code class="language-bash">greenbone-nvt-sync  # Scripts NVT
+greenbone-feed-sync # Bases CVE y certificaciones</code></pre>
+          </li>
+          <li>
+            <h4 class="font-semibold mb-1">Crear Targets</h4>
+            <p>Define rangos IP, credenciales SSH/SMB y parámetros de port-scan inicial.</p>
+          </li>
+          <li>
+            <h4 class="font-semibold mb-1">Diseñar perfiles de escaneo</h4>
+            <p>Elige perfiles predefinidos (Discovery, Full and Fast) o clona uno para ajustes avanzados.</p>
+          </li>
+          <li>
+            <h4 class="font-semibold mb-1">Lanzar Tasks</h4>
+            <p>Configura target, scan config, report config y programación (inmediato o recurrente).</p>
+          </li>
+          <li>
+            <h4 class="font-semibold mb-1">Revisar Results</h4>
+            <p>Analiza hallazgos por host y servicio; filtra por severidad, familia de NVT o etiquetas.</p>
+          </li>
+          <li>
+            <h4 class="font-semibold mb-1">Generar Reports</h4>
+            <p>Exporta en PDF, HTML, CSV con plantillas personalizadas e integra logos y secciones a medida.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 3. Funcionalidades -->
+      <section id="funcionalidades">
+        <h2 class="text-2xl font-bold mb-6 text-primary-600">3. Funcionalidades destacadas</h2>
+        <ul class="list-disc list-inside space-y-4 text-gray-700 dark:text-gray-300">
+          <li><strong>Escaneo autenticado vs no autenticado:</strong> uso de SSH/SMB para tests a nivel sistema y configuración.</li>
+          <li><strong>Detección de vulnerabilidades web:</strong> XSS, SQLi, directory traversal, encabezados inseguros y certificados TLS.</li>
+          <li><strong>Informes personalizables:</strong> plantillas XSLT, logos corporativos y secciones configurables.</li>
+          <li><strong>API y automatización:</strong> gvm-cli, OSP API 2.0 y scripts para integración con SIEM/CMDB.</li>
+          <li><strong>Alertas y auditoría:</strong> registro de acciones de usuario y notificaciones por correo.</li>
+          <li><strong>Compatibilidad de protocolos:</strong> SNMP, SCADA, MQTT, Docker, Kubernetes, LDAP/SAML.</li>
+        </ul>
+      </section>
+
+      <!-- 4. Ediciones -->
+      <section id="ediciones"> 
+        <h2 class="text-2xl font-bold mb-6 text-primary-600">4. Ediciones y Appliance</h2>
+        <div class="grid gap-8 md:grid-cols-2">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">Edición Comunitaria (GVM/OpenVAS)</h3>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Gratuita y de código abierto.</li>
+              <li>Feed con actualizaciones cada 24 horas.</li>
+              <li>Sin soporte oficial ni SLA.</li>
+            </ul>
+          </div>
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transform hover:-translate-y-1 transition">
+            <h3 class="text-xl font-semibold mb-2">Edición Comercial (GSM)</h3>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Appliance hardware o virtual con soporte oficial.</li>
+              <li>Feed Premium: actualizaciones varias veces al día.</li>
+              <li>Funciones avanzadas y SLA garantizado.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Ejemplo CLI -->
+      <section id="cli-snippet">
+        <h2 class="text-2xl font-bold mb-4 text-primary-600">5. Ejemplo práctico de CLI</h2>
+        <p>Usa <code>gvm-cli</code> para automatizar un escaneo y generar un reporte en PDF:</p>
+        <pre class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 overflow-auto"><code class="language-bash"># Crear target
+gvm-cli socket --xml '<create_target><name>TestHost</name><hosts>192.168.1.10</hosts></create_target>'
+# Crear task con target y perfil Full and Fast (ID)
+gvm-cli socket --xml '<create_task><name>Scan1</name><target id="&lt;ID_Target&gt;"/><config id="daba56c8-73ec-11df-a475-002264764cea"/></create_task>'
+# Esperar finalización y descargar reporte PDF
+gvm-cli socket --xml '<get_reports format_id="c402cc3e-b531-11e1-9163-406186ea4fc5" task_id="&lt;ID_Task&gt;"/>' > report.pdf</code></pre>
+      </section>
+
+      <!-- 6. Capturas de pantalla -->
+      <section id="screenshots">
+        <h2 class="text-2xl font-bold mb-4 text-primary-600">6. Capturas de pantalla</h2>
+        <p>Ejemplos del dashboard de Greenbone y reporte generado:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <img src="/assets/openvas_results.png" alt="Resultados OpenVAS" class="rounded-lg shadow-lg">
+          <img src="/assets/openvas_report.png" alt="Reporte PDF OpenVAS" class="rounded-lg shadow-lg">
+        </div>
+      </section>
+
+      <!-- 7. Snippet NASL -->
+      <section id="nasl-example">
+        <h2 class="text-2xl font-bold mb-4 text-primary-600">7. Ejemplo de script NASL</h2>
+        <p>Mini NVT que obtiene el banner HTTP de un servicio:</p>
+        <pre class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 overflow-auto"><code class="language-nasl">include("compat.inc");
+if(description){
+  script_id("demo-http-banner");
+  script_version("1.0");
+  script_name("HTTP Banner Grab");
+  exit(0);
+}
+port = 80;
+h = open_sock_tcp(port);
+if(h){
+  banner = recv_buf(h,128);
+  if(banner!=NULL)
+    security_report(banner);
+  close(h);
+}</code></pre>
+      </section>
+
+      <!-- 8. Troubleshooting -->
+      <section id="troubleshooting">
+        <h2 class="text-2xl font-bold mb-4 text-primary-600">8. Troubleshooting</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+          <li><strong>Error de sincronización:</strong> Verifica credenciales de feed y ejecuta <code>greenbone-feed-sync --type nvt</code>.</li>
+          <li><strong>Problemas SSL:</strong> Añade la CA en <code>/etc/ssl/certs/</code> y ejecuta <code>update-ca-certificates</code>.</li>
+          <li><strong>Fallo ospd:</strong> Asegúrate de que <code>ospd-openvas</code> esté corriendo y socket en <code>/var/run/ospd/</code>.</li>
+          <li><strong>Permisos DB:</strong> Confirma que el usuario de PostgreSQL tiene acceso a la BD de gvmd.</li>
+        </ul>
+      </section>
+
+      <!-- Diagrama Mermaid revisado -->
+      <section>
+        <h2 class="text-2xl font-bold mb-4 text-primary-600">Diagrama de Flujo</h2>
+        <div class="mermaid bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+          flowchart LR
+            A[Sincronizar Feed] --> B[Crear Targets]
+            B --> C[Configurar Perfil]
+            C --> D[Lanzar Task]
+            D --> E[Revisar Results]
+            E --> F[Generar Report]
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="text-center py-8 text-sm text-gray-600 dark:text-gray-400">
+    <p>   https://h4ck.cl/tools/instalacion-paso-a-paso-de-openvas-en-kali-linux/  </p> 
+    © 2025 sualba.dev – Blog de Ciberseguridad
+  </footer>
+
+  <!-- Script Toggle Dark Mode -->
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const htmlEl = document.documentElement;
+    const iconLight = document.getElementById('icon-light');
+    const iconDark = document.getElementById('icon-dark');
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlEl.classList.add('dark'); iconLight.classList.remove('hidden'); iconDark.classList.add('hidden');
+    } else {
+      iconLight.classList.add('hidden'); iconDark.classList.remove('hidden');
+    }
+    toggle.addEventListener('click', () => {
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+      iconLight.classList.toggle('hidden'); iconDark.classList.toggle('hidden');
+    });
+  </script>
+  
+</body>
+</html>
+

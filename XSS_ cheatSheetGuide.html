@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Profesional XSS Cheat Sheet</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+  <style>
+    :root {
+      --bs-body-bg: #f5f7fa;
+      --bs-body-color: #333;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: var(--bs-body-bg);
+    }
+    nav {
+      width: 260px;
+      background-color: #343a40;
+      color: #adb5bd;
+    }
+    nav .nav-link {
+      color: #adb5bd;
+      transition: color .2s, background .2s;
+    }
+    nav .nav-link:hover {
+      color: #fff;
+      background-color: #495057;
+    }
+    nav .nav-link.active {
+      color: #fff;
+      background-color: #495057;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: .5rem;
+    }
+    pre {
+      position: relative;
+      padding: 1rem 1.5rem;
+      border-radius: .5rem;
+      overflow-x: auto;
+      background-color: #282c34;
+    }
+    .copy-btn {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      background: rgba(255,255,255,.1);
+      border: none;
+      color: #fff;
+      padding: .2rem .5rem;
+      border-radius: .3rem;
+      cursor: pointer;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: #adb5bd;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dark/Light Toggle -->
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">🌓</button>
+  <nav class="d-flex flex-column p-3">
+    <h4 class="text-white mb-4">XSS Cheat Sheet</h4>
+    <input class="form-control mb-3 bg-dark text-light" placeholder="Buscar..." id="navSearch">
+    <ul class="nav nav-pills flex-column" id="navList">
+      <li class="nav-item"><a class="nav-link active" href="#intro">Introducción</a></li>
+      <li class="nav-item"><a class="nav-link" href="#fundamentos">Fundamentos XSS</a></li>
+      <li class="nav-item"><a class="nav-link" href="#tipos">Tipos de XSS</a></li>
+      <li class="nav-item"><a class="nav-link" href="#attack-flow">Flujo de Ataque</a></li>
+      <li class="nav-item"><a class="nav-link" href="#payloads">Payloads Básicos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#dom">DOM-Based XSS</a></li>
+      <li class="nav-item"><a class="nav-link" href="#avanzado">Técnicas Avanzadas</a></li>
+      <li class="nav-item"><a class="nav-link" href="#prevencion">Prevención</a></li>
+      <li class="nav-item"><a class="nav-link" href="#php-snippets">Snippets PHP</a></li>
+      <li class="nav-item"><a class="nav-link" href="#referencias">Referencias</a></li>
+    </ul>
+  </nav>
+  <main>
+    <section id="intro">
+      <h2>Introducción</h2>
+      <p>Cross-Site Scripting (XSS) es una vulnerabilidad crítica que permite a atacantes inyectar scripts maliciosos en aplicaciones web, ejecutándose en el navegador de usuarios inocentes. Las consecuencias pueden ir desde simples alertas hasta el robo de sesiones, manipulación de contenidos y escalada de privilegios.</p>
+      <div class="alert alert-info" role="alert">Objetivo: Brindar una guía profesional, completa y práctica para tu TFG.</div>
+    </section>
+    <section id="fundamentos">
+      <h2>Fundamentos de XSS</h2>
+      <p><strong>¿Por qué ocurre?</strong> Falta de validación y codificación contextual de entradas de usuario.</p>
+      <p><strong>Contextos de salida:</strong> HTML, atributos, JavaScript, URL, CSS.</p>
+      <p>Un script inyectado hereda permisos de la <em>misma fuente</em> (Same-Origin Policy), por lo que el navegador no lo distingue de código legítimo.</p>
+    </section>
+    <section id="tipos">
+      <h2>Tipos de XSS</h2>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Stored (Persistente)</h5>
+              <p>El payload se almacena en el servidor (DB, logs). Se ejecuta en cada visita.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Reflected (No-persistente)</h5>
+              <p>El payload viaja en la petición (URL, formulario) y regresa en la respuesta.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">DOM-Based</h5>
+              <p>La vulnerabilidad reside en el JS cliente que manipula DOM con datos inseguros.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="attack-flow">
+      <h2>Flujo de un Ataque XSS</h2>
+      <ol>
+        <li>📍 <strong>Descubrir</strong> punto vulnerable (input, parámetro, fragmento URL).</li>
+        <li>✍️ <strong>Construir</strong> payload JS: alert, robar cookies, redirección.</li>
+        <li>🚀 <strong>Inyección</strong>: reflect, store o DOM.</li>
+        <li>👁️ <strong>Ejecutar</strong> al cargar o interactuar.</li>
+        <li>💥 <strong>Impacto</strong>: robo de sesión, defacement, acciones maliciosas.</li>
+      </ol>
+    </section>
+    <section id="payloads">
+      <h2>Payloads Básicos</h2>
+      <pre><code class="language-html">&lt;script&gt;alert('XSS')&lt;/script&gt;
+&lt;img src=x onerror=alert('XSS')&gt;
+&lt;svg onload=alert('XSS')/&gt;
+"&gt;&lt;script&gt;alert(1)&lt;/script&gt;
+</code><button class="copy-btn">Copiar</button></pre>
+    </section>
+    <section id="dom">
+      <h2>DOM-Based XSS</h2>
+      <p>La lógica vulnerable está en el cliente:</p>
+      <pre><code class="language-js">// vuln.js
+document.getElementById('out').innerHTML = location.search.substring(1);
+</code><button class="copy-btn">Copiar</button></pre>
+      <p>Ejecutar via <code>http://site.com/page.html?&lt;img src=x onerror=alert(1)&gt;</code>.</p>
+    </section>
+    <section id="avanzado">
+      <h2>Técnicas Avanzadas & Bypass</h2>
+      <ul>
+        <li><strong>Codificación:</strong> %3Cscript%3Ealert(1)%3C%2Fscript%3E, &#x3C;script&gt;</li>
+        <li><strong>Protocolos:</strong> <code>javascript:alert(1)</code>, Data URIs.</li>
+        <li><strong>WAF Evasión:</strong> Tab, Line-Breaks, Double-Encoding, Unicode (\u0061lert).</li>
+        <li><strong>SVG/MathML:</strong> &lt;math href&gt;, &lt;svg onload&gt;.</li>
+      </ul>
+      <div class="alert alert-warning">Siempre prueba en entornos autorizados y documenta cada hallazgo.</div>
+    </section>
+    <section id="prevencion">
+      <h2>Prevención & Mitigación</h2>
+      <ul>
+        <li>📑 <strong>Codificación contextual:</strong> HTML, JS, CSS, URL.</li>
+        <li>🔒 <strong>Cookies seguras:</strong> HttpOnly, Secure, SameSite.</li>
+        <li>🛡️ <strong>Content Security Policy (CSP):</strong> report-only durante pruebas.</li>
+        <li>📥 <strong>Validación y sanitización:</strong> whitelist de entradas.</li>
+        <li>🔧 <strong>Librerías:</strong> OWASP ESAPI, frameworks seguros.</li>
+      </ul>
+    </section>
+    <section id="php-snippets">
+      <h2>Snippets en PHP</h2>
+      <p>Esta sección combina ejemplos de código <strong>vulnerable</strong> (para demostrar ataques XSS) y <strong>funciones seguras</strong> (para mitigar vulnerabilidades).</p>
+      <!-- Ejemplos vulnerables -->
+      <h3>Ejemplos Vulnerables (XSS)</h3>
+      <h5>1. XSS Reflected (GET)</h5>
+      <pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Buscador de Palabras&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Buscador de palabras&lt;/h2&gt;
+    &lt;?php
+        // Formulario que envía via GET
+        echo "&lt;form action='index.php' method='get'&gt;
+                &lt;p&gt;Palabra a buscar: &lt;input type='text' name='palabra'&gt;&lt;/p&gt;
+                &lt;input type='submit' value='Buscar'&gt;
+              &lt;/form&gt;";
+
+        if (isset(\$_GET['palabra'])) {
+            // Refleja directamente el valor de 'palabra' sin sanitizar
+            echo "La palabra &quot;" . \$_GET['palabra'] . "&quot; ha obtenido el resultado de ...";
+        }
+    ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code><button class="copy-btn">Copiar</button></pre>
+
+      <h5>2. XSS Stored (POST + Base de Datos)</h5>
+      <pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Mensajes&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Mensajes&lt;/h2&gt;
+    &lt;?php
+        // Conexión a la base de datos
+        include('conexion.php');
+
+        // Formulario de envío via POST
+        echo "&lt;form action='index.php' method='post'&gt;
+                &lt;p&gt;Mensaje a introducir: &lt;input type='text' name='mensaje'&gt;&lt;/p&gt;
+                &lt;input type='submit' value='Enviar'&gt;
+              &lt;/form&gt;";
+
+        if (\$_SERVER['REQUEST_METHOD'] === 'POST' && isset(\$_POST['mensaje'])) {
+            \$mensaje = \$_POST['mensaje'];
+            // Inserta sin sanitizar, vulnerable a XSS
+            \$conexion->query("INSERT INTO mensajes(mensaje) VALUES('\$mensaje')");
+        }
+
+        // Mostrar mensajes almacenados
+        \$result = \$conexion->query('SELECT * FROM mensajes');
+        while (\$line = mysqli_fetch_array(\$result)) {
+            echo "&lt;p&gt;Mensaje: " . \$line['mensaje'] . "&lt;/p&gt;";
+        }
+    ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code><button class="copy-btn">Copiar</button></pre>
+
+      <div class="alert alert-warning">Estos ejemplos <strong>muestran vulnerabilidades</strong>. Nunca los uses en producción sin sanitizar y validar los datos.</div>
+
+      <!-- Funciones seguras: los 50 snippets -->
+      <h3>Funciones Seguras en PHP</h3>
+      <p>A continuación, 50 funciones/snippets de uso común en orden de <em>básico a avanzado</em>, diseñados para validar, sanitizar, proteger sesiones, cabeceras y más.</p>
+      <ol>
+        <li><code>sanitize_input()</code>: trim + <code>htmlspecialchars</code> para limpiar strings.</li>
+        <li><code>validate_email()</code>: <code>filter_var</code> con <code>FILTER_VALIDATE_EMAIL</code>.</li>
+        <li><code>sanitize_int()</code>: <code>FILTER_SANITIZE_NUMBER_INT</code>.</li>
+        <li><code>sanitize_url()</code>: <code>FILTER_SANITIZE_URL</code>.</li>
+        <li><code>sanitize_string()</code>: <code>FILTER_SANITIZE_STRING</code>.</li>
+        <li>Uso de <code>PDO</code> con prepared statements para evitar SQL Injection.</li>
+        <li><code>validate_ip()</code>: <code>FILTER_VALIDATE_IP</code>.</li>
+        <li>HTMLPurifier para limpiar HTML de forma segura.</li>
+        <li><code>validate_date()</code>: <code>DateTime::createFromFormat</code> para fechas.</li>
+        <li><code>limit_length()</code>: <code>mb_substr</code> para truncar strings.</li>
+        <li><code>Content-Security-Policy</code> básica con <code>header()</code>.</li>
+        <li><code>Strict-Transport-Security</code> (HSTS).</li>
+        <li><code>X-Frame-Options</code>: SAMEORIGIN.</li>
+        <li><code>X-Content-Type-Options</code>: nosniff.</li>
+        <li><code>Referrer-Policy</code>: no-referrer.</li>
+        <li><code>Permissions-Policy</code> (Feature-Policy) para limitar APIs.</li>
+        <li><code>X-XSS-Protection</code>: mode=block (aunque obsoleto).</li>
+        <li><code>Cache-Control</code>: no-store, no-cache.</li>
+        <li>Forzar HTTPS en PHP antes de servir contenido.</li>
+        <li>Iniciar sesión con <code>session_start()</code> y parámetros seguros (<code>cookie_secure</code>, <code>httponly</code>).</li>
+        <li><code>session_regenerate_id(true)</code> para evitar fijación de sesión.</li>
+        <li>Tokens CSRF: <code>bin2hex(random_bytes())</code>.</li>
+        <li>Validación de token CSRF con <code>hash_equals()</code>.</li>
+        <li>Timeout de sesión por inactividad.</li>
+        <li>Logout seguro: destruir sesión y cookies.</li>
+        <li>Revisar IP y User-Agent en cada solicitud de sesión.</li>
+        <li>Almacenar datos sensibles cifrados con <code>defuse/php-encryption</code>.</li>
+        <li>Logging de peticiones y errores personalizados.</li>
+        <li>Monitoreo de payloads sospechosos en <code>REQUEST_URI</code>.</li>
+        <li>Rate limiting simple basado en IP.</li>
+        <li>Notificaciones por email al detectar patrones maliciosos.</li>
+        <li>Listas negras de IP dinámicas.</li>
+        <li>Uso de <code>syslog()</code> para eventos críticos.</li>
+        <li>Guardar logs en base de datos para análisis forense.</li>
+        <li>Validar <code>Referer</code> y <code>Origin</code>.</li>
+        <li>Logs en formato JSON para integración con ELK.</li>
+        <li>Sanitizar + validar email en un solo paso.</li>
+        <li>Formularios seguros combinando CSRF y sanitización.</li>
+        <li>Redirección segura validando dominios permitidos.</li>
+        <li>Upload de ficheros controlando nombres y paths.</li>
+        <li>Prevención combinada de SQLi y XSS con sanitización y PDO.</li>
+        <li>Hash de contraseñas con <code>password_hash()</code>.</li>
+        <li>Verificar contraseñas con <code>password_verify()</code>.</li>
+        <li>Autenticación con JWT (<code>Firebase JWT</code>).</li>
+        <li>Decodificación y validación de JWT en PHP.</li>
+        <li>Middleware de autenticación para rutas privadas.</li>
+        <li>Implementación de rate limiting avanzada con Redis.</li>
+        <li>Protección contra clickjacking con encabezados HTTP.</li>
+        <li>Semi-automático: integración con bibliotecas OWASP.</li>
+        <li>Generación de cabeceras CSP dinámicas según perfil.</li>
+        <li>Implementación de CSP report-only con manejo de reports.</li>
+        <li>Uso de frameworks PHP seguros (Laravel, Symfony) y sus helpers de validación.</li>
+      </ol>
+    </section>
+    <section id="referencias">
+      <h2>Referencias y Recursos</h2>
+      <ol>
+        <li><a href="https://owasp.org/www-community/attacks/xss/">OWASP XSS</a></li>
+        <li><a href="https://portswigger.net/web-security/cross-site-scripting">PortSwigger Labs</a></li>
+        <li><a href="https://developer.mozilla.org/es/docs/Glossary/Cross-site_scripting">MDN Web Docs</a></li>
+      </ol>
+    </section>
+  </main>
+  <!-- Bootstrap & Highlight.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script>
+    // Copy code functionality
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.previousElementSibling.innerText;
+        navigator.clipboard.writeText(code).then(() => btn.textContent = 'Copiado!');
+        setTimeout(() => btn.textContent = 'Copiar', 2000);
+      });
+    });
+    // Theme toggle
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('bg-dark');
+      document.body.classList.toggle('text-light');
+      document.querySelectorAll('nav, .card, pre').forEach(el => el.classList.toggle('bg-dark'));
+    });
+    // Nav search filter
+    document.getElementById('navSearch').addEventListener('input', e => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#navList .nav-link').forEach(link => {
+        link.parentElement.style.display = link.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

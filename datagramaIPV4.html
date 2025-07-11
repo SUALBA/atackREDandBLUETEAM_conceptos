@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guía Profesional: Entendiendo un Datagrama IP</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      color: #1e1e1e;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      color: #0b3d91;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+    }
+    code, pre {
+      background-color: #eaeaea;
+      padding: 0.6rem;
+      display: block;
+      border-radius: 6px;
+      font-family: monospace;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+      text-align: left;
+    }
+    table th {
+      background-color: #e0e7ff;
+    }
+    blockquote {
+      border-left: 4px solid #0b3d91;
+      padding-left: 1rem;
+      color: #555;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    footer {
+      margin-top: 2rem;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧩 Guía Profesional para Entender un Datagrama IP (IPv4)</h1>
+
+  <blockquote>
+    Aprende a analizar, interpretar y entender la estructura fundamental de un datagrama IP como lo haría un ingeniero de redes o especialista en ciberseguridad.
+  </blockquote>
+
+  <h2>📦 ¿Qué es un Datagrama?</h2>
+  <p>
+    Un <strong>datagrama</strong> es una unidad de datos independiente enviada a través de una red sin requerir una conexión previa.
+    Es el formato utilizado por protocolos como <strong>IP</strong> y <strong>UDP</strong>, siguiendo un esquema <em>best-effort</em>: puede llegar, llegar fuera de orden o no llegar.
+  </p>
+
+  <h2>🧱 Estructura del Datagrama IPv4</h2>
+  <pre><code>
++----------------------------+
+| Versión | IHL | Tipo de servicio |
++----------------------------+
+| Longitud total             |
++----------------------------+
+| Identificación             |
++----------------------------+
+| Banderas | Desplazamiento  |
++----------------------------+
+| Tiempo de vida (TTL)       |
++----------------------------+
+| Protocolo                  |
++----------------------------+
+| Suma de verificación (checksum) |
++----------------------------+
+| Dirección IP de origen     |
++----------------------------+
+| Dirección IP de destino    |
++----------------------------+
+| Opciones (opcional)        |
++----------------------------+
+| Payload (datos)            |
++----------------------------+
+  </code></pre>
+
+  <h2>🔍 Campos Clave y su Significado</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Campo</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Versión</strong></td><td>Especifica la versión del protocolo IP (normalmente 4 para IPv4).</td></tr>
+      <tr><td><strong>IHL (Header Length)</strong></td><td>Longitud del encabezado IP en bloques de 32 bits.</td></tr>
+      <tr><td><strong>Tipo de Servicio</strong></td><td>Prioridad del paquete y tipo de tráfico.</td></tr>
+      <tr><td><strong>Longitud Total</strong></td><td>Tamaño completo del datagrama (cabecera + datos), en bytes.</td></tr>
+      <tr><td><strong>Identificación</strong></td><td>Identificador único para fragmentación de paquetes.</td></tr>
+      <tr><td><strong>Banderas</strong></td><td>Controla la fragmentación del paquete (por ejemplo, no fragmentar).</td></tr>
+      <tr><td><strong>Desplazamiento</strong></td><td>Posición del fragmento dentro del paquete original si fue fragmentado.</td></tr>
+      <tr><td><strong>TTL (Time to Live)</strong></td><td>Número de saltos que puede realizar antes de ser descartado.</td></tr>
+      <tr><td><strong>Protocolo</strong></td><td>Tipo de protocolo encapsulado (ej. 6 = TCP, 17 = UDP).</td></tr>
+      <tr><td><strong>Checksum</strong></td><td>Suma de verificación para detectar errores en la cabecera.</td></tr>
+      <tr><td><strong>IP de Origen</strong></td><td>Dirección IP del emisor del datagrama.</td></tr>
+      <tr><td><strong>IP de Destino</strong></td><td>Dirección IP del receptor final del datagrama.</td></tr>
+      <tr><td><strong>Opciones (opcional)</strong></td><td>Usado para funciones de red avanzadas (poco frecuente).</td></tr>
+      <tr><td><strong>Payload (datos)</strong></td><td>Información encapsulada (por ejemplo, un segmento TCP o un datagrama UDP).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>🎯 Ejemplo de Análisis en Wireshark</h2>
+  <pre><code>
+Internet Protocol Version 4, Src: 192.168.1.10, Dst: 8.8.8.8
+- Version: 4
+- Header Length: 20 bytes
+- TTL: 64
+- Protocol: UDP (17)
+- Source: 192.168.1.10
+- Destination: 8.8.8.8
+- Payload: DNS request
+  </code></pre>
+
+  <h2>🛠️ Herramientas para Analizar Datagramas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Herramienta</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Wireshark</strong></td><td>Análisis visual y en profundidad de cada campo de un paquete.</td></tr>
+      <tr><td><strong>tcpdump</strong></td><td>Captura y análisis de paquetes desde la terminal.</td></tr>
+      <tr><td><strong>Scapy</strong></td><td>Librería en Python para construir, modificar y analizar datagramas.</td></tr>
+      <tr><td><strong>Hex Editor</strong></td><td>Para análisis manual de bytes de bajo nivel (hexadecimal y binario).</td></tr>
+    </tbody>
+  </table>
+
+  <h2>✅ Conclusión</h2>
+  <p>
+    Comprender un datagrama IP es clave para todo profesional de <strong>redes</strong> o <strong>ciberseguridad</strong>. Al dominar su estructura, puedes:
+  </p>
+  <ul>
+    <li>Detectar vulnerabilidades</li>
+    <li>Rastrear ataques o tráfico sospechoso</li>
+    <li>Optimizar el rendimiento de red</li>
+    <li>Crear scripts de análisis personalizados</li>
+  </ul>
+
+  <h2>📚 ¿Qué sigue?</h2>
+  <ul>
+    <li>Aprende sobre <strong>datagramas UDP y segmentos TCP</strong></li>
+    <li>Investiga sobre <strong>IPv6</strong> y sus diferencias con IPv4</li>
+    <li>Practica con <strong>Wireshark</strong> capturando paquetes reales</li>
+  </ul>
+
+  <footer>
+    🧠 Un paquete de red no miente. Solo hay que saber leerlo.
+  </footer>
+
+</body>
+</html>

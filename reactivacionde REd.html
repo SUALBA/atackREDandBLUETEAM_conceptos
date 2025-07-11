@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Guía Compacta: Recuperar Conectividad de Red</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@1.0.6/dist/heroicons.min.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <main class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-8">Guía Compacta: Recuperar Conectividad de Red</h1>
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <!-- Step 1 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <h2 class="font-semibold mb-1">1. Listar interfaces</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ip link show</code>
+      </div>
+      <!-- Step 2 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-green-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11V3m0 8l-4-4m4 4l4-4"/>
+        </svg>
+        <h2 class="font-semibold mb-1">2. Activar interfaz</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ip link set dev &lt;iface&gt; up</code>
+      </div>
+      <!-- Step 3 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-yellow-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6a2 2 0 012-2h4a2 2 0 012 2v6m-6 4h6"/>
+        </svg>
+        <h2 class="font-semibold mb-1">3. Solicitar DHCP</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">dhclient &lt;iface&gt;</code>
+      </div>
+      <!-- Step 4 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-red-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
+        </svg>
+        <h2 class="font-semibold mb-1">4. Ver IP</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ip addr show &lt;iface&gt;</code>
+      </div>
+      <!-- Step 5 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-purple-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+        <h2 class="font-semibold mb-1">5. Ver rutas</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ip route show</code>
+      </div>
+      <!-- Step 6 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-indigo-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6m-2 6h6"/>
+        </svg>
+        <h2 class="font-semibold mb-1">6. Añadir ruta</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ip route add default via &lt;gateway&gt; dev &lt;iface&gt;</code>
+      </div>
+      <!-- Step 7 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-teal-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4-4 4 4m0-8l-4 4-4-4"/>
+        </svg>
+        <h2 class="font-semibold mb-1">7. Probar conectividad</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">ping 127.0.0.1 &amp;&amp; ping &lt;gateway&gt; &amp;&amp; ping 8.8.8.8 &amp;&amp; ping google.com</code>
+      </div>
+      <!-- Step 8 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-gray-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 6h18M3 14h18m-9 4h9"/>
+        </svg>
+        <h2 class="font-semibold mb-1">8. Configurar red VM</h2>
+        <p class="text-sm text-center">Modo Bridged / NAT / Host-only y DHCP habilitado</p>
+      </div>
+      <!-- Step 9 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-pink-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-2-2m0 0l2-2m-2 2h8m-6 2v1a3 3 0 006 0v-1m-6 0V9a3 3 0 016 0v6"/>
+        </svg>
+        <h2 class="font-semibold mb-1">9. Obtener permisos root</h2>
+        <code class="bg-gray-100 rounded px-2 py-1 text-sm">su –</code>
+      </div>
+      <!-- Step 10 -->
+      <div class="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
+        <svg class="h-8 w-8 text-yellow-700 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5-6l3 3-3 3"/>
+        </svg>
+        <h2 class="font-semibold mb-1">10. Tip extra</h2>
+        <p class="text-sm text-center">Instala net-tools o ifupdown2 si no ves interfaces, o revisa la configuración del hipervisor.</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

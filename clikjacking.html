@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Clickjacking y Esteganografía</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
+    header { background: #007BFF; color: white; padding: 2rem; text-align: center; }
+    header h1 { margin: 0 0 0.5rem; font-size: 2.5rem; }
+    main { padding: 2rem; max-width: 900px; margin: auto; }
+    section { background: white; margin-bottom: 2rem; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    h2 { color: #007BFF; margin-top: 0; }
+    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+    code { font-family: monospace; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    th { background: #e9ecef; }
+    footer { text-align: center; padding: 1rem; background: #e9ecef; font-size: 0.9rem; }
+    nav { margin-bottom: 2rem; text-align: center; }
+    nav a { margin: 0 1rem; color: #007BFF; text-decoration: none; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guía de Clickjacking y Esteganografía</h1>
+    <p>Conceptos, funcionamiento y prevención</p>
+  </header>
+  <main>
+    <nav>
+      <a href="#que-es">¿Qué es?</a>
+      <a href="#como-funciona">¿Cómo funciona?</a>
+      <a href="#prevencion">Prevención (Clickjacking)</a>
+      <a href="#esteganografia">Esteganografía</a>
+    </nav>
+
+    <section id="que-es">
+      <h2>¿Qué es Clickjacking?</h2>
+      <p>El <strong>clickjacking</strong>, también conocido como <em>secuestro de clics</em> o <em>UI redressing</em>,
+      es una técnica de ataque en la que se engaña al usuario para que realice clics en elementos invisibles
+      o superpuestos de una página web, provocando acciones no deseadas en una aplicación vulnerable.</p>
+    </section>
+
+    <section id="como-funciona">
+      <h2>¿Cómo funciona?</h2>
+      <h3>Página atacante</h3>
+      <p>El atacante crea una página propia con un diseño atractivo o un mensaje convincente (por ejemplo, “¡Gana un iPhone gratis!”, “Reproduce este vídeo”, etc.),
+      para captar la atención y motivar al usuario a interactuar.</p>
+      <h3>Inserción de &lt;iframe&gt;</h3>
+      <p>Dentro de esa página, incluye un <code>&lt;iframe&gt;</code> que apunta al sitio víctima (o a la interfaz de administración de la propia aplicación).
+      El <code>&lt;iframe&gt;</code> se hace <strong>transparente</strong> o se posiciona justo encima de los botones reales que queremos secuestrar.</p>
+      <h3>Superposición engañosa</h3>
+      <p>Sobre el <code>&lt;iframe&gt;</code> transparente se colocan botones o enlaces falsos:
+      el usuario ve y hace clic en ese botón, pero, en realidad, está pulsando un elemento dentro del iframe
+      (por ejemplo “Eliminar cuenta”, “Transferir dinero”, “Autorizar permiso”).</p>
+      <h3>Ejecución involuntaria</h3>
+      <p>El clic se envía al sitio objetivo, que interpreta la acción como legítima y lleva a cabo la operación sin que
+      el usuario sea consciente de lo que está haciendo realmente.</p>
+    </section>
+
+    <section id="prevencion">
+      <h2>¿Cómo prevenir el Clickjacking?</h2>
+      <ul>
+        <li><strong>X-Frame-Options:</strong> DENY, SAMEORIGIN o ALLOW-FROM.</li>
+        <li><strong>Content Security Policy:</strong> frame-ancestors 'self' o dominios permitidos.</li>
+        <li><strong>Frame Busting (JavaScript):</strong>
+          <pre><code>if (window.top !== window.self) {
+  window.top.location = window.self.location;
+}</code></pre>
+        </li>
+        <li><strong>Revisión de componentes:</strong> asegurarse de no deshabilitar encabezados de seguridad.</li>
+      </ul>
+    </section>
+
+    <section id="esteganografia">
+      <h2>Esteganografía en Ciberseguridad</h2>
+      <p>La <strong>esteganografía</strong> es el arte de ocultar información dentro de otros ficheros (imágenes, audio,
+      vídeo o incluso protocolos de red) de forma que pase inadvertida.</p>
+      <h3>Aplicaciones más habituales</h3>
+      <ol>
+        <li><strong>Canales encubiertos para exfiltración de datos:</strong> uso de LSB en imágenes y audio, o cambios sutiles en vídeo para ocultar credenciales o documentos.</li>
+        <li><strong>Comando y control (C2) de malware:</strong> incrustar instrucciones en redes sociales o servicios de imágenes.</li>
+        <li><strong>Marcas de agua digitales:</strong> firmas invisibles en archivos multimedia para proteger la propiedad intelectual.</li>
+        <li><strong>Comunicaciones seguras en redes restrictivas:</strong> uso de campos no utilizados en cabeceras TCP/IP o tráfico DNS.</li>
+      </ol>
+      <h3>Principales técnicas y herramientas</h3>
+      <table>
+        <thead>
+          <tr><th>Técnica</th><th>Descripción</th><th>Herramientas</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>LSB en imágenes</td><td>Modificar el bit menos significativo de píxeles.</td><td>Steghide, OpenStego</td></tr>
+          <tr><td>Transform Domain (DCT, DWT)</td><td>Ocultar en coeficientes de frecuencia JPEG/DCT.</td><td>OutGuess, F5</td></tr>
+          <tr><td>Esteganografía en audio</td><td>Cambiar bits de muestras o aprovechar el enmascaramiento psicoacústico.</td><td>SilentEye</td></tr>
+          <tr><td>Texto</td><td>Insertar caracteres invisibles o patrones de espaciado.</td><td>Snow, OpenPuff</td></tr>
+          <tr><td>Red (covert channels IP/TCP)</td><td>Uso de padding o secuencias de tiempo en tráfico legítimo.</td><td>CovertTCP, IMapTools</td></tr>
+        </tbody>
+      </table>
+      <h3>Detección y Contramedidas (Esteganálisis)</h3>
+      <ul>
+        <li><strong>Análisis estadístico:</strong> comparar distribuciones de colores o frecuencias con archivos limpios.</li>
+        <li><strong>Detección de anomalías en tráfico:</strong> monitorizar patrones de tiempo y tamaños de paquete.</li>
+        <li><strong>Firma y hash:</strong> almacenar y comparar resúmenes criptográficos de archivos.</li>
+        <li><strong>Machine learning:</strong> modelos que detectan microvariaciones típicas de esteganografía.</li>
+      </ul>
+      <h3>Buenas prácticas defensivas</h3>
+      <ul>
+        <li>Filtrar y reconvertir contenido multimedia para destruir posibles cargas ocultas.</li>
+        <li>Inspección profunda de paquetes (DPI) con módulos de esteganálisis.</li>
+        <li>Políticas de lista blanca de formatos y orígenes de ficheros.
+        </li>
+        <li>Formación y concienciación del personal.</li>
+      </ul>
+      <p>En resumen, la esteganografía permite crear canales ocultos y proteger la autoría de contenidos. Las defensas
+      combinan detección estadística, reencodings y controles estrictos de contenido.</p>
+    </section>
+  </main>
+  <footer>
+    <p>© 2025 – Guía de Ciberseguridad</p>
+  </footer>
+</body>
+</html>

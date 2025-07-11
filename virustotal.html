@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Completa VirusTotal para Hackers Éticos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --neon: #39ff14;
+      --accent: #08fdd8;
+      --text: #e6e6e6;
+      --heading: #39ff14;
+      --border: rgba(57,255,20,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Roboto Mono', monospace;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    header { text-align: center; margin-bottom: 2rem; }
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--heading);
+      text-shadow: 0 0 8px var(--neon);
+      margin-bottom: 0.5rem;
+      animation: flicker 2s infinite;
+    }
+    @keyframes flicker {
+      0%,19%,21%,23%,25%,54%,56%,100% { opacity: 0.99; }
+      20%,24%,55% { opacity: 0.4; }
+    }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 3rem; }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    nav a:hover { background: rgba(8,253,216,0.2); }
+    section { margin-bottom: 2rem; border-left: 4px solid var(--border); padding-left: 1rem; }
+    section h2 { color: var(--neon); margin-bottom: 0.5rem; }
+    section h3 { color: var(--accent); margin-top: 1rem; }
+    code, pre {
+      background: #121212;
+      padding: 0.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    pre { margin: 1rem 0; }
+    ul { margin-left: 1.2rem; }
+    dl dt { font-weight: bold; margin-top: 0.5rem; }
+    dl dd { margin-left: 1.2rem; margin-bottom: 0.5rem; }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 1px solid #222;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VirusTotal: Guía Avanzada para Hackers Éticos</h1>
+    <p>Referencia definitiva con ejemplos prácticos de automatización y uso intensivo.</p>
+  </header>
+  <nav>
+    <a href="#upload">Subida</a>
+    <a href="#analysis">Análisis</a>
+    <a href="#scores">Puntuación</a>
+    <a href="#tabs">Pestañas</a>
+    <a href="#why">¿Por qué?</a>
+    <a href="#advanced">Trucos Avanzados</a>
+    <a href="#api">API & Ejemplos</a>
+  </nav>
+
+  <section id="upload">
+    <h2>1. Subida de Archivos</h2>
+    <ul>
+      <li><strong>Drag & Drop:</strong> Suelta archivos en la ventana.</li>
+      <li><strong>File Upload:</strong> Botón para explorar el disco.</li>
+      <li><strong>URL Submission:</strong> Envía URLs o dominios para escaneo.</li>
+      <li><em>Quick Tip:</em> Instala la extensión oficial de VirusTotal para navegador.</li>
+    </ul>
+  </section>
+
+  <section id="analysis">
+    <h2>2. Análisis con Motores Múltiples</h2>
+    <p>Se ejecutan en paralelo:</p>
+    <ul>
+      <li>Antivirus basados en firmas</li>
+      <li>Sandbox dinámico</li>
+      <li>Modelos de Machine Learning</li>
+    </ul>
+    <p><em>Resultados:</em> Nombre de malware, familia, tipo (Trojan, Backdoor, Hacktool).</p>
+  </section>
+
+  <section id="scores">
+    <h2>3. Puntuación y Detección</h2>
+    <ul>
+      <li><strong>Count:</strong> Ej. <code>60/72</code>.</li>
+      <li><strong>Community Score:</strong> Valoración social.</li>
+      <li><strong>Etiquetas:</strong> Crypter, Metasploit, etc.</li>
+    </ul>
+  </section>
+
+  <section id="tabs">
+    <h2>4. Pestañas Principales</h2>
+    <dl>
+      <dt>Detection</dt><dd>Listado y resultado de cada motor.</dd>
+      <dt>Details</dt><dd>Hashes, tipo PE, imports, secciones.</dd>
+      <dt>Relations</dt><dd>Grafos de muestras y URLs relacionadas.</dd>
+      <dt>Behavior</dt><dd>Registro de acciones en sandbox.</dd>
+      <dt>Community</dt><dd>Comentarios y notas colaborativas.</dd>
+    </dl>
+  </section>
+
+  <section id="why">
+    <h2>5. ¿Por qué es tan usado?</h2>
+    <ul>
+      <li>Dashboard único con +70 motores.</li>
+      <li>Velocidad: si existe, es inmediato.</li>
+      <li>Información estática y dinámica.</li>
+      <li>Feedback comunitario.</li>
+      <li>API robusta para integración.</li>
+    </ul>
+  </section>
+
+  <section id="advanced">
+    <h2>6. Trucos Avanzados</h2>
+    <h3>Permalink forzado</h3>
+    <p>Añade <code>?nocache=1</code> para vaciar cachés.</p>
+    <h3>JSON API desde UI</h3>
+    <p>En <em>Details</em> descarga el JSON puro de <code>/api/v3/files/{id}</code>.</p>
+    <h3>YARA Rules</h3>
+    <p>Sube tus reglas YARA en la sandbox dinámica para detección personalizada.</p>
+    <h3>Comparación de variantes</h3>
+    <p>Usa la pestaña <em>Relations</em> para mapear hashes similares.</p>
+    <h3>Extensión YouHack</h3>
+    <p>Búsquedas y descargas masivas sin salir de la terminal.</p>
+  </section>
+
+  <section id="api">
+    <h2>7. API & Ejemplos Prácticos</h2>
+
+    <h3>7.1. Enviar Lotes desde Bash</h3>
+    <pre><code>#!/bin/bash
+APIKEY="TU_API_KEY"
+for file in /muestras/*.exe; do
+  echo "Escaneando $file..."
+  curl -s -X POST "https://www.virustotal.com/api/v3/files" \
+    -H "x-apikey: $APIKEY" \
+    -F "file=@$file" \
+    | jq '.data.id'
+done</code></pre>
+
+    <h3>7.2. Script en Python</h3>
+    <pre><code>import requests
+APIKEY = 'TU_API_KEY'
+HEADERS = {'x-apikey': APIKEY}
+url = 'https://www.virustotal.com/api/v3/files'
+for path in ['/muestras/shell1.exe','/muestras/shell2.php']:
+    with open(path,'rb') as f:
+        files = {'file': (path, f)}
+        resp = requests.post(url, headers=HEADERS, files=files)
+        print(path, resp.json()['data']['attributes']['last_analysis_stats'])</code></pre>
+
+    <h3>7.3. Consultas Periódicas con <code>cron</code></h3>
+    <p>Ejecuta el script Bash cada hora:</p>
+    <pre><code># crontab -e
+0 * * * * /usr/local/bin/vt_batch_scan.sh >> /var/log/vt_scan.log 2>&1</code></pre>
+
+    <h3>7.4. Webhooks & Alertas SIEM</h3>
+    <p>Configura un endpoint para recibir notificaciones de nuevos análisis:</p>
+    <pre><code># server.py (Flask)
+from flask import Flask, request
+app = Flask(__name__)
+@app.route('/vt-webhook', methods=['POST'])
+def vt_webhook():
+    data = request.json
+    # Extrae hash y detecciones
+    file_id = data['data']['id']
+    stats = data['data']['attributes']['last_analysis_stats']
+    # Envíalo a tu SIEM (ej. syslog)
+    print(f"Nuevo informe {file_id} -> {stats}")
+    return '', 204
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+</code></pre>
+    <p>En la consola de VirusTotal (Dashboard → Webhooks), añade tu URL <code>https://tu.dominio/vt-webhook</code> y selecciona eventos de <em>scan.report</em>.</p>
+
+  </section>
+
+  <footer>
+    &copy; 2025 – Guía creada para hackers éticos y estudiantes de ciberseguridad.
+  </footer>
+</body>
+</html>

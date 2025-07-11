@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Guía de Intruder Sniper en Burp Suite</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 2em auto;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 1em;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      margin-top: 1.5em;
+    }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.5em; border-bottom: 2px solid #ddd; padding-bottom: 0.3em; }
+    .section { margin-bottom: 2em; }
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1em;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    code { font-family: Consolas, monospace; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+
+  <h1>Guía de Intruder Sniper en Burp Suite</h1>
+  <p>En esta guía verás cómo configurar y entender la pestaña <strong>Intruder</strong> en <em>modo Sniper</em> de Burp Suite para automatizar pruebas de inyección en una única posición de tu petición HTTP.</p>
+
+  <div class="section">
+    <h2>1. Modo Sniper</h2>
+    <p>El modo <strong>Sniper</strong> está pensado para probar un <strong>único punto de inyección</strong> en la petición. Para ello marcas (con “Add §”) las posiciones donde Burp sustituirá un valor de prueba (<em>payload</em>) de tu lista, una posición a la vez.</p>
+  </div>
+
+  <div class="section">
+    <h2>2. Target (Objetivo)</h2>
+    <p>Aquí defines la URL a la que vas a enviar múltiples peticiones. En tu ejemplo:</p>
+    <pre><code>http://192.168.100.173/login.php</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>3. El raw request en Intruder</h2>
+    <p>Dentro del cuadro de la petición verás algo así:</p>
+    <pre><code>POST /login.php HTTP/1.1
+Host: 192.168.100.173
+User-Agent: Mozilla/5.0 …
+Accept: …
+Content-Type: application/x-www-form-urlencoded
+Cookie: PHPSESSID=9iqL5hcu44ei31le4ud8nqlls; security=low
+
+username=admin&amp;password=password&amp;Login=Login&amp;user_token=ead27578…</code></pre>
+    <ul>
+      <li><strong>Líneas 1–7:</strong> cabeceras HTTP estándar.</li>
+      <li><strong>Cookie:</strong> <code>PHPSESSID</code> (sesión) y <code>security=low</code> (nivel de seguridad de la app).</li>
+      <li><strong>Cuerpo (body):</strong> parámetros <code>username</code>, <code>password</code>, <code>user_token</code> (anti-CSRF)…</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4. Posiciones (Positions)</h2>
+    <p>– <strong>Add §</strong>: coloca marcadores <code>§</code> alrededor del valor que quieras variar.<br>
+       – <strong>Auto §</strong>: Burp detecta automáticamente posibles puntos de inyección.<br>
+       – <strong>Clear §</strong>: quita todos los marcadores.</p>
+    <p>Por ejemplo, marcando <code>password=§password§</code>, Burp sustituirá “password” por cada valor de tu lista de payloads.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Actualizar Host header</h2>
+    <p>La opción <em>“Update Host header to match”</em> hace que Burp cambie la cabecera <code>Host:</code> para que coincida con la dirección real a la que envía la petición (útil para testear virtual hosts o dominios internos).</p>
+  </div>
+
+  <div class="section">
+    <h2>6. Flujo típico de un ataque Intruder Sniper</h2>
+    <ol>
+      <li>Interceptar el request en <strong>Proxy &rarr; HTTP history</strong>.</li>
+      <li>Enviar a Intruder (<em>Right-click</em> → “Send to Intruder”).</li>
+      <li>Seleccionar modo <strong>Sniper</strong>.</li>
+      <li>Marcar posición/es con <code>§</code>.</li>
+      <li>Ir a la pestaña <strong>Payloads</strong> y cargar tu lista de valores de prueba.</li>
+      <li>Pulsar <strong>Start attack</strong> y analizar las respuestas en busca de variaciones (status codes, tamaño, contenido…).</li>
+    </ol>
+  </div>
+
+  <p>Con esto podrás automatizar el envío de múltiples peticiones variando solo los campos que te interesan, para descubrir contraseñas débiles, inyecciones SQL u otros fallos de seguridad.</p>
+  <p><em>¿Tienes dudas sobre cómo crear listas de payloads o interpretar los resultados? ¡Comenta abajo y lo vemos!</em></p>
+
+</body>
+</html>

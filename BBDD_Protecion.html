@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protección de Bases de Datos SQL: Guía Básica y Profesional</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; background-color: #fafafa; color: #333; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #ecf0f1; padding: 2px 4px; border-radius: 4px; font-family: Consolas, monospace; }
+    pre { background: #ecf0f1; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+    ul, ol { margin-left: 1.5rem; }
+    section { margin-top: 2rem; }
+    footer { margin-top: 3rem; font-size: 0.9rem; text-align: center; color: #7f8c8d; }
+  </style>
+</head>
+<body>
+  <article>
+    <h1>Protección de Bases de Datos SQL: Guía Básica y Profesional</h1>
+    <p>Las bases de datos SQL son el corazón de muchas aplicaciones críticas. Protegerlas frente a accesos no autorizados requiere un enfoque en varias capas: red, autenticación, cifrado, permisos y monitorización. A continuación encontrarás tanto conocimientos básicos como prácticas profesionales, además de los pasos que un hacker ético seguiría para evaluar la seguridad de una base de datos.</p>
+    
+    <section>
+      <h2>Medidas de Seguridad en Profundidad</h2>
+      <h3>1. Aislamiento y Seguridad de Red</h3>
+      <ul>
+        <li><strong>Firewall y ACL:</strong> Restringe el acceso al puerto SQL solo a direcciones IP o redes autorizadas.</li>
+        <li><strong>Subred Privada y VPN:</strong> Mantén el servidor SQL en una red privada y exige VPN para accesos externos.</li>
+        <li><strong>Segmentación:</strong> Separa la base de datos de otros servicios (web, correo) para limitar movimientos laterales.</li>
+      </ul>
+      
+      <h3>2. Autenticación Fuerte</h3>
+      <ul>
+        <li><strong>Usuarios Individuales:</strong> Evita cuentas genéricas y crea usuarios únicos para cada conexión.</li>
+        <li><strong>Política de Contraseñas:</strong> Longitud mínima de 12 caracteres, complejidad y caducidad periódica.</li>
+        <li><strong>MFA/AD Token:</strong> Implementa autenticación multifactor o tokens de identidad (Azure AD, AWS IAM).</li>
+      </ul>
+      
+      <h3>3. Control de Permisos</h3>
+      <ul>
+        <li><strong>Principio de Menor Privilegio:</strong> Concede solo SELECT/INSERT/UPDATE/DELETE según necesidad.</li>
+        <li><strong>Roles y Esquemas:</strong> Usa roles agrupados para gestionar permisos de forma centralizada.</li>
+        <li><strong>Auditoría Periódica:</strong> Revoca cuentas inactivas y revisa permisos sobredimensionados.</li>
+      </ul>
+      
+      <h3>4. Cifrado de Datos</h3>
+      <ul>
+        <li><strong>Cifrado en Reposo:</strong> Habilita TDE (Transparent Data Encryption) o equivalentes.</li>
+        <li><strong>Cifrado en Tránsito:</strong> Fuerza conexiones TLS/SSL para proteger credenciales y datos.</li>
+        <li><strong>Gestión de Claves:</strong> Usa HSM o servicios gestionados (KMS, Key Vault) y rota claves periódicamente.</li>
+      </ul>
+      
+      <h3>5. Monitorización y Auditoría</h3>
+      <ul>
+        <li><strong>Logs de Conexión:</strong> Registra accesos, errores de autenticación y cambios de esquema.</li>
+        <li><strong>SIEM:</strong> Envía logs a un sistema centralizado (Splunk, ELK, Sentinel) y crea alertas.</li>
+        <li><strong>Análisis de Anomalías:</strong> Detecta patrones inusuales de IPs, horarios o volumen de consultas.</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Pasos de un Profesional de Hacking Ético</h2>
+      <p>Para evaluar la seguridad de una base de datos SQL de forma controlada y ética, sigue este proceso:</p>
+      <ol>
+        <li><strong>Reconocimiento:</strong>
+          <ul>
+            <li>Recolecta información: nombres de dominio, IPs, versiones de software.</li>
+            <li>Escaneo de puertos:</li>
+            <pre><code>nmap -sV -p 1433,3306,5432 <IP_objetivo></code></pre>
+          </ul>
+        </li>
+        <li><strong>Enumeración:</strong>
+          <ul>
+            <li>Identifica usuarios y roles y verifica configuraciones de autenticación.</li>
+            <li>Revisa políticas de contraseñas y expiración.</li>
+          </ul>
+        </li>
+        <li><strong>Pruebas de Inyección SQL:</strong>
+          <ul>
+            <li>Usa herramientas como SQLMap:</li>
+            <pre><code>sqlmap -u "http://app/vuln.php?id=1" --dbs</code></pre>
+            <li>Verifica filtros y sintaxis parametrizada.</li>
+          </ul>
+        </li>
+        <li><strong>Explotación Controlada:</strong>
+          <ul>
+            <li>Si encuentras una vulnerabilidad, documenta el impacto y no extraigas datos reales.</li>
+            <li>Realiza pruebas en un entorno de staging o con permiso explícito.</li>
+          </ul>
+        </li>
+        <li><strong>Post-Explotación y Reporte:</strong>
+          <ul>
+            <li>Genera un informe con hallazgos, riesgos y recomendaciones.</li>
+            <li>Propón mitigaciones: parametrización de queries, parches, reforzar políticas.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+    
+    <footer>
+      <p>Publicado por [Tu Nombre] | Especialista en Seguridad Informática y Hacking Ético</p>
+    </footer>
+  </article>
+</body>
+</html>

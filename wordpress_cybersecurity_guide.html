@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciberseguridad en WordPress - Guía Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 2rem;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .card li:last-child {
+            border-bottom: none;
+        }
+
+        .card li::before {
+            content: '▶';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .vulnerability-level {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .high { background: #ff6b6b; color: white; }
+        .medium { background: #feca57; color: #333; }
+        .low { background: #48dbfb; color: white; }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 10px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .attack-timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+
+        .attack-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Ciberseguridad en WordPress</h1>
+            <p>Guía completa para pentesters y especialistas en seguridad</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2><span class="icon">🔍</span>Reconocimiento de WordPress</h2>
+                <p>WordPress es el CMS más popular del mundo, usado en aproximadamente el 40% de todos los sitios web.</p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">40%</div>
+                        <div>Sitios web globales</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">75M+</div>
+                        <div>Sitios activos</div>
+                    </div>
+                </div>
+
+                <h3>Rutas típicas de WordPress:</h3>
+                <div class="code-block">
+/wp-admin/          # Panel de administración
+/wp-login.php       # Página de login
+/wp-content/        # Contenido (themes, plugins)
+/wp-includes/       # Archivos core
+/wp-config.php      # Configuración principal
+/xmlrpc.php         # API XML-RPC
+/readme.html        # Información de versión
+                </div>
+
+                <h3>Técnicas de fingerprinting:</h3>
+                <ul>
+                    <li>Análisis de headers HTTP</li>
+                    <li>Detección de rutas estándar</li>
+                    <li>Identificación de themes y plugins</li>
+                    <li>Análisis de código fuente HTML</li>
+                    <li>Detección de versiones por archivos CSS/JS</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">⚠️</span>Vulnerabilidades Comunes</h2>
+                
+                <h3>Top 10 vulnerabilidades en WordPress:</h3>
+                <ul>
+                    <li>Ataques de fuerza bruta al login <span class="vulnerability-level high">ALTA</span></li>
+                    <li>Plugins y themes desactualizados <span class="vulnerability-level high">ALTA</span></li>
+                    <li>Inyección SQL en formularios <span class="vulnerability-level high">ALTA</span></li>
+                    <li>Cross-Site Scripting (XSS) <span class="vulnerability-level medium">MEDIA</span></li>
+                    <li>Enumeración de usuarios <span class="vulnerability-level medium">MEDIA</span></li>
+                    <li>Subida de archivos maliciosos <span class="vulnerability-level high">ALTA</span></li>
+                    <li>Exposición de wp-config.php <span class="vulnerability-level high">ALTA</span></li>
+                    <li>XML-RPC habilitado <span class="vulnerability-level medium">MEDIA</span></li>
+                    <li>Directory traversal <span class="vulnerability-level medium">MEDIA</span></li>
+                    <li>Weak password policies <span class="vulnerability-level low">BAJA</span></li>
+                </ul>
+
+                <h3>Ejemplo de ataque por fuerza bruta:</h3>
+                <div class="code-block">
+# Usando Hydra
+hydra -l admin -P passwords.txt target.com http-post-form 
+"/wp-login.php:log=^USER^&pwd=^PASS^:ERROR"
+
+# Usando WPScan
+wpscan --url http://target.com --passwords passwords.txt 
+--usernames admin
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🛡️</span>Medidas Defensivas</h2>
+                
+                <h3>Hardening básico:</h3>
+                <ul>
+                    <li>Actualizar WordPress, themes y plugins regularmente</li>
+                    <li>Usar contraseñas fuertes y únicas</li>
+                    <li>Implementar autenticación de dos factores (2FA)</li>
+                    <li>Limitar intentos de login fallidos</li>
+                    <li>Ocultar información de versión</li>
+                    <li>Deshabilitar editor de archivos en admin</li>
+                    <li>Configurar permisos de archivos correctamente</li>
+                    <li>Usar SSL/TLS en toda la comunicación</li>
+                </ul>
+
+                <h3>Configuración de wp-config.php segura:</h3>
+                <div class="code-block">
+// Deshabilitar edición de archivos
+define('DISALLOW_FILE_EDIT', true);
+
+// Forzar SSL en admin
+define('FORCE_SSL_ADMIN', true);
+
+// Ocultar errores de PHP
+define('WP_DEBUG', false);
+
+// Claves de seguridad únicas
+define('AUTH_KEY', 'clave-unica-aleatoria');
+                </div>
+
+                <h3>Plugins de seguridad recomendados:</h3>
+                <ul>
+                    <li><strong>Wordfence:</strong> Firewall y scanner de malware</li>
+                    <li><strong>Sucuri:</strong> Monitoreo y limpieza de malware</li>
+                    <li><strong>iThemes Security:</strong> Más de 30 medidas de seguridad</li>
+                    <li><strong>Limit Login Attempts:</strong> Prevención de fuerza bruta</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🔧</span>Herramientas de Pentesting</h2>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3>WPScan</h3>
+                        <p>Scanner específico para WordPress</p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Nikto</h3>
+                        <p>Scanner de vulnerabilidades web</p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Burp Suite</h3>
+                        <p>Proxy para análisis de aplicaciones</p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>SQLMap</h3>
+                        <p>Herramienta de inyección SQL</p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Hydra</h3>
+                        <p>Ataques de fuerza bruta</p>
+                    </div>
+                    <div class="tool-card">
+                        <h3>Metasploit</h3>
+                        <p>Framework de explotación</p>
+                    </div>
+                </div>
+
+                <h3>Comandos útiles de WPScan:</h3>
+                <div class="code-block">
+# Escaneo básico
+wpscan --url http://target.com
+
+# Enumeración de usuarios
+wpscan --url http://target.com --enumerate u
+
+# Enumeración de plugins vulnerables
+wpscan --url http://target.com --enumerate vp
+
+# Enumeración completa
+wpscan --url http://target.com --enumerate u,vp,vt,tt,cb,dbe
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🎯</span>Metodología de Ataque</h2>
+                
+                <div class="attack-timeline">
+                    <div class="timeline-item">
+                        <h3>1. Reconocimiento</h3>
+                        <p>Identificación de WordPress, versión, themes y plugins instalados</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>2. Enumeración</h3>
+                        <p>Búsqueda de usuarios, directorios expuestos y puntos de entrada</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>3. Análisis de Vulnerabilidades</h3>
+                        <p>Identificación de CVEs en componentes detectados</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>4. Explotación</h3>
+                        <p>Aprovechamiento de vulnerabilidades encontradas</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>5. Post-Explotación</h3>
+                        <p>Escalado de privilegios y persistencia</p>
+                    </div>
+                </div>
+
+                <h3>Vectores de ataque comunes:</h3>
+                <ul>
+                    <li><strong>Brute Force:</strong> Ataques de diccionario contra wp-login.php</li>
+                    <li><strong>Plugin Exploits:</strong> Vulnerabilidades en plugins desactualizados</li>
+                    <li><strong>Theme Exploits:</strong> Backdoors en themes pirateados</li>
+                    <li><strong>XML-RPC:</strong> Amplificación de ataques de fuerza bruta</li>
+                    <li><strong>File Upload:</strong> Subida de shells maliciosos</li>
+                    <li><strong>SQL Injection:</strong> En formularios de contacto o búsqueda</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">📊</span>Estadísticas y Tendencias</h2>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">90%</div>
+                        <div>Ataques por plugins vulnerables</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">8%</div>
+                        <div>Ataques por themes vulnerables</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">2%</div>
+                        <div>Ataques por WordPress core</div>
+                    </div>
+                </div>
+
+                <h3>Plugins más atacados:</h3>
+                <ul>
+                    <li>Contact Form 7 - Formularios de contacto</li>
+                    <li>Yoast SEO - Optimización SEO</li>
+                    <li>WooCommerce - E-commerce</li>
+                    <li>Elementor - Constructor de páginas</li>
+                    <li>Slider Revolution - Sliders</li>
+                    <li>WP File Manager - Gestión de archivos</li>
+                    <li>UpdraftPlus - Backups</li>
+                </ul>
+
+                <h3>Tendencias de seguridad 2024-2025:</h3>
+                <ul>
+                    <li>Aumento de ataques supply chain</li>
+                    <li>Malware que evade detección</li>
+                    <li>Ataques dirigidos a plugins populares</li>
+                    <li>Criptominería en sitios comprometidos</li>
+                    <li>Phishing mediante sitios WordPress</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>🎓 Recursos Adicionales para Estudiantes</h3>
+            <p>• WordPress Codex • OWASP Top 10 • CVE Database • WordPress Security Team • Bug Bounty Programs</p>
+            <p><strong>Recuerda:</strong> Usa estos conocimientos solo en entornos autorizados y para fines educativos</p>
+        </div>
+    </div>
+</body>
+</html>

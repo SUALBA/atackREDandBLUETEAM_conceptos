@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Visual Completa de Comandos Nmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #e3f2fd;
+      --card: #ffffff;
+      --primary: #1f2937;
+      --accent: #2563eb;
+      --text: #374151;
+      --radius: 12px;
+      --shadow: rgba(0, 0, 0, 0.05);
+      --spacing: 1rem;
+      --gap: 1.5rem;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: var(--spacing);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: var(--spacing);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: var(--gap);
+      color: var(--primary);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--gap);
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px var(--shadow);
+      padding: var(--spacing);
+      transition: transform .2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+    }
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--accent);
+    }
+    code {
+      display: block;
+      background: #f0f4f8;
+      padding: 0.5rem;
+      margin: 0.5rem 0 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--primary);
+      word-wrap: break-word;
+    }
+    p {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Guía Visual Completa de Comandos Nmap</h1>
+    <div class="grid">
+      <div class="card">
+        <h2>Especificación de Objetivos</h2>
+        <code>nmap -iL &lt;fichero&gt;</code>
+        <p>Lee la lista de objetivos desde un fichero.</p>
+        <code>nmap -iR &lt;num&gt;</code>
+        <p>Escanea <em>num</em> objetivos aleatorios.</p>
+        <code>nmap --exclude &lt;hosts&gt;</code>
+        <p>Excluye hosts específicos del escaneo.</p>
+      </div>
+
+      <div class="card">
+        <h2>Descubrimiento de Equipos</h2>
+        <code>nmap -sn 192.168.1.0/24</code>
+        <p>Ping sweep: descubre hosts activos sin escanear puertos.</p>
+        <code>nmap -Pn target</code>
+        <p>Desactiva ping; asume que todos los hosts están activos.</p>
+        <code>nmap -sL target</code>
+        <p>Lista objetivos sin enviar paquetes de sondeo.</p>
+        <code>nmap -PR target</code>
+        <p>Ping ARP en redes locales para detección rápida.</p>
+      </div>
+
+      <div class="card">
+        <h2>Análisis de Puertos</h2>
+        <code>nmap -sS target</code>
+        <p>SYN stealth scan (requiere permisos de root).</p>
+        <code>nmap -sT target</code>
+        <p>Connect scan usando conexión TCP completa.</p>
+        <code>nmap -sU target</code>
+        <p>Escaneo de puertos UDP.</p>
+        <code>nmap -sO target</code>
+        <p>Escaneo de protocolos IP.</p>
+        <code>nmap -sI &lt;zombie&gt; target</code>
+        <p>Idle scan usando un host zombie para anonimato.</p>
+      </div>
+
+      <div class="card">
+        <h2>Especificación de Puertos</h2>
+        <code>nmap -p &lt;puertos&gt; target</code>
+        <p>Define puertos específicos o rangos (ej. <code>80,443,1000-2000</code>).</p>
+        <code>nmap -p- target</code>
+        <p>Escanea todos los puertos (1-65535).</p>
+        <code>nmap --top-ports &lt;num&gt; target</code>
+        <p>Escanea los <em>num</em> puertos más comunes.</p>
+        <code>nmap --port-ratio &lt;ratio&gt; target</code>
+        <p>Escanea puertos con ratio de apertura superior al valor.</p>
+      </div>
+
+      <div class="card">
+        <h2>Detección de Versiones y SO</h2>
+        <code>nmap -sV target</code>
+        <p>Detecta servicios y versiones.</p>
+        <code>nmap --version-intensity &lt;0-9&gt; target</code>
+        <p>Ajusta la agresividad de pruebas de versión.</p>
+        <code>nmap --version-all target</code>
+        <p>Agrupación máxima de pruebas de versión.</p>
+        <code>nmap -O target</code>
+        <p>Identificación de sistema operativo.</p>
+        <code>nmap --osscan-limit target</code>
+        <p>Limita fingerprinting a hosts que respondan bien.</p>
+        <code>nmap --osscan-guess target</code>
+        <p>Modo agresivo de adivinación de SO.</p>
+      </div>
+
+      <div class="card">
+        <h2>Nmap Scripting Engine (NSE)</h2>
+        <code>nmap -sC target</code>
+        <p>Ejecuta scripts por defecto para descubrimiento básico.</p>
+        <code>nmap --script vuln target</code>
+        <p>Ejecuta scripts de detección de vulnerabilidades.</p>
+        <code>nmap -p 1433 --script ms-sql-empty-password target</code>
+        <p>Prueba contraseñas vacías en MS SQL.</p>
+        <code>nmap --script vulners target</code>
+        <p>Lista CVEs y puntuaciones CVSS.</p>
+      </div>
+
+      <div class="card">
+        <h2>Evasión y Spoofing</h2>
+        <code>nmap -f target</code>
+        <p>Fragmenta paquetes para evadir IDS.</p>
+        <code>nmap -D RND:5 target</code>
+        <p>Usa direcciones señuelo para ocultar el origen.</p>
+        <code>nmap --spoof-mac &lt;mac&gt; target</code>
+        <p>Falsifica la dirección MAC.</p>
+        <code>nmap -g &lt;puerto&gt; target</code>
+        <p>Especifica puerto de origen.</p>
+      </div>
+
+      <div class="card">
+        <h2>Temporización y Rendimiento</h2>
+        <code>nmap -T&lt;0-5&gt; target</code>
+        <p>Plantillas de tiempo (0: lento, 5: rápido).</p>
+        <code>nmap --min-parallelism &lt;n&gt; target</code>
+        <p>Mínimo de sondas paralelas.</p>
+        <code>nmap --max-rtt-timeout &lt;tiempo&gt; target</code>
+        <p>Establece tiempo máximo de RTT.</p>
+      </div>
+
+      <div class="card">
+        <h2>Salida e Interacción</h2>
+        <code>nmap -oN salida.txt target</code>
+        <p>Guarda salida normal en fichero.</p>
+        <code>nmap -oX salida.xml target</code>
+        <p>Guarda salida en formato XML.</p>
+        <code>nmap --append-output -oN salida.txt target</code>
+        <p>Añade resultados al fichero existente.</p>
+        <code>nmap --resume &lt;fichero&gt;</code>
+        <p>Reanuda un escaneo interrumpido.</p>
+      </div>
+
+      <div class="card">
+        <h2>Miscelánea</h2>
+        <code>nmap -6 target</code>
+        <p>Escaneo de hosts IPv6.</p>
+        <code>nmap -A target</code>
+        <p>Análisis agresivo (SO, versión, scripts y traceroute).</p>
+        <code>nmap -h</code>
+        <p>Visualiza la ayuda y opciones resumidas.</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

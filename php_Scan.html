@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Escaneo de PHP con VirusTotal y Buenas Prácticas</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Heroicons -->
+  <script src="https://unpkg.com/heroicons@1.0.6/dist/heroicons.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <header class="bg-blue-600 text-white py-8 shadow-md">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-3xl font-bold">Escaneo de PHP con VirusTotal y Buenas Prácticas</h1>
+      <p class="mt-2 text-blue-200">Guía para detectar y analizar web-shells PHP, con opciones web, CLI y conceptos extra.</p>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 space-y-12">
+    <!-- Sección 1 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">1. Escaneo de Archivos PHP en VirusTotal</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Opción Web -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2 flex items-center">
+            <svg class="h-6 w-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2v6M6 4h12v4H6V4z" />
+            </svg>
+            Interfaz Web
+          </h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Visita <a href="https://www.virustotal.com" class="text-blue-600 hover:underline">VirusTotal</a>.</li>
+            <li>Selecciona <em>Choose file</em> y carga tu <code>reverse.php</code>.</li>
+            <li>Revisa el resumen de detecciones (0/70, etc.).</li>
+            <li>Descarga o comparte el informe con tu equipo.</li>
+          </ol>
+        </div>
+        <!-- Opción CLI -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2 flex items-center">
+            <svg class="h-6 w-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4m1-5H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2z"/>
+            </svg>
+            CLI (`vt`)
+          </h3>
+          <pre class="bg-gray-100 rounded px-4 py-2 overflow-auto text-sm"><code># Instalar vt-cli
+pip3 install vt-cli
+
+# API key
+export VT_API_KEY="TU_API_KEY"
+
+# Subir y escanear archivo
+vt file scan --path reverse.php
+
+# Consultar informe
+vt file report reverse.php</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 2 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">2. Escaneo de URLs Públicas</h2>
+      <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+        <p class="mb-4 text-gray-700">VirusTotal también puede analizar la URL donde está publicado tu script para ver si aparece en listas de bloqueo.</p>
+        <pre class="bg-gray-100 rounded px-4 py-2 overflow-auto text-sm"><code># CLI
+vt url scan http://192.168.1.110/hackable/uploads/reverse.php
+vt url report http://192.168.1.110/hackable/uploads/reverse.php
+
+# Web
+Cambia a la pestaña <strong>URL</strong> en la interfaz y pega tu enlace.</code></pre>
+      </div>
+    </section>
+
+    <!-- Sección 3 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">3. Conceptos Adicionales Útiles</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Análisis estático -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2">Análisis Estático</h3>
+          <p class="text-gray-700">Emplea herramientas como <code>PHPStan</code> o <code>Psalm</code> para detectar código inseguro sin ejecutarlo.</p>
+        </div>
+        <!-- YARA -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2">Reglas YARA</h3>
+          <p class="text-gray-700">Crea firmas YARA para identificar patrones de web-shells o código malicioso en múltiples archivos.</p>
+        </div>
+        <!-- Validación de tipos -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2">Validación y Sanitización</h3>
+          <p class="text-gray-700">Filtros de <code>fileinfo</code> y comprobaciones de MIME ayudan a evitar subidas de scripts PHP disfrazados.</p>
+        </div>
+        <!-- Sandboxing -->
+        <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+          <h3 class="font-semibold mb-2">Entorno Aislado</h3>
+          <p class="text-gray-700">Prueba cargas en contenedores o entornos sandbox para minimizar el riesgo real de ejecución.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusión -->
+    <section class="text-center">
+      <p class="text-gray-600">Con esta guía tendrás una doble capa de análisis: <strong>VirusTotal</strong> para detección rápida y <strong>prácticas avanzadas</strong> para reforzar tu seguridad. ¡Comparte y ajusta según tus necesidades!</p>
+    </section>
+  </main>
+</body>
+</html>

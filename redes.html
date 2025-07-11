@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Redes para Hackers Éticos - Guía de Estudio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff00;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .header p {
+            color: #00dddd;
+            font-size: 1.2em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 5px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.2);
+        }
+
+        .section h2 {
+            color: #00dddd;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00dddd;
+            transform: scale(1.02);
+        }
+
+        .card h3 {
+            color: #ffff00;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .card p {
+            color: #cccccc;
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            margin: 10px 0;
+            border-left: 3px solid #00dddd;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .table th, .table td {
+            border: 1px solid #00ff00;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00dddd;
+            font-weight: bold;
+        }
+
+        .table td {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .warning {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #ff6b6b;
+        }
+
+        .tip {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #ffff00;
+        }
+
+        .animated-text {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00ff00; }
+            to { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+        }
+
+        .toggle-btn {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #00dddd;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .floating-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ff00;
+            color: #000;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="animated-text">🔒 REDES INFORMÁTICAS 🔒</h1>
+            <p>Guía de Estudio para Hackers Éticos | Blue Team | SOC</p>
+        </div>
+
+        <div class="section">
+            <h2>📖 Definición de Redes</h2>
+            <p>Sistema que conecta múltiples dispositivos o equipos, permitiendo el intercambio de información y recursos de forma eficiente.</p>
+            
+            <div class="tip">
+                <strong>💡 Tip:</strong> Piensa en una red como un sistema de carreteras que conecta diferentes ciudades (dispositivos).
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🌐 Tipos de Redes</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>LAN (Local Area Network)</h3>
+                    <p><span class="highlight">Alcance:</span> Casa o empresa</p>
+                    <p><span class="highlight">Características:</span> Red local limitada geográficamente</p>
+                </div>
+                <div class="card">
+                    <h3>PAN (Personal Area Network)</h3>
+                    <p><span class="highlight">Alcance:</span> Persona específica</p>
+                    <p><span class="highlight">Ejemplo:</span> Bluetooth, dispositivos personales</p>
+                </div>
+                <div class="card">
+                    <h3>MAN (Metropolitan Area Network)</h3>
+                    <p><span class="highlight">Alcance:</span> Ciudades/Campus</p>
+                    <p><span class="highlight">Uso:</span> Interconexión de LANs en una ciudad</p>
+                </div>
+                <div class="card">
+                    <h3>WAN (Wide Area Network)</h3>
+                    <p><span class="highlight">Alcance:</span> Países/Planeta</p>
+                    <p><span class="highlight">Ejemplo:</span> Internet</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Direcciones IP</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>IP Pública</h3>
+                    <p>Dirección única en Internet (REGLAS)</p>
+                    <p><span class="highlight">Función:</span> Identificación global</p>
+                    <div class="code">Ejemplo: 203.0.113.1</div>
+                </div>
+                <div class="card">
+                    <h3>IP Privada</h3>
+                    <p>Solo funciona dentro de la LAN</p>
+                    <p><span class="highlight">Característica:</span> No accesible desde Internet</p>
+                    <div class="code">
+                        192.168.x.x<br>
+                        10.x.x.x<br>
+                        172.16.x.x - 172.31.x.x
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warning">
+                <strong>⚠️ Importante:</strong> Las IPs privadas necesitan NAT (Network Address Translation) para acceder a Internet.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Direcciones MAC</h2>
+            <p><span class="highlight">MAC →</span> Media Access Control</p>
+            <p>Dirección física única que identifica cada dispositivo de red a nivel de hardware.</p>
+            
+            <div class="code">
+                Ejemplo: 00:1B:44:11:3A:B7
+            </div>
+            
+            <div class="card">
+                <h3>Características importantes:</h3>
+                <p>• Se asigna a cada dispositivo de red</p>
+                <p>• Los routers reconocen los dispositivos conectados gracias a su MAC</p>
+                <p>• No se puede cambiar (*) - aunque hay técnicas para falsificarla</p>
+                <p>• <span class="highlight">MAC Spoofing:</span> Cambiar la MAC ID</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Modelo OSI</h2>
+            <p>Describe cómo funciona un sistema de red a nivel interno</p>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Nombre</th>
+                        <th>Ejemplos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>7</td>
+                        <td>Aplicación</td>
+                        <td>HTTP, FTP, SMTP, DNS, Telnet</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Presentación</td>
+                        <td>JPG, PNG, GIF, ASCII, SSL, HTML</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Sesión</td>
+                        <td>RPC, TLS, SSH</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Transporte</td>
+                        <td>TCP (confiable), UDP (rápido, no confiable)</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Red</td>
+                        <td>IPv4, IPv6, ICMP, ARP</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Enlace de Datos</td>
+                        <td>MAC, ATM, HDLC, Frame Relay</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Física</td>
+                        <td>Ethernet, USB, DSL, ISDN</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🌐 Modelo TCP/IP</h2>
+            <p>Se enfoca en cómo los dispositivos se comunican a través de Internet</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Capa 4: Aplicación</h3>
+                    <p>HTTP, Telnet, FTP, SMTP, DNS</p>
+                </div>
+                <div class="card">
+                    <h3>Capa 3: Transporte</h3>
+                    <p>TCP, UDP</p>
+                </div>
+                <div class="card">
+                    <h3>Capa 2: Red/Internet</h3>
+                    <p>IP, ICMP, ARP</p>
+                </div>
+                <div class="card">
+                    <h3>Capa 1: Interfaz de Red</h3>
+                    <p>Ethernet, Frame Relay</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Servicios de Red Importantes</h2>
+            
+            <div class="card">
+                <h3>DNS (Domain Name System)</h3>
+                <p>Traduce nombres de dominio a direcciones IP</p>
+                <div class="code">google.com → 172.217.16.142</div>
+            </div>
+
+            <div class="card">
+                <h3>DHCP (Dynamic Host Configuration Protocol)</h3>
+                <p>Asigna IP dinámicamente a dispositivos</p>
+            </div>
+
+            <div class="card">
+                <h3>ARP (Address Resolution Protocol)</h3>
+                <p>Obtiene MAC desde IP dentro de la misma red</p>
+            </div>
+
+            <div class="card">
+                <h3>NAT (Network Address Translation)</h3>
+                <p>Permite que múltiples dispositivos con IP privada accedan a Internet usando una IP pública</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛡️ Conceptos de Seguridad</h2>
+            
+            <div class="card">
+                <h3>VPN (Virtual Private Network)</h3>
+                <p>Crea un túnel cifrado entre redes para conexión segura</p>
+            </div>
+
+            <div class="card">
+                <h3>Firewall</h3>
+                <p>Sistema de seguridad que filtra el tráfico entrante y saliente</p>
+            </div>
+
+            <div class="card">
+                <h3>Router</h3>
+                <p>Conecta dos o más redes diferentes y dirige el tráfico entre ellas</p>
+            </div>
+
+            <div class="card">
+                <h3>Switch</h3>
+                <p>Conecta varios dispositivos dentro de una red local (LAN)</p>
+            </div>
+
+            <div class="card">
+                <h3>HUB</h3>
+                <p>Dispositivo básico que conecta múltiples dispositivos (obsoleto, sustituido por switches)</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚡ Protocolos Importantes</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>IPv4</h3>
+                    <p>32 bits → 4,300 millones de direcciones</p>
+                </div>
+                <div class="card">
+                    <h3>IPv6</h3>
+                    <p>128 bits → Mayor cantidad de direcciones</p>
+                </div>
+                <div class="card">
+                    <h3>TCP</h3>
+                    <p>Confiable, orientado a conexión</p>
+                </div>
+                <div class="card">
+                    <h3>UDP</h3>
+                    <p>Rápido, no confiable</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Nota Ética:</strong> Esta información es para propósitos educativos y de seguridad defensiva. Siempre actúa dentro del marco legal y ético.
+        </div>
+    </div>
+
+    <div class="floating-icon" onclick="scrollToTop()">
+        ↑
+    </div>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Añadir efectos de hover dinámicos
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 10px 25px rgba(0, 255, 0, 0.3)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Animación de aparición al hacer scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

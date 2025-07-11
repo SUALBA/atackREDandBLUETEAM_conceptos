@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ataques Avanzados a Infraestructuras de Sistemas y Redes</title>
+  <style>
+    /* =====================
+       Estilo Profesional
+       ===================== */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+    :root {
+      --bg: #f4f7fa;
+      --card: #ffffff;
+      --primary: #1a237e;
+      --secondary: #3949ab;
+      --accent: #e91e63;
+      --text: #2e3a59;
+      --radius: 10px;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+      --spacing: 1.5rem;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: var(--spacing);
+    }
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 0.5rem;
+      margin-bottom: var(--spacing);
+    }
+    h2 {
+      font-size: 1.9rem;
+      color: var(--secondary);
+      margin-top: var(--spacing);
+      margin-bottom: 0.75rem;
+    }
+    h3 {
+      font-size: 1.4rem;
+      color: var(--secondary);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .section {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--spacing);
+      margin-bottom: var(--spacing);
+    }
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code {
+      background: #eef0f3;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ataques Avanzados a Infraestructuras de Sistemas y Redes</h1>
+
+    <section class="section" id="pentest-avanzado">
+      <h2>1. Fases Avanzadas de Pentesting y Red Teaming</h2>
+      <p>Más allá del pentest tradicional, las empresas adoptan <strong>Red Team</strong> y <strong>Purple Team</strong> para simular ataques reales siguiendo el marco <a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK</a>. Estas fases incluyen:</p>
+      <ul>
+        <li><strong>Reconocimiento avanzado</strong>: <em>OSINT</em>, GitHub Dorking, API Abuse, consultas a <a href="https://shodan.io/" target="_blank">Shodan</a> y <a href="https://censys.io/" target="_blank">Censys</a>.</li>
+        <li><strong>Escaneo y fingerprinting profundo</strong>: uso de <a href="https://nmap.org/" target="_blank">Nmap</a> con NSE, <code>--script ssl-enum-ciphers</code>, <code>http-shellshock</code>, servicios expuestos en IPv6.</li>
+        <li><strong>Explotación y post-explotación</strong>: frameworks <a href="https://www.metasploit.com/" target="_blank">Metasploit</a>, Mimikatz, BloodHound para mapeo de AD.</li>
+        <li><strong>Persistencia y movimiento lateral</strong>: Pass-the-Hash, Kerberoasting, Golden Ticket, técnicas de living-off-the-land (LOTL).</li>
+        <li><strong>Reporte y transferencia de conocimiento</strong>: informes con <a href="https://nist.gov/publications/nist-sp-800-115" target="_blank">NIST SP 800-115</a> y sesiones de Purple Team.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="vectores-ataque">
+      <h2>2. Vectores de Ataque en Infraestructuras</h2>
+      <h3>2.1 DDoS Multicapa</h3>
+      <p>Se clasifican en:</p>
+      <ul>
+        <li><strong>Volumétricos</strong> (UDP floods, DNS amplification).</li>
+        <li><strong>Protocolo</strong> (SYN floods, ACK floods).</li>
+        <li><strong>Aplicación</strong> (HTTP/S floods, Slowloris, R.U.D.Y.).</li>
+      </ul>
+      <p>Mitigación: CDNs, scrubbing services (Cloudflare, Akamai), rate limiting.</p>
+
+      <h3>2.2 ARP Spoofing y DNS Poisoning</h3>
+      <p>Herramientas: BetterCAP, Responder. Contramedidas: Dynamic ARP Inspection, DNSSEC y filters.</p>
+
+      <h3>2.3 Secuestro de Rutas BGP</h3>
+      <p>Ataques de enrutamiento que interrumpen tráfico global. Protección: RPKI, monitoreo de prefijos con <a href="https://bgp.he.net/" target="_blank">Hurricane Electric BGP Toolkit</a>.</p>
+
+      <h3>2.4 VLAN Hopping y Dot1x</h3>
+      <p>Explotación: doble etiquetado (double tagging). Prevención: IEEE 802.1X con port-based NAC (Cisco ISE, Aruba ClearPass).</p>
+    </section>
+
+    <section class="section" id="scada-ics">
+      <h2>3. Ataques a Infraestructuras ICS/SCADA</h2>
+      <ul>
+        <li><strong>Protocolo Modbus</strong>: Sniffing y manipulación de registros.</li>
+        <li><strong>DNP3 y OPC UA</strong>: ataques a controladores lógicos programables (PLC).</li>
+        <li><strong>Stuxnet-style</strong>: inyección de código en firmware.</li>
+      </ul>
+      <p>Recomendaciones: segmentación de red (DMZ-OT), IDS especializados (Tripwire, Nozomi Networks).</p>
+    </section>
+
+    <section class="section" id="redes-cloud">
+      <h2>4. Amenazas en Redes Cloud y Virtualización</h2>
+      <ul>
+        <li><strong>Side-channel attacks</strong> entre VMs (Meltdown, Spectre).</li>
+        <li><strong>Abuso de metadatos</strong> (AWS IMDS v1 vs v2).</li>
+        <li><strong>Cross-tenant attacks</strong> en Kubernetes, contenedores Docker.</li>
+      </ul>
+      <p>Defensas: microsegmentación, zero trust, cifrado en tránsito y reposo.</p>
+    </section>
+
+    <section class="section" id="herramientas">
+      <h2>5. Herramientas y Recursos</h2>
+      <ul>
+        <li><a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK</a></li>
+        <li><a href="https://cve.mitre.org/" target="_blank">CVE Details</a></li>
+        <li><a href="https://nmap.org/" target="_blank">Nmap</a> y NSE</li>
+        <li><a href="https://shodan.io/" target="_blank">Shodan</a> / <a href="https://censys.io/" target="_blank">Censys</a></li>
+        <li><a href="https://www.owasp.org/" target="_blank">OWASP</a> Top 10 y Cheat Sheets</li>
+        <li><a href="https://www.sans.org/" target="_blank">SANS Institute</a> Whitepapers</li>
+        <li><a href="https://nvd.nist.gov/" target="_blank">NVD - National Vulnerability Database</a></li>
+      </ul>
+    </section>
+
+    <section class="section" id="contramedidas">
+      <h2>6. Contramedidas y Buenas Prácticas</h2>
+      <ul>
+        <li><strong>Zero Trust Network Architecture</strong> (ZTNA).</li>
+        <li><strong>Microsegmentación</strong> (VMware NSX, Cisco ACI).</li>
+        <li><strong>SIEM y SOAR</strong> para detección y respuesta (Splunk, Elastic).</li>
+        <li><strong>Autenticación fuerte</strong> y <strong>MFA</strong> en todos los accesos.</li>
+        <li><strong>Actualización continua</strong> de firmware y parches (WSUS, Ansible).
+        <li><strong>Evaluaciones regulares</strong> con Red Team y Purple Team.</li>
+      </ul>
+    </section>
+
+  </div>
+</body>
+</html>

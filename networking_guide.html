@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de Protocolos y Redes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin: 30px 0 15px 0;
+            padding: 10px 0;
+            border-left: 5px solid #3498db;
+            padding-left: 20px;
+            background: linear-gradient(90deg, rgba(52, 152, 219, 0.1), transparent);
+        }
+
+        h3 {
+            color: #2980b9;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+            padding: 8px 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+        }
+
+        h4 {
+            color: #27ae60;
+            font-size: 1.1em;
+            margin: 15px 0 8px 0;
+            font-weight: 600;
+        }
+
+        p {
+            margin: 10px 0;
+            text-align: justify;
+            padding: 0 5px;
+        }
+
+        ul, ol {
+            margin: 10px 0 10px 30px;
+        }
+
+        li {
+            margin: 5px 0;
+            padding-left: 5px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e3f2fd;
+            transition: background 0.3s ease;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+
+        .toc h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .toc li:before {
+            content: "📚";
+            position: absolute;
+            left: 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .toc a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #3498db;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Guía Completa de Protocolos y Redes</h1>
+        
+        <div class="toc">
+            <h3>📋 Tabla de Contenidos</h3>
+            <ul>
+                <li><a href="#puertos">Asignación de Números de Puerto</a></li>
+                <li><a href="#protocolos">Registro de Protocolos</a></li>
+                <li><a href="#dominios">Gestión de Dominios - ICANN</a></li>
+                <li><a href="#ping">El Comando PING</a></li>
+                <li><a href="#ttl">TTL - Time To Live</a></li>
+                <li><a href="#ping-flags">Flags del Comando PING</a></li>
+                <li><a href="#referencia">Información de Referencia</a></li>
+            </ul>
+        </div>
+
+        <section id="puertos">
+            <h2>🔌 Asignación de Números de Puerto</h2>
+            
+            <p>La asignación de números de puertos está regulada por la <strong>IANA (Internet Assigned Numbers Authority)</strong>, que es la organización responsable de coordinar varios aspectos técnicos de Internet a nivel global.</p>
+            
+            <h3>📊 Categorías de Puertos</h3>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rango</th>
+                            <th>Categoría</th>
+                            <th>Gestión</th>
+                            <th>Ejemplos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0-1023</td>
+                            <td>Puertos bien conocidos</td>
+                            <td>IANA (requiere privilegios admin)</td>
+                            <td>HTTP (80), HTTPS (443), SSH (22), FTP (21)</td>
+                        </tr>
+                        <tr>
+                            <td>1024-49151</td>
+                            <td>Puertos registrados</td>
+                            <td>IANA (solicitud organizacional)</td>
+                            <td>MySQL (3306), PostgreSQL (5432)</td>
+                        </tr>
+                        <tr>
+                            <td>49152-65535</td>
+                            <td>Puertos dinámicos/privados</td>
+                            <td>Uso libre</td>
+                            <td>Asignados automáticamente por el SO</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="info-box">
+                <h4>📝 Proceso de Asignación Oficial</h4>
+                <ol>
+                    <li>Presentar solicitud a IANA</li>
+                    <li>Justificar la necesidad del puerto específico</li>
+                    <li>Proporcionar documentación técnica detallada</li>
+                    <li>Cumplir con los criterios establecidos</li>
+                    <li>Registro público en la base de datos de IANA</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="protocolos">
+            <h2>📋 Registro de Protocolos</h2>
+            
+            <p>Para registrar un protocolo específico, debes dirigirte a diferentes organizaciones según el tipo de protocolo:</p>
+            
+            <h3>🌐 Para Protocolos de Internet</h3>
+            <div class="highlight">
+                <h4>IETF (Internet Engineering Task Force)</h4>
+                <ul>
+                    <li>Organización principal para estándares de Internet</li>
+                    <li>Proceso: Enviar un <strong>Internet-Draft</strong> → RFC</li>
+                    <li>Sitio web: ietf.org</li>
+                    <li>Proceso gratuito pero riguroso</li>
+                </ul>
+            </div>
+            
+            <h3>🔢 Para Números de Protocolo y Puertos</h3>
+            <div class="highlight">
+                <h4>IANA (Internet Assigned Numbers Authority)</h4>
+                <ul>
+                    <li>Números de protocolo IP</li>
+                    <li>Asignación de puertos</li>
+                    <li>Otros identificadores numéricos</li>
+                    <li>Sitio web: iana.org</li>
+                </ul>
+            </div>
+            
+            <h3>🏭 Para Estándares Industriales</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Organización</th>
+                            <th>Especialidad</th>
+                            <th>Ejemplos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IEEE</td>
+                            <td>Redes locales, wireless</td>
+                            <td>802.11 (WiFi), 802.3 (Ethernet)</td>
+                        </tr>
+                        <tr>
+                            <td>ISO</td>
+                            <td>Estándares internacionales</td>
+                            <td>Modelo OSI, ISO/IEC 27001</td>
+                        </tr>
+                        <tr>
+                            <td>ITU</td>
+                            <td>Telecomunicaciones</td>
+                            <td>Estándares de telefonía, radio</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="dominios">
+            <h2>🌍 Gestión de Dominios - ICANN</h2>
+            
+            <p><strong>ICANN (Internet Corporation for Assigned Names and Numbers)</strong> supervisa el sistema de nombres de dominio (DNS) a nivel global.</p>
+            
+            <h3>🏗️ Estructura Jerárquica</h3>
+            
+            <div class="info-box">
+                <h4>📊 Niveles de Gestión</h4>
+                <ul>
+                    <li><strong>ICANN</strong> (nivel superior): Política global de DNS</li>
+                    <li><strong>Registros de TLD</strong> (nivel intermedio): Gestionan .com, .org, .es, etc.</li>
+                    <li><strong>Registradores</strong> (nivel comercial): Venden dominios al público</li>
+                </ul>
+            </div>
+            
+            <h3>💼 Proceso de Registro</h3>
+            
+            <h4>Como Usuario Final:</h4>
+            <ol>
+                <li>Contactar un registrador autorizado</li>
+                <li>Verificar disponibilidad del dominio</li>
+                <li>Completar el proceso de registro</li>
+                <li>Pagar la tarifa correspondiente</li>
+            </ol>
+            
+            <h4>Para Crear un Nuevo TLD:</h4>
+            <div class="warning-box">
+                <h4>⚠️ Proceso Complejo y Costoso</h4>
+                <ul>
+                    <li>Solicitud directa a ICANN</li>
+                    <li>Costo aproximado: $185,000 USD</li>
+                    <li>Evaluación técnica y financiera rigurosa</li>
+                    <li>Proceso puede durar varios años</li>
+                </ul>
+            </div>
+            
+            <h3>🔗 Relación con IANA</h3>
+            <p>IANA opera bajo ICANN y mantiene la <strong>zona raíz</strong> del DNS, que es la base de todo el sistema de nombres de dominio de Internet.</p>
+        </section>
+
+        <section id="ping">
+            <h2>🔊 El Comando PING</h2>
+            
+            <h3>📚 Origen del Término</h3>
+            <p>El término "ping" proviene del <strong>sonar submarino</strong> y naval. Es la onomatopeya del sonido que hace el sonar cuando envía un pulso acústico bajo el agua.</p>
+            
+            <div class="highlight">
+                <h4>🚢 Analogía Naval vs. Redes</h4>
+                <ul>
+                    <li><strong>Sonar naval:</strong> Pulso sonoro → Eco de vuelta → Medir distancia/presencia</li>
+                    <li><strong>Ping de red:</strong> Paquete ICMP → Respuesta del host → Medir latencia/conectividad</li>
+                </ul>
+            </div>
+            
+            <h3>👨‍💻 Historia</h3>
+            <p><strong>Mike Muuss</strong> creó la utilidad <code>ping</code> en 1983 y eligió este nombre por la perfecta analogía con el sonar naval.</p>
+            
+            <h3>⚙️ Funcionamiento Técnico</h3>
+            <ul>
+                <li>Envía paquetes ICMP Echo Request</li>
+                <li>Espera respuestas ICMP Echo Reply</li>
+                <li>Calcula tiempo de ida y vuelta (RTT)</li>
+                <li>Detecta pérdida de paquetes</li>
+            </ul>
+        </section>
+
+        <section id="ttl">
+            <h2>⏰ TTL - Time To Live</h2>
+            
+            <p>TTL puede tener diferentes significados según el contexto:</p>
+            
+            <h3>🌐 1. Time To Live (Redes)</h3>
+            
+            <h4>En Paquetes IP:</h4>
+            <ul>
+                <li>Valor numérico que indica cuántos "saltos" puede atravesar un paquete</li>
+                <li>Cada router reduce el TTL en 1</li>
+                <li>Cuando TTL = 0, el paquete se descarta</li>
+                <li><strong>Propósito:</strong> Evitar bucles infinitos en la red</li>
+            </ul>
+            
+            <h4>En DNS:</h4>
+            <ul>
+                <li>Tiempo (en segundos) que un registro DNS puede estar en caché</li>
+                <li>Controla la frecuencia de actualización de información DNS</li>
+                <li>Ejemplos: TTL=300 (5 minutos), TTL=86400 (24 horas)</li>
+            </ul>
+            
+            <div class="code-block">
+# Ejemplo de respuesta ping mostrando TTL
+64 bytes from google.com: icmp_seq=1 ttl=54 time=15.2ms
+64 bytes from google.com: icmp_seq=2 ttl=54 time=14.8ms
+64 bytes from google.com: icmp_seq=3 ttl=54 time=15.1ms
+            </div>
+            
+            <h3>🔌 2. Transistor-Transistor Logic (Electrónica)</h3>
+            <div class="info-box">
+                <h4>TTL en Electrónica Digital</h4>
+                <ul>
+                    <li>Familia de circuitos integrados lógicos</li>
+                    <li>Usa transistores bipolares</li>
+                    <li>Niveles de voltaje: 0V (lógico 0), 5V (lógico 1)</li>
+                    <li>Velocidad de conmutación rápida</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="ping-flags">
+            <h2>🚩 Flags del Comando PING</h2>
+            
+            <p>El comando <code>ping -f</code> tiene comportamientos diferentes según el sistema operativo:</p>
+            
+            <h3>🐧 En Linux/Unix</h3>
+            <div class="highlight">
+                <h4>Flood Ping</h4>
+                <ul>
+                    <li>Envía paquetes tan rápido como sea posible</li>
+                    <li>No espera respuestas entre envíos</li>
+                    <li>Muestra un punto (.) por cada paquete enviado</li>
+                    <li>Muestra un retroceso por cada respuesta recibida</li>
+                    <li><strong>Requiere privilegios de root</strong></li>
+                </ul>
+                
+                <div class="code-block">
+sudo ping -f google.com
+PING google.com (172.217.16.142): 56 data bytes
+.....^C
+--- google.com ping statistics ---
+100 packets transmitted, 98 packets received, 2.0% packet loss
+                </div>
+            </div>
+            
+            <h3>🪟 En Windows</h3>
+            <div class="highlight">
+                <h4>Set Don't Fragment Flag</h4>
+                <ul>
+                    <li>Establece el bit DF (Don't Fragment) en el paquete IP</li>
+                    <li>Prohíbe la fragmentación del paquete</li>
+                    <li>Si el paquete es muy grande para la MTU, se descarta</li>
+                    <li>Útil para descubrir la MTU máxima de la ruta</li>
+                </ul>
+                
+                <div class="code-block">
+ping -f -l 1500 google.com
+# Si falla, reduce el tamaño (-l) hasta encontrar la MTU máxima
+ping -f -l 1472 google.com
+                </div>
+            </div>
+            
+            <h3>⚙️ Otros Flags Útiles</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Flag</th>
+                            <th>Sistema</th>
+                            <th>Función</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>-c</td>
+                            <td>Linux/Unix</td>
+                            <td>Número de paquetes a enviar</td>
+                            <td>ping -c 4 google.com</td>
+                        </tr>
+                        <tr>
+                            <td>-n</td>
+                            <td>Windows</td>
+                            <td>Número de paquetes a enviar</td>
+                            <td>ping -n 4 google.com</td>
+                        </tr>
+                        <tr>
+                            <td>-i</td>
+                            <td>Linux/Unix</td>
+                            <td>Intervalo entre paquetes</td>
+                            <td>ping -i 2 google.com</td>
+                        </tr>
+                        <tr>
+                            <td>-s</td>
+                            <td>Linux/Unix</td>
+                            <td>Tamaño del paquete</td>
+                            <td>ping -s 1000 google.com</td>
+                        </tr>
+                        <tr>
+                            <td>-l</td>
+                            <td>Windows</td>
+                            <td>Tamaño del paquete</td>
+                            <td>ping -l 1000 google.com</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="referencia">
+            <h2>📚 Información de Referencia Adicional</h2>
+            
+            <h3>🌐 Organizaciones Importantes</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Organización</th>
+                            <th>Función Principal</th>
+                            <th>Sitio Web</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IANA</td>
+                            <td>Asignación de números de protocolo, puertos, direcciones IP</td>
+                            <td>iana.org</td>
+                        </tr>
+                        <tr>
+                            <td>ICANN</td>
+                            <td>Gestión del sistema de nombres de dominio</td>
+                            <td>icann.org</td>
+                        </tr>
+                        <tr>
+                            <td>IETF</td>
+                            <td>Desarrollo de estándares de Internet</td>
+                            <td>ietf.org</td>
+                        </tr>
+                        <tr>
+                            <td>IEEE</td>
+                            <td>Estándares de ingeniería y tecnología</td>
+                            <td>ieee.org</td>
+                        </tr>
+                        <tr>
+                            <td>ITU</td>
+                            <td>Estándares de telecomunicaciones internacionales</td>
+                            <td>itu.int</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3>🔍 Herramientas de Diagnóstico de Red</h3>
+            <div class="highlight">
+                <h4>Comandos Esenciales:</h4>
+                <ul>
+                    <li><strong>ping:</strong> Verificar conectividad y latencia</li>
+                    <li><strong>traceroute/tracert:</strong> Rastrear ruta de paquetes</li>
+                    <li><strong>nslookup/dig:</strong> Consultas DNS</li>
+                    <li><strong>netstat:</strong> Conexiones de red activas</li>
+                    <li><strong>ss:</strong> Información de sockets (Linux moderno)</li>
+                    <li><strong>wireshark:</strong> Análisis de tráfico de red</li>
+                </ul>
+            </div>
+            
+            <h3>📊 Puertos Más Comunes</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Puerto</th>
+                            <th>Protocolo</th>
+                            <th>Servicio</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>21</td>
+                            <td>TCP</td>
+                            <td>FTP</td>
+                            <td>File Transfer Protocol</td>
+                        </tr>
+                        <tr>
+                            <td>22</td>
+                            <td>TCP</td>
+                            <td>SSH</td>
+                            <td>Secure Shell</td>
+                        </tr>
+                        <tr>
+                            <td>23</td>
+                            <td>TCP</td>
+                            <td>Telnet</td>
+                            <td>Terminal remoto (inseguro)</td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+                            <td>TCP</td>
+                            <td>SMTP</td>
+                            <td>Simple Mail Transfer Protocol</td>
+                        </tr>
+                        <tr>
+                            <td>53</td>
+                            <td>TCP/UDP</td>
+                            <td>DNS</td>
+                            <td>Domain Name System</td>
+                        </tr>
+                        <tr>
+                            <td>80</td>
+                            <td>TCP</td>
+                            <td>HTTP</td>
+                            <td>HyperText Transfer Protocol</td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+                            <td>TCP</td>
+                            <td>POP3</td>
+                            <td>Post Office Protocol v3</td>
+                        </tr>
+                        <tr>
+                            <td>143</td>
+                            <td>TCP</td>
+                            <td>IMAP</td>
+                            <td>Internet Message Access Protocol</td>
+                        </tr>
+                        <tr>
+                            <td>443</td>
+                            <td>TCP</td>
+                            <td>HTTPS</td>
+                            <td>HTTP Secure</td>
+                        </tr>
+                        <tr>
+                            <td>993</td>
+                            <td>TCP</td>
+                            <td>IMAPS</td>
+                            <td>IMAP over SSL/TLS</td>
+                        </tr>
+                        <tr>
+                            <td>995</td>
+                            <td>TCP</td>
+                            <td>POP3S</td>
+                            <td>POP3 over SSL/TLS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3>🔧 Conceptos Avanzados</h3>
+            
+            <h4>MTU (Maximum Transmission Unit)</h4>
+            <p>El tamaño máximo de un paquete que puede ser transmitido en una red. El MTU estándar para Ethernet es 1500 bytes.</p>
+            
+            <h4>Path MTU Discovery</h4>
+            <p>Proceso para determinar el MTU más pequeño en toda la ruta entre dos hosts. Se utiliza el flag "Don't Fragment" en ping para este propósito.</p>
+            
+            <h4>ICMP (Internet Control Message Protocol)</h4>
+            <p>Protocolo utilizado por ping para enviar mensajes de error y control en redes IP. Incluye tipos como Echo Request, Echo Reply, Destination Unreachable, etc.</p>
+            
+            <div class="warning-box">
+                <h4>⚠️ Consideraciones de Seguridad</h4>
+                <ul>
+                    <li>Algunos firewalls bloquean ICMP, afectando el funcionamiento de ping</li>
+                    <li>El flood ping puede ser considerado un ataque DoS</li>
+                    <li>Siempre usar herramientas de diagnóstico de forma responsable</li>
+                    <li>Obtener permisos apropiados antes de realizar pruebas en redes de terceros</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="footer">
+            <p><strong>📄 Guía Completa de Protocolos y Redes</strong></p>
+            <p>Documento técnico de referencia - Actualizado con información completa sobre gestión de protocolos, dominios y herramientas de diagnóstico de red.</p>
+            <p><em>Recuerda: La tecnología evoluciona constantemente. Verifica siempre la información más reciente en las organizaciones oficiales.</em></p>
+        </div>
+    </div>
+</body>
+</html>

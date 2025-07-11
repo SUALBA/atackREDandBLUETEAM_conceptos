@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Introducción a Aplicaciones Web &amp; Burp Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html { scroll-behavior: smooth; }
+      .active-link { @apply text-indigo-600 font-semibold; }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-slate-800">
+    <!-- Navbar -->
+    <header class="fixed inset-x-0 top-0 z-50 backdrop-blur bg-white/80 border-b border-gray-200">
+      <nav class="max-w-5xl mx-auto flex justify-between items-center px-4 py-3">
+        <h1 class="text-lg md:text-xl font-bold">Web + Burp 101</h1>
+        <ul class="flex gap-3 text-xs md:text-sm" id="mainNav">
+          <li><a href="#http" class="navlink">HTTP</a></li>
+          <li><a href="#metodos" class="navlink">Métodos</a></li>
+          <li><a href="#peticion" class="navlink">Petición</a></li>
+          <li><a href="#ataques" class="navlink">Ataques</a></li>
+          <li><a href="#appweb" class="navlink">App Web</a></li>
+          <li><a href="#herramientas" class="navlink">Herramientas</a></li>
+          <li><a href="#cert" class="navlink">Certificado</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="pt-24 pb-16 max-w-5xl mx-auto px-4">
+      <!-- HTTP Protocol -->
+      <section id="http" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">1. Protocolo HTTP</h2>
+        <div class="bg-white rounded-2xl shadow p-6">
+          <p class="text-sm leading-relaxed">HTTP (HyperText Transfer Protocol) es el lenguaje que utilizan los navegadores y los servidores para intercambiar recursos mediante un modelo &laquo;petición &rarr; respuesta&raquo;. Opera típicamente sobre el puerto <code>80</code> (HTTP) o <code>443</code> (HTTPS).</p>
+        </div>
+      </section>
+
+      <!-- HTTP Métodos -->
+      <section id="metodos" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">2. Métodos HTTP</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-lg font-medium mb-3">Los 4 de uso diario</h3>
+            <ul class="list-disc list-inside text-sm space-y-1">
+              <li><strong>GET</strong> &rarr; Solicita un recurso (idempotente).</li>
+              <li><strong>POST</strong> &rarr; Envía datos para crear/procesar.</li>
+              <li><strong>PUT</strong> &rarr; Reemplaza un recurso existente.</li>
+              <li><strong>DELETE</strong> &rarr; Elimina un recurso.</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-lg font-medium mb-3">Verbos complementarios</h3>
+            <p class="text-sm">HEAD, OPTIONS, PATCH y TRACE se emplean para meta‑información, introspección o actualizaciones parciales.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Partes de la Petición -->
+      <section id="peticion" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">3. Partes de una petición HTTP</h2>
+        <div class="bg-white rounded-2xl shadow p-6 text-sm">
+          <pre class="bg-slate-900 text-green-300 rounded-xl p-4 overflow-x-auto text-xs">GET /login HTTP/1.1
+Host: example.com
+User-Agent: Firefox/126.0
+Cookie: session=abc123
+
+<body></body></pre>
+          <ul class="mt-4 list-disc list-inside space-y-1">
+            <li><strong>Línea de inicio</strong>: método, ruta y versión.</li>
+            <li><strong>Cabeceras</strong>: pares clave-valor (Host, Cookie, Accept…).</li>
+            <li><strong>Cuerpo</strong>: solo para métodos que envían datos (POST, PUT…).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Ataques -->
+      <section id="ataques" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">4. Ataques a aplicaciones web</h2>
+        <div class="bg-white rounded-2xl shadow p-6">
+          <p class="text-sm mb-2">Las vulnerabilidades se explotan enviando <em>payloads</em> que fuerzan comportamientos imprevistos.</p>
+          <details>
+            <summary class="cursor-pointer font-semibold">Payload Box (diccionario de payloads)</summary>
+            <p class="mt-2 text-sm">Colecciones como <code>PayloadAllTheThings</code> y el plugin &laquo;Burp Payload Box&raquo; reúnen cadenas para XSS, SQLi, SSTI, etc., listas para pegar en pruebas.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Aplicación Web -->
+      <section id="appweb" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">5. ¿Qué es una aplicación web?</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl shadow p-6 text-sm">
+            <h3 class="text-lg font-medium mb-3">Estáticas vs Dinámicas</h3>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>Estáticas:</strong> HTML/CSS pre‑generado, cambia solo al desplegar.</li>
+              <li><strong>Dinámicas:</strong> HTML generado al vuelo (PHP, Node.js, Django…).</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-6 text-sm">
+            <h3 class="text-lg font-medium mb-3">Pilas full‑stack populares</h3>
+            <ul class="list-disc list-inside space-y-1">
+              <li><strong>LAMP:</strong> Linux · Apache · MySQL · PHP.</li>
+              <li><strong>MEAN:</strong> MongoDB · Express · Angular · Node.</li>
+              <li><strong>MERN:</strong> MongoDB · Express · React · Node.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Herramientas -->
+      <section id="herramientas" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">6. Herramientas esenciales</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl shadow p-6 text-sm space-y-4">
+            <details open>
+              <summary class="cursor-pointer font-semibold">Navegadores de desarrollo</summary>
+              <ul class="list-disc list-inside mt-2">
+                <li><strong>Chrome DevTools</strong>: inspección, Network, Lighthouse.</li>
+                <li><strong>Firefox Developer Edition</strong>: pestaña Storage, herramientas CSS.</li>
+              </ul>
+            </details>
+            <details>
+              <summary class="cursor-pointer font-semibold">Enumeración de rutas</summary>
+              <ul class="list-disc list-inside mt-2">
+                <li><strong>Dirbuster</strong> / <strong>Dirb</strong> &rarr; fuerza bruta de directorios.</li>
+              </ul>
+            </details>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-6 text-sm space-y-4">
+            <details open>
+              <summary class="cursor-pointer font-semibold">Escáneres de vulnerabilidades</summary>
+              <ul class="list-disc list-inside mt-2">
+                <li><strong>Nikto:</strong> tests HTTP peligrosos.</li>
+                <li><strong>OWASP ZAP:</strong> proxy + escáner activo.</li>
+              </ul>
+            </details>
+            <details>
+              <summary class="cursor-pointer font-semibold">Burp Suite</summary>
+              <p class="mt-2">Proxy, Repeater, Intruder, Decoder y extensiones para investigación avanzada.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certificado -->
+      <section id="cert" class="mb-16">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4">7. Instalar certificado de Burp en el navegador</h2>
+        <div class="bg-white rounded-2xl shadow p-6 text-sm">
+          <ol class="list-decimal list-inside space-y-1">
+            <li>Con Burp en marcha, navega a <code>http://burpsuite</code>.</li>
+            <li>Descarga el certificado <code>cacert.der</code>.</li>
+            <li>Firefox: <em>Settings &rarr; Privacy &amp; Security &rarr; View Certificates &rarr; Import…</em></li>
+            <li>Marca “Confiar en esta CA para identificar sitios web”.</li>
+            <li>Reinicia el navegador y prueba interceptar un sitio HTTPS.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <footer class="py-8 text-center text-xs text-gray-500">
+      © 2025 · Elaborado para fines educativos.
+    </footer>
+
+    <script>
+      const navLinks = document.querySelectorAll('.navlink');
+      const sections = Array.from(navLinks).map(l => document.querySelector(l.getAttribute('href')));
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const link = document.querySelector(`a[href="#${entry.target.id}"]`);
+          entry.isIntersecting ? link.classList.add('active-link') : link.classList.remove('active-link');
+        });
+      }, {rootMargin: '-50% 0px -50% 0px', threshold: 0});
+      sections.forEach(s => observer.observe(s));
+    </script>
+  </body>
+</html>

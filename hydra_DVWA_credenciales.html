@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydra - Guía de Estudio Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: #1e3c72;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .section h3 {
+            color: #2a5298;
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .section h3::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid #333;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .command {
+            color: #50fa7b;
+        }
+
+        .code-block .comment {
+            color: #6272a4;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .warning::before {
+            content: '⚠️ ';
+            font-size: 1.2rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        .info-box::before {
+            content: 'ℹ️ ';
+            font-size: 1.2rem;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .success-box::before {
+            content: '✅ ';
+            font-size: 1.2rem;
+        }
+
+        .example-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .example-card h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .protocol-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .protocol-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .protocol-card h4 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navigation a {
+            display: block;
+            color: #1e3c72;
+            text-decoration: none;
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navigation a:hover {
+            background-color: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .navigation {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <a href="#intro">Introducción</a>
+        <a href="#installation">Instalación</a>
+        <a href="#syntax">Sintaxis</a>
+        <a href="#examples">Ejemplos</a>
+        <a href="#systems">Sistemas</a>
+        <a href="#ethics">Ética</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔧 HYDRA TOOL</h1>
+            <p class="subtitle">Guía Completa de Estudio y Práctica</p>
+        </div>
+
+        <div class="content">
+            <section id="intro" class="section">
+                <h2>🎯 ¿Qué es Hydra?</h2>
+                <p>Hydra es una herramienta de <strong>fuerza bruta</strong> utilizada para encontrar credenciales válidas en servicios de red. Es una de las herramientas más populares en pentesting y auditorías de seguridad.</p>
+                
+                <div class="info-box">
+                    <strong>Definición:</strong> Herramienta de pentesting que realiza ataques de fuerza bruta contra diversos protocolos y servicios de red.
+                </div>
+
+                <h3>Funcionalidades principales</h3>
+                <ul>
+                    <li>Ataques de fuerza bruta contra múltiples protocolos</li>
+                    <li>Soporte para diccionarios de contraseñas</li>
+                    <li>Ataques paralelos (multi-threading)</li>
+                    <li>Soporte para formularios web HTTP/HTTPS</li>
+                    <li>Detección automática de credenciales válidas</li>
+                </ul>
+
+                <div class="protocol-grid">
+                    <div class="protocol-card">
+                        <h4>SSH</h4>
+                        <p>Secure Shell Protocol</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>HTTP/HTTPS</h4>
+                        <p>Web Authentication</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>FTP</h4>
+                        <p>File Transfer Protocol</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>RDP</h4>
+                        <p>Remote Desktop Protocol</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="installation" class="section">
+                <h2>💻 Instalación</h2>
+                
+                <h3>En Kali Linux (Recomendado)</h3>
+                <div class="success-box">
+                    <strong>Hydra viene preinstalado</strong> en Kali Linux - listo para usar sin instalación adicional.
+                </div>
+
+                <div class="code-block">
+<span class="comment"># Verificar instalación</span>
+<span class="command">hydra -h</span>
+
+<span class="comment"># Ubicación de diccionarios incluidos</span>
+<span class="command">ls /usr/share/wordlists/</span>
+</div>
+
+                <h3>En Ubuntu/Debian</h3>
+                <div class="code-block">
+<span class="comment"># Actualizar repositorios</span>
+<span class="command">sudo apt update</span>
+
+<span class="comment"># Instalar Hydra</span>
+<span class="command">sudo apt install hydra</span>
+
+<span class="comment"># Verificar instalación</span>
+<span class="command">hydra --help</span>
+</div>
+
+                <h3>En sistemas Red Hat/CentOS</h3>
+                <div class="code-block">
+<span class="comment"># Instalar desde repositorio</span>
+<span class="command">sudo yum install hydra</span>
+
+<span class="comment"># O con dnf (versiones más recientes)</span>
+<span class="command">sudo dnf install hydra</span>
+</div>
+
+                <div class="info-box">
+                    <strong>Diccionarios en Kali:</strong> Los diccionarios de contraseñas están ubicados en <code>/usr/share/wordlists/</code>, incluyendo el famoso <code>rockyou.txt</code>.
+                </div>
+            </section>
+
+            <section id="syntax" class="section">
+                <h2>📝 Sintaxis y Opciones</h2>
+                
+                <h3>Sintaxis básica</h3>
+                <div class="code-block">
+<span class="command">hydra [opciones] [objetivo] [servicio]</span>
+</div>
+
+                <h3>Opciones principales para usuarios</h3>
+                <div class="example-card">
+                    <h4>Configuración de usuarios</h4>
+                    <div class="code-block">
+<span class="command">-l usuario</span>     <span class="comment"># Usuario específico</span>
+<span class="command">-L archivo</span>     <span class="comment"># Lista de usuarios desde archivo</span>
+</div>
+                </div>
+
+                <h3>Opciones para contraseñas</h3>
+                <div class="example-card">
+                    <h4>Configuración de contraseñas</h4>
+                    <div class="code-block">
+<span class="command">-p contraseña</span>  <span class="comment"># Contraseña específica</span>
+<span class="command">-P archivo</span>     <span class="comment"># Lista de contraseñas desde archivo</span>
+<span class="command">-x min:max:charset</span> <span class="comment"># Generar contraseñas automáticamente</span>
+</div>
+                </div>
+
+                <h3>Opciones de configuración</h3>
+                <div class="example-card">
+                    <h4>Configuración del ataque</h4>
+                    <div class="code-block">
+<span class="command">-t número</span>      <span class="comment"># Hilos paralelos (por defecto 16)</span>
+<span class="command">-V</span>             <span class="comment"># Modo verbose (detallado)</span>
+<span class="command">-f</span>             <span class="comment"># Parar al encontrar primera credencial válida</span>
+<span class="command">-o archivo</span>     <span class="comment"># Guardar resultados en archivo</span>
+<span class="command">-s puerto</span>      <span class="comment"># Puerto específico (si no es el por defecto)</span>
+<span class="command">-w tiempo</span>      <span class="comment"># Tiempo máximo de espera por respuesta</span>
+</div>
+                </div>
+            </section>
+
+            <section id="examples" class="section">
+                <h2>💡 Ejemplos Prácticos</h2>
+
+                <h3>Análisis del comando original</h3>
+                <div class="example-card">
+                    <h4>Desglose del comando proporcionado</h4>
+                    <div class="code-block">
+<span class="command">hydra -l admin -P ~/Desktop/diccionario.txt 10.0.52.11 \
+http-get-form "/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie: PHPSESSID=lj4unah8jf4n65l8j9sa06hf5m; security=medium:F=Username and/or password incorrect" -V</span>
+</div>
+                    <p><strong>Explicación:</strong></p>
+                    <ul>
+                        <li><code>-l admin</code>: Usuario fijo "admin"</li>
+                        <li><code>-P ~/Desktop/diccionario.txt</code>: Diccionario de contraseñas</li>
+                        <li><code>10.0.52.11</code>: IP objetivo</li>
+                        <li><code>http-get-form</code>: Protocolo HTTP con formulario GET</li>
+                        <li><code>/vulnerabilities/brute/</code>: Ruta del formulario (DVWA)</li>
+                        <li><code>username=^USER^&password=^PASS^</code>: Parámetros del formulario</li>
+                        <li><code>H=Cookie</code>: Header de cookie de sesión</li>
+                        <li><code>F=Username and/or password incorrect</code>: Mensaje de error</li>
+                    </ul>
+                </div>
+
+                <h3>Ataques SSH</h3>
+                <div class="example-card">
+                    <h4>Ataque básico SSH</h4>
+                    <div class="code-block">
+<span class="comment"># Usuario específico, diccionario de contraseñas</span>
+<span class="command">hydra -l admin -P passwords.txt 192.168.1.100 ssh</span>
+
+<span class="comment"># Lista de usuarios y contraseñas</span>
+<span class="command">hydra -L users.txt -P passwords.txt 192.168.1.100 ssh</span>
+
+<span class="comment"># Con puerto específico</span>
+<span class="command">hydra -l root -P passwords.txt -s 2222 192.168.1.100 ssh</span>
+</div>
+                </div>
+
+                <h3>Ataques HTTP POST</h3>
+                <div class="example-card">
+                    <h4>Formularios de login web</h4>
+                    <div class="code-block">
+<span class="comment"># Formulario POST básico</span>
+<span class="command">hydra -l admin -P passwords.txt 192.168.1.100 \
+http-post-form "/login:username=^USER^&password=^PASS^:Invalid login"</span>
+
+<span class="comment"># Con cookies de sesión</span>
+<span class="command">hydra -l admin -P passwords.txt 192.168.1.100 \
+http-post-form "/login:user=^USER^&pass=^PASS^:H=Cookie\: PHPSESSID=abc123:F=Error"</span>
+</div>
+                </div>
+
+                <h3>Ataques FTP</h3>
+                <div class="example-card">
+                    <h4>File Transfer Protocol</h4>
+                    <div class="code-block">
+<span class="comment"># Ataque FTP básico</span>
+<span class="command">hydra -L users.txt -P passwords.txt ftp://192.168.1.100</span>
+
+<span class="comment"># Con usuario específico</span>
+<span class="command">hydra -l anonymous -P passwords.txt 192.168.1.100 ftp</span>
+</div>
+                </div>
+
+                <h3>Otros protocolos</h3>
+                <div class="example-card">
+                    <h4>Diversos servicios</h4>
+                    <div class="code-block">
+<span class="comment"># RDP (Remote Desktop)</span>
+<span class="command">hydra -l administrator -P passwords.txt rdp://192.168.1.100</span>
+
+<span class="comment"># Telnet</span>
+<span class="command">hydra -l root -P passwords.txt 192.168.1.100 telnet</span>
+
+<span class="comment"># POP3 Email</span>
+<span class="command">hydra -l user@domain.com -P passwords.txt pop3://mail.domain.com</span>
+</div>
+                </div>
+            </section>
+
+            <section id="systems" class="section">
+                <h2>🖥️ Sistemas Recomendados</h2>
+
+                <h3>Kali Linux vs Ubuntu</h3>
+                <div class="example-card">
+                    <h4>✅ Kali Linux (Recomendado para pentesting)</h4>
+                    <p><strong>Ventajas:</strong></p>
+                    <ul>
+                        <li>Hydra preinstalado y configurado</li>
+                        <li>Diccionarios incluidos en <code>/usr/share/wordlists/</code></li>
+                        <li>Entorno optimizado para seguridad</li>
+                        <li>Herramientas complementarias incluidas</li>
+                    </ul>
+                    <div class="code-block">
+<span class="comment"># Diccionarios disponibles en Kali</span>
+<span class="command">ls /usr/share/wordlists/</span>
+rockyou.txt            <span class="comment"># Más popular</span>
+fasttrack.txt          <span class="comment"># Contraseñas comunes</span>
+/usr/share/seclists/   <span class="comment"># Colección extensa</span>
+</div>
+                </div>
+
+                <div class="example-card">
+                    <h4>🔧 Ubuntu</h4>
+                    <p><strong>Ventajas:</strong></p>
+                    <ul>
+                        <li>Sistema más estable para uso general</li>
+                        <li>Mejor rendimiento en algunos casos</li>
+                        <li>Más familiar para desarrollo</li>
+                    </ul>
+                    <p><strong>Desventajas:</strong></p>
+                    <ul>
+                        <li>Requiere instalación manual</li>
+                        <li>No incluye diccionarios</li>
+                        <li>Configuración adicional necesaria</li>
+                    </ul>
+                </div>
+
+                <h3>Entorno de laboratorio recomendado</h3>
+                <div class="info-box">
+                    <strong>Configuración ideal:</strong>
+                    <ul>
+                        <li><strong>Atacante:</strong> Kali Linux</li>
+                        <li><strong>Objetivo:</strong> DVWA, Metasploitable, o máquinas vulnerables</li>
+                        <li><strong>Red:</strong> Virtual aislada (VirtualBox/VMware)</li>
+                        <li><strong>Documentación:</strong> Keepnote o CherryTree para registros</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="ethics" class="section">
+                <h2>⚖️ Consideraciones Éticas y Legales</h2>
+
+                <div class="warning">
+                    <strong>USO EXCLUSIVAMENTE ÉTICO</strong><br>
+                    Esta herramienta solo debe usarse en sistemas propios, con autorización explícita, o en entornos de laboratorio controlados.
+                </div>
+
+                <h3>Usos legítimos</h3>
+                <div class="success-box">
+                    <ul>
+                        <li><strong>Auditorías de seguridad autorizadas</strong></li>
+                        <li><strong>Pentesting ético con contrato</strong></li>
+                        <li><strong>Laboratorios de práctica (DVWA, Metasploitable)</strong></li>
+                        <li><strong>Sistemas propios para pruebas</strong></li>
+                        <li><strong>Educación en ciberseguridad</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Responsabilidades</h3>
+                <div class="example-card">
+                    <h4>Antes de usar Hydra</h4>
+                    <ul>
+                        <li>Obtener autorización por escrito</li>
+                        <li>Definir el alcance del test</li>
+                        <li>Configurar entorno aislado</li>
+                        <li>Documentar todas las acciones</li>
+                        <li>Informar vulnerabilidades encontradas</li>
+                    </ul>
+                </div>
+
+                <h3>Optimización y buenas prácticas</h3>
+                <div class="example-card">
+                    <h4>Configuración responsable</h4>
+                    <div class="code-block">
+<span class="comment"># Limitar hilos para no sobrecargar el objetivo</span>
+<span class="command">hydra -t 4 -l admin -P passwords.txt target ssh</span>
+
+<span class="comment"># Parar al encontrar credenciales válidas</span>
+<span class="command">hydra -f -l admin -P passwords.txt target ssh</span>
+
+<span class="comment"># Guardar resultados para análisis</span>
+<span class="command">hydra -o results.txt -l admin -P passwords.txt target ssh</span>
+</div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Recuerda:</strong> El objetivo no es comprometer sistemas, sino identificar vulnerabilidades para mejorar la seguridad.
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>📚 Recursos Adicionales</h2>
+                
+                <h3>Diccionarios recomendados</h3>
+                <div class="example-card">
+                    <h4>Fuentes de wordlists</h4>
+                    <ul>
+                        <li><strong>rockyou.txt</strong> - El más usado (14 millones de contraseñas)</li>
+                        <li><strong>SecLists</strong> - Colección comprehensive</li>
+                        <li><strong>fasttrack.txt</strong> - Contraseñas comunes y rápidas</li>
+                        <li><strong>Diccionarios personalizados</strong> - Específicos del objetivo</li>
+                    </ul>
+                </div>
+
+                <h3>Herramientas complementarias</h3>
+                <div class="protocol-grid">
+                    <div class="protocol-card">
+                        <h4>Nmap</h4>
+                        <p>Reconocimiento de puertos</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>Burp Suite</h4>
+                        <p>Análisis de aplicaciones web</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>Metasploit</h4>
+                        <p>Framework de exploits</p>
+                    </div>
+                    <div class="protocol-card">
+                        <h4>DVWA</h4>
+                        <p>Aplicación web vulnerable</p>
+                    </div>
+                </div>
+
+                <h3>Comandos de referencia rápida</h3>
+                <div class="code-block">
+<span class="comment"># Ver servicios soportados</span>
+<span class="command">hydra -h | grep "Supported services"</span>
+
+<span class="comment"># Ejemplo completo SSH</span>
+<span class="command">hydra -l root -P /usr/share/wordlists/rockyou.txt -t 4 -f 192.168.1.100 ssh</span>
+
+<span class="comment"># Ejemplo completo HTTP</span>
+<span class="command">hydra -l admin -P passwords.txt 192.168.1.100 http-post-form "/login:user=^USER^&pass=^PASS^:Login Failed"</span>
+</div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <p>🔒 <strong>Recuerda:</strong> Usa esta herramienta solo de manera ética y responsable</p>
+            <p>📖 Guía de estudio creada con para fines educativos</p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling para navegación
+        document.querySelectorAll('.navigation a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animación para las tarjetas de protocolo
+        const protocolCards = document.querySelectorAll('.protocol-card');
+        protocolCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+
+        // Highlight de código al hacer hover
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            block.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
