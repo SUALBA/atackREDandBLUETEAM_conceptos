@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hardening con Microsoft Security Compliance Toolkit</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0 20px;
+    }
+    header {
+      background-color: #343a40;
+      color: #fff;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    section {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    code, pre {
+      background-color: #eef1f4;
+      padding: 10px;
+      display: block;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #dee2e6;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f3f5;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9em;
+      padding: 20px;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔐 Hardening con Microsoft Security Compliance Toolkit 1.0</h1>
+    <p>Guía esencial para mejorar la seguridad en sistemas Windows</p>
+  </header>
+
+  <section>
+    <h2>🧭 ¿Qué es el Hardening?</h2>
+    <p>El <strong>hardening</strong> es el proceso de reducir las vulnerabilidades de un sistema operativo o aplicación mediante la eliminación o configuración de servicios, funciones y permisos innecesarios.</p>
+    <p><em>Objetivo: reducir la superficie de ataque y proteger el sistema.</em></p>
+
+    <h2>🧰 Microsoft Security Compliance Toolkit 1.0</h2>
+    <p>Es una colección gratuita de herramientas de Microsoft que permite aplicar automáticamente configuraciones seguras (baselines) en sistemas Windows.</p>
+    
+    <h3>📦 ¿Qué incluye?</h3>
+    <ul>
+      <li>Plantillas de configuración en archivos .admx, .inf, .xlsx</li>
+      <li>Scripts de aplicación y documentación</li>
+      <li>Compatibilidad con GPO local y Active Directory</li>
+    </ul>
+
+    <h2>🔐 Beneficios clave en Ciberseguridad</h2>
+    <ul>
+      <li>Desactiva funciones peligrosas (SMBv1, ejecución automática de USBs)</li>
+      <li>Aplica configuraciones seguras y recomendadas</li>
+      <li>Reduce riesgos ante malware, ransomware, y ataques dirigidos</li>
+      <li>Facilita auditorías y cumplimiento normativo (ISO, NIST, GDPR)</li>
+    </ul>
+
+    <h2>🚀 Ejemplos de uso real</h2>
+    <h3>Estaciones de trabajo Windows 10:</h3>
+    <ul>
+      <li>Aplicar configuración segura a usuarios</li>
+      <li>Restringir PowerShell, forzar BitLocker y políticas de contraseña</li>
+    </ul>
+    <pre><code>LGPO.exe /g Local_Security_Policy\GPO_Backup</code></pre>
+
+    <h3>Proteger contra Ransomware:</h3>
+    <pre><code>Set-MpPreference -EnableControlledFolderAccess Enabled</code></pre>
+
+    <h3>Hardening de Servidores:</h3>
+    <ul>
+      <li>Deshabilitar RDP sin autenticación</li>
+      <li>Aplicar firewall, BitLocker, y auditorías</li>
+    </ul>
+
+    <h2>🧠 Conceptos clave</h2>
+    <table>
+      <tr>
+        <th>Concepto</th>
+        <th>Descripción</th>
+      </tr>
+      <tr>
+        <td>GPO</td>
+        <td>Políticas de grupo que configuran múltiples sistemas desde Active Directory</td>
+      </tr>
+      <tr>
+        <td>ADMX / ADML</td>
+        <td>Plantillas administrativas para configurar políticas</td>
+      </tr>
+      <tr>
+        <td>Baseline</td>
+        <td>Conjunto recomendado de configuraciones seguras por Microsoft</td>
+      </tr>
+    </table>
+
+    <h2>📎 Enlaces útiles</h2>
+    <ul>
+      <li><a href="https://www.microsoft.com/en-us/download/details.aspx?id=55319" target="_blank">Descargar Microsoft Security Compliance Toolkit</a></li>
+      <li><a href="https://learn.microsoft.com/es-es/windows/security/threat-protection/windows-security-configuration-framework/security-compliance-toolkit-10" target="_blank">Documentación oficial</a></li>
+      <li><a href="https://www.cisecurity.org/cis-benchmarks/" target="_blank">CIS Benchmarks para Windows</a></li>
+    </ul>
+
+    <h2>✅ Buenas prácticas</h2>
+    <ul>
+      <li>Aplicar primero en entornos de prueba</li>
+      <li>Documentar todos los cambios</li>
+      <li>Revisar impacto de cada política</li>
+      <li>Mantener baselines actualizados</li>
+    </ul>
+  </section>
+
+  <footer>
+    &copy; 2025 - Guía de Ciberseguridad | Basado en prácticas oficiales de Microsoft
+  </footer>
+</body>
+</html>

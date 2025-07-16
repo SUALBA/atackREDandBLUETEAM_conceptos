@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitorización y Hardening - Guía de Estudio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      margin: 2rem;
+    }
+    h1, h2, h3 {
+      color: #1a1a1a;
+    }
+    h1 {
+      border-bottom: 3px solid #0077cc;
+      padding-bottom: 0.5rem;
+    }
+    ul {
+      margin-left: 1.5rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+      background: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    th {
+      background-color: #e9f3fb;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Monitorización y Hardening - Guía de Estudio</h1>
+
+  <div class="section">
+    <h2>🔐 Introducción a la protección de activos</h2>
+    <p>Consiste en proteger sistemas, redes y datos ante amenazas internas o externas mediante monitorización continua y refuerzo de la configuración.</p>
+  </div>
+
+  <div class="section">
+    <h2>📊 Monitorización</h2>
+
+    <h3>¿Qué es?</h3>
+    <p>Supervisión constante del estado y rendimiento de los sistemas, para detectar fallos o amenazas en tiempo real.</p>
+
+    <h3>Tipos</h3>
+    <ul>
+      <li><strong>Activa:</strong> consulta directa al sistema (ping, peticiones HTTP...)</li>
+      <li><strong>Pasiva:</strong> analiza eventos y logs ya generados</li>
+      <li><strong>Centralizada:</strong> todos los datos se almacenan y procesan en un nodo</li>
+      <li><strong>Distribuida:</strong> cada nodo realiza parte de la monitorización</li>
+    </ul>
+
+    <h3>Pasos básicos</h3>
+    <ul>
+      <li>Identificar activos críticos</li>
+      <li>Definir métricas y umbrales</li>
+      <li>Instalar y configurar herramientas</li>
+      <li>Recolectar y analizar datos</li>
+      <li>Configurar alertas y respuestas</li>
+    </ul>
+
+    <h3>Herramientas comunes</h3>
+    <ul>
+      <li><strong>Nagios:</strong> sistema clásico de monitorización, muy robusto</li>
+      <li><strong>Prometheus:</strong> orientado a métricas en tiempo real y cloud-native</li>
+    </ul>
+
+    <h3>Comandos útiles</h3>
+    <p><strong>Linux:</strong></p>
+    <ul>
+      <li><code>top</code>, <code>htop</code> – uso de CPU y RAM</li>
+      <li><code>journalctl</code>, <code>dmesg</code>, <code>tail -f</code> – logs</li>
+      <li><code>ss</code>, <code>iftop</code>, <code>tcpdump</code> – red</li>
+    </ul>
+    <p><strong>Windows:</strong></p>
+    <ul>
+      <li>Monitor de rendimiento</li>
+      <li>Visor de eventos</li>
+      <li><code>Get-EventLog</code> (PowerShell)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📌 ¿Qué recursos monitorizar?</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Qué monitorizar</th>
+          <th>¿Por qué?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CPU</td>
+          <td>Uso del procesador</td>
+          <td>Evita sobrecargas y detecta malware</td>
+        </tr>
+        <tr>
+          <td>Memoria</td>
+          <td>RAM libre, uso de swap</td>
+          <td>Previene cuelgues y fugas</td>
+        </tr>
+        <tr>
+          <td>Disco</td>
+          <td>Espacio libre, salud de discos</td>
+          <td>Evita fallos por falta de espacio</td>
+        </tr>
+        <tr>
+          <td>Red</td>
+          <td>Latencia, tráfico</td>
+          <td>Detecta DDoS o problemas de conectividad</td>
+        </tr>
+        <tr>
+          <td>Procesos</td>
+          <td>Activos, zombies</td>
+          <td>Control de servicios en ejecución</td>
+        </tr>
+        <tr>
+          <td>Usuarios</td>
+          <td>Usuarios conectados</td>
+          <td>Detección de accesos sospechosos</td>
+        </tr>
+        <tr>
+          <td>Servicios</td>
+          <td>Web, SSH, FTP, DB</td>
+          <td>Disponibilidad de aplicaciones clave</td>
+        </tr>
+        <tr>
+          <td>Logs</td>
+          <td>Errores, accesos, fallos</td>
+          <td>Detección temprana de incidentes</td>
+        </tr>
+        <tr>
+          <td>Temperatura</td>
+          <td>Sensores de CPU y disco</td>
+          <td>Evita daños por sobrecalentamiento</td>
+        </tr>
+        <tr>
+          <td>Backups</td>
+          <td>Estado de copias de seguridad</td>
+          <td>Asegura recuperación ante fallo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🛡️ Hardening (Endurecimiento)</h2>
+
+    <h3>¿Qué es?</h3>
+    <p>Es el proceso de reducir la superficie de ataque de un sistema eliminando lo innecesario, cerrando puertos, configurando permisos, etc.</p>
+
+    <h3>Tipos</h3>
+    <ul>
+      <li><strong>Manual:</strong> configuración manual, revisión de servicios, puertos, permisos...</li>
+      <li><strong>Automático:</strong> uso de herramientas como <code>Lynis</code>, <code>OpenSCAP</code>, <code>ansible</code>, etc.</li>
+    </ul>
+
+    <h3>Ejemplos de hardening</h3>
+    <ul>
+      <li>Desactivar servicios que no se usan (FTP, Telnet...)</li>
+      <li>Configurar firewalls (iptables, UFW)</li>
+      <li>Actualizar el sistema y software frecuentemente</li>
+      <li>Eliminar usuarios innecesarios</li>
+      <li>Proteger archivos sensibles (ej. <code>/etc/shadow</code>)</li>
+    </ul>
+  </div>
+
+</body>
+</html>

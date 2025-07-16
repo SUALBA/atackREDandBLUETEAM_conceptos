@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nagios vs Prometheus en Ciberseguridad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-[Inter]">
+  <div class="max-w-5xl mx-auto p-8">
+    <h1 class="text-4xl font-bold text-cyan-400 mb-6">🔐 Nagios vs Prometheus en Ciberseguridad</h1>
+
+    <p class="mb-6">Comparativa técnica pensada especialmente para entornos Red Team, Blue Team y SOCs, donde la monitorización, visibilidad y alertas juegan un papel clave en la defensa activa.</p>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-cyan-300 mb-4">📊 Comparativa general</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-gray-800 border border-gray-700 text-sm">
+          <thead>
+            <tr class="bg-gray-700 text-cyan-200">
+              <th class="px-4 py-2 text-left">Característica</th>
+              <th class="px-4 py-2 text-left">Nagios</th>
+              <th class="px-4 py-2 text-left">Prometheus</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-gray-700">
+              <td class="px-4 py-2">Tipo de monitoreo</td>
+              <td class="px-4 py-2">Chequeos activos (servicios)</td>
+              <td class="px-4 py-2">Métricas de series temporales</td>
+            </tr>
+            <tr class="border-t border-gray-700">
+              <td class="px-4 py-2">Alertas</td>
+              <td class="px-4 py-2">Básicas por umbral</td>
+              <td class="px-4 py-2">Condicionales, dinámicas con Alertmanager</td>
+            </tr>
+            <tr class="border-t border-gray-700">
+              <td class="px-4 py-2">Visualización</td>
+              <td class="px-4 py-2">Limitada (sin plugins gráficos)</td>
+              <td class="px-4 py-2">Potente con Grafana</td>
+            </tr>
+            <tr class="border-t border-gray-700">
+              <td class="px-4 py-2">Ideal para</td>
+              <td class="px-4 py-2">Infraestructura clásica</td>
+              <td class="px-4 py-2">Entornos modernos y DevOps</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-cyan-300 mb-4">🛡️ Casos prácticos en Ciberseguridad</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+          <h3 class="text-xl text-cyan-200 mb-2">Blue Team con Nagios</h3>
+          <ul class="list-disc list-inside text-gray-300">
+            <li>Estado de IDS/IPS (Snort, Suricata)</li>
+            <li>Monitorizar disponibilidad de VPN</li>
+            <li>Chequeo de firewall activo</li>
+            <li>Espacio en disco de servidores SIEM</li>
+          </ul>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+          <h3 class="text-xl text-cyan-200 mb-2">Blue Team con Prometheus</h3>
+          <ul class="list-disc list-inside text-gray-300">
+            <li>Alerta si procesos sospechosos superan umbral</li>
+            <li>Visualizar tráfico SSH inesperado</li>
+            <li>Uso inusual de CPU tras ataque</li>
+            <li>Integración con Wazuh para análisis profundo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-cyan-300 mb-4">📐 Arquitectura recomendada</h2>
+      <pre class="bg-gray-800 text-green-400 p-4 rounded-xl border border-gray-700 overflow-x-auto text-sm">
++------------------------+           +------------------------+
+|        Nagios          | <------> | Servicios críticos     |
+| Chequeo de servicios   |           | (VPN, IDS, Firewall...)|
++------------------------+           +------------------------+
+
++------------------------+           +------------------------+
+|      Prometheus        | <------>  | Exporters (Node, Wazuh)|
+| Métricas y alertas     |           +------------------------+
++------------------------+
+
++------------------------+
+|        Grafana         |
+| Dashboards visuales    |
++------------------------+
+
++------------------------+
+|     Wazuh / ELK SIEM   |
+| Correlación de eventos |
++------------------------+
+      </pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-cyan-300 mb-4">📦 Alerta avanzada (Prometheus + Alertmanager)</h2>
+      <pre class="bg-gray-800 text-yellow-300 p-4 rounded-xl border border-gray-700 overflow-x-auto text-sm">
+- alert: PosibleInfeccion
+  expr: count_over_time(process{name=~"nmap|netcat|nc"}[10m]) > 5
+  for: 2m
+  labels:
+    severity: high
+  annotations:
+    summary: "Actividad sospechosa"
+    description: "Se detectaron múltiples procesos sospechosos en {{ $labels.instance }}"
+      </pre>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold text-cyan-300 mb-4">✅ Conclusión experta</h2>
+      <p class="mb-4">Como especialista en ciberseguridad, te recomiendo:</p>
+      <ul class="list-disc list-inside text-gray-300">
+        <li><strong>Usar Nagios</strong> para asegurar disponibilidad de sistemas clave.</li>
+        <li><strong>Usar Prometheus</strong> para análisis proactivo de comportamiento.</li>
+        <li><strong>Unificar todo con Grafana</strong> para visualización en tu SOC.</li>
+        <li><strong>Integrar con Wazuh</strong> para cubrir logs y alertas de amenazas.</li>
+      </ul>
+    </section>
+
+    <footer class="mt-12 text-center text-sm text-gray-500">
+      Hecho para formación de equipos SOC / Blue Team. ¿Quieres una demo real? Escríbeme.
+    </footer>
+  </div>
+</body>
+</html>

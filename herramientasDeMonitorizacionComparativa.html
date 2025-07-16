@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativa de Herramientas de Monitorización</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0e1117;
+      color: #e5e5e5;
+      padding: 2rem;
+    }
+    h1, h2 {
+      color: #61dafb;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1c1f26;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 1rem;
+      text-align: left;
+    }
+    th {
+      background-color: #20232a;
+      color: #61dafb;
+    }
+    tr:hover {
+      background-color: #2a2d36;
+    }
+    .tag {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background-color: #444;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-right: 0.25rem;
+    }
+    .concept {
+      margin-bottom: 1rem;
+    }
+    .concept-title {
+      font-weight: bold;
+      color: #f9a825;
+    }
+  </style>
+</head>
+<body>
+  <h1>Comparativa de Herramientas de Monitorización</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Herramienta</th>
+        <th>Enfoque</th>
+        <th>Ventajas</th>
+        <th>Casos de Uso</th>
+        <th>Integraciones Clave</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nagios</strong></td>
+        <td>Infraestructura (CPU, RAM, disco, red)</td>
+        <td>Estable, amplia comunidad, miles de plugins</td>
+        <td>Monitorización de servidores físicos y redes en tiempo real</td>
+        <td><span class="tag">NRPE</span><span class="tag">SNMP</span><span class="tag">NagVis</span></td>
+      </tr>
+      <tr>
+        <td><strong>Zabbix</strong></td>
+        <td>Infraestructura + Interfaz amigable</td>
+        <td>Auto-detección, visuales potentes, alertas avanzadas</td>
+        <td>Empresas que necesitan visibilidad rápida y escalabilidad</td>
+        <td><span class="tag">SNMP</span><span class="tag">API REST</span><span class="tag">Webhooks</span></td>
+      </tr>
+      <tr>
+        <td><strong>Prometheus</strong></td>
+        <td>Métricas de tiempo (TSDB)</td>
+        <td>Diseñado para microservicios, consultas potentes (PromQL)</td>
+        <td>Kubernetes, contenedores, sistemas distribuidos</td>
+        <td><span class="tag">Grafana</span><span class="tag">Alertmanager</span><span class="tag">Pushgateway</span></td>
+      </tr>
+      <tr>
+        <td><strong>ELK Stack</strong></td>
+        <td>Logs + Análisis (Big Data + Seguridad)</td>
+        <td>Filtros complejos, búsquedas full-text, alertas y dashboards</td>
+        <td>SIEM, detección de amenazas, compliance, análisis forense</td>
+        <td><span class="tag">Beats</span><span class="tag">Logstash</span><span class="tag">Filebeat</span></td>
+      </tr>
+      <tr>
+        <td><strong>Grafana</strong></td>
+        <td>Visualización (Dashboards)</td>
+        <td>Flexible, elegante, se conecta con casi todo</td>
+        <td>Visualización de métricas, logs, alertas unificadas</td>
+        <td><span class="tag">Prometheus</span><span class="tag">Elastic</span><span class="tag">InfluxDB</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>📚 Glosario de Conceptos Clave</h2>
+
+  <div class="concept"><span class="concept-title">NRPE:</span> Plugin de Nagios que permite ejecutar comandos en máquinas remotas para monitorización avanzada.</div>
+  <div class="concept"><span class="concept-title">SNMP:</span> Protocolo de red usado para recopilar información y configurar dispositivos de red como routers, switches, etc.</div>
+  <div class="concept"><span class="concept-title">NagVis:</span> Herramienta visual que permite representar gráficamente el estado de los hosts monitorizados por Nagios.</div>
+  <div class="concept"><span class="concept-title">API REST:</span> Interfaz que permite integrar y controlar sistemas usando peticiones HTTP. Muy común para automatizar monitorización.</div>
+  <div class="concept"><span class="concept-title">Webhooks:</span> Métodos para recibir notificaciones automáticas entre sistemas cuando ocurre un evento específico.</div>
+  <div class="concept"><span class="concept-title">TSDB (Time Series Database):</span> Base de datos optimizada para almacenar series temporales (valores numéricos ligados a marcas de tiempo).</div>
+  <div class="concept"><span class="concept-title">PromQL:</span> Lenguaje de consultas usado en Prometheus para extraer y analizar métricas.</div>
+  <div class="concept"><span class="concept-title">Kubernetes:</span> Plataforma de orquestación de contenedores que automatiza la gestión, el escalado y la implementación de aplicaciones.</div>
+  <div class="concept"><span class="concept-title">Alertmanager:</span> Componente de Prometheus que gestiona alertas y notificaciones.</div>
+  <div class="concept"><span class="concept-title">Pushgateway:</span> Puerta de entrada que permite a procesos de corta duración enviar métricas a Prometheus.</div>
+  <div class="concept"><span class="concept-title">Beats:</span> Conjunto de agentes ligeros para enviar datos a Logstash o Elasticsearch.</div>
+  <div class="concept"><span class="concept-title">Logstash:</span> Herramienta de procesamiento y transformación de logs antes de enviarlos a Elasticsearch.</div>
+  <div class="concept"><span class="concept-title">Filebeat:</span> Agente diseñado para enviar archivos de log directamente a Logstash o Elasticsearch.</div>
+  <div class="concept"><span class="concept-title">InfluxDB:</span> Base de datos de series temporales usada comúnmente con Grafana para métricas de rendimiento.</div>
+  <div class="concept"><span class="concept-title">Elastic:</span> Ecosistema basado en Elasticsearch, incluye visualización (Kibana), ingestión (Beats, Logstash), y seguridad.</div>
+  <div class="concept"><span class="concept-title">SIEM:</span> Security Information and Event Management. Solución que centraliza logs, los analiza y detecta amenazas de seguridad.</div>
+
+</body>
+</html>

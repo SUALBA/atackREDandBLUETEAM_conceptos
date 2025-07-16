@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛡️ Sistemas Anti-DDoS Explicados</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <div class="max-w-6xl mx-auto p-6 space-y-10">
+
+    <header class="text-center">
+      <h1 class="text-4xl font-bold text-teal-400 animate-bounce">🛡️ Sistemas Anti-DDoS</h1>
+      <p class="mt-2 text-gray-300">Defensa inteligente contra ataques de denegación de servicio</p>
+    </header>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-pink-400">🚨 ¿Qué es un ataque DDoS?</h2>
+      <p class="mt-4 text-gray-200">Un <strong>DDoS (Distributed Denial of Service)</strong> es un ataque que intenta saturar un servidor, red o aplicación con una avalancha de tráfico falso, impidiendo que los usuarios reales accedan a los servicios.</p>
+      <p class="mt-2 text-yellow-300 italic">Imagina miles de personas bloqueando la puerta de una tienda: nadie más puede entrar.</p>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-blue-400">🔐 ¿Qué hacen los sistemas anti-DDoS?</h2>
+      <ul class="list-disc list-inside space-y-2 mt-4 text-gray-200">
+        <li>Aprenden cómo se comporta el tráfico normal en la red (líneas base).</li>
+        <li>Detectan comportamientos anómalos.</li>
+        <li>Filtran y bloquean tráfico malicioso.</li>
+        <li>Permiten solo tráfico legítimo.</li>
+      </ul>
+      <p class="mt-4 text-green-300">✅ Protegen servicios críticos como bancos, e-commerce, apps y webs corporativas.</p>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-yellow-400">🧠 ¿Cómo funciona un sistema anti-DDoS?</h2>
+      <ol class="list-decimal list-inside mt-4 text-gray-200 space-y-2">
+        <li><strong>Monitorización inicial:</strong> Observa el tráfico normal para definir umbrales.</li>
+        <li><strong>Detección:</strong> Al detectar desviaciones, activa el modo defensa.</li>
+        <li><strong>Mitigación:</strong> Aplica reglas y filtros.</li>
+        <li><strong>Normalización:</strong> Permite acceso solo a usuarios legítimos.</li>
+      </ol>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-lime-400">📊 Tipos comunes de ataques DDoS</h2>
+      <ul class="list-disc list-inside mt-4 text-gray-200 space-y-2">
+        <li><strong>UDP Flood:</strong> Envía miles de paquetes UDP sin sentido para colapsar el servidor.</li>
+        <li><strong>SYN Flood:</strong> Abusa del protocolo TCP para agotar recursos.</li>
+        <li><strong>ICMP Flood:</strong> Usa pings masivos para saturar el ancho de banda.</li>
+        <li><strong>Slowloris:</strong> Abre muchas conexiones lentas para mantener al servidor ocupado.</li>
+        <li><strong>Amplificación DNS:</strong> Usa servidores DNS para reflejar tráfico al objetivo.</li>
+      </ul>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-fuchsia-400">🧰 Tecnologías usadas en la defensa</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-gray-200">
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <strong>Firewall de nueva generación (NGFW)</strong>
+          <p>Filtra tráfico basado en aplicaciones, usuarios y contenido.</p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <strong>IPS (Intrusion Prevention System)</strong>
+          <p>Detecta y bloquea ataques en tiempo real.</p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <strong>Scrubbing Center</strong>
+          <p>Filtra grandes volúmenes de tráfico en la nube.</p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <strong>Threat Intelligence</strong>
+          <p>Base de datos con IPs y patrones de ataques conocidos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-semibold text-cyan-300">🧪 Ejemplo real</h2>
+      <p class="mt-4 text-gray-200">Imagina que una plataforma de e-commerce es atacada con millones de peticiones falsas durante el Black Friday. Gracias al sistema anti-DDoS, el tráfico es desviado a un scrubbing center, donde se filtra y solo los clientes reales acceden. La tienda sigue operativa y sin pérdidas.</p>
+    </section>
+
+    <footer class="text-center mt-10 text-gray-400">
+      <p>Creado para entender los sistemas anti-DDoS de forma visual y clara 💻🧠</p>
+    </footer>
+
+  </div>
+</body>
+</html>
