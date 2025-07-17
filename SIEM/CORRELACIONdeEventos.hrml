@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionalidades de SIEM</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .functionality {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .functionality:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .functionality::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .func-1 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .func-1::before { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+        
+        .func-2 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .func-2::before { background: linear-gradient(135deg, #48cae4, #023e8a); }
+        
+        .func-3 { background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); }
+        .func-3::before { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+        
+        .func-4 { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+        .func-4::before { background: linear-gradient(135deg, #3498db, #2980b9); }
+        
+        .func-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .func-5::before { background: linear-gradient(135deg, #e74c3c, #f39c12); }
+        
+        .func-6 { background: linear-gradient(135deg, #a8cc8c 0%, #fdbda1 100%); }
+        .func-6::before { background: linear-gradient(135deg, #27ae60, #f39c12); }
+        
+        .func-7 { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+        .func-7::before { background: linear-gradient(135deg, #9b59b6, #3498db); }
+        
+        .func-8 { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        .func-8::before { background: linear-gradient(135deg, #1abc9c, #3498db); }
+        
+        .func-9 { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); }
+        .func-9::before { background: linear-gradient(135deg, #34495e, #2c3e50); }
+        
+        .func-10 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .func-10::before { background: linear-gradient(135deg, #8e44ad, #e74c3c); }
+        
+        .func-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .func-icon {
+            font-size: 1.8em;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .func-description {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #34495e;
+            font-weight: 500;
+        }
+        
+        .func-details {
+            background: rgba(255,255,255,0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .func-details h4 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        
+        .example-box {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .example-box h5 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.2);
+            color: #2c3e50;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 2px;
+            font-weight: 500;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'CODE';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            border-color: #e74c3c;
+            transform: scale(1.02);
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .conclusion h2 {
+            margin-top: 0;
+            font-size: 2em;
+        }
+        
+        ul, ol {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .correlation-section {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .correlation-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .correlation-type {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Funcionalidades de SIEM</h1>
+            <p>Security Information and Event Management (SIM + SEM)</p>
+        </div>
+        
+        <div class="content">
+            <div class="functionality func-1">
+                <div class="func-title">
+                    <span class="func-icon">📊</span>
+                    1. Recolección y Consolidación de Logs
+                </div>
+                <div class="func-description">
+                    <span class="highlight">Centraliza y normaliza</span> logs de múltiples fuentes para crear una vista unificada de la infraestructura de TI.
+                </div>
+                <div class="func-details">
+                    <h4>🎯 Características principales:</h4>
+                    <ul>
+                        <li><strong>Agregación centralizada:</strong> Recopila logs de servidores, aplicaciones, bases de datos y dispositivos de seguridad</li>
+                        <li><strong>Normalización:</strong> Convierte diferentes formatos en un estándar común</li>
+                        <li><strong>Almacenamiento a largo plazo:</strong> Mantiene históricos para análisis forense</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>💡 Ejemplos prácticos:</h5>
+                    <span class="tag">Active Directory</span>
+                    <span class="tag">Apache/Nginx</span>
+                    <span class="tag">Firewall logs</span>
+                    <span class="tag">Antivirus</span>
+                    <span class="tag">Database logs</span>
+                </div>
+            </div>
+
+            <div class="functionality func-2">
+                <div class="func-title">
+                    <span class="func-icon">🌐</span>
+                    2. Detección de Anomalías de Red
+                </div>
+                <div class="func-description">
+                    Identifica patrones de tráfico inusuales y <span class="highlight">comportamientos anómalos</span> que pueden indicar amenazas.
+                </div>
+                <div class="func-details">
+                    <h4>🔍 Métodos de detección:</h4>
+                    <ul>
+                        <li><strong>Análisis de comportamiento:</strong> Establece líneas base normales</li>
+                        <li><strong>Detección por firmas:</strong> Busca patrones conocidos de ataques</li>
+                        <li><strong>Machine Learning:</strong> Algoritmos para anomalías complejas</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>🚨 Ejemplos de detección:</h5>
+                    <span class="tag">Tráfico geográfico sospechoso</span>
+                    <span class="tag">Dominios maliciosos</span>
+                    <span class="tag">Transferencias masivas</span>
+                    <span class="tag">Escaneo de puertos</span>
+                </div>
+            </div>
+
+            <div class="functionality func-3">
+                <div class="func-title">
+                    <span class="func-icon">👤</span>
+                    3. Análisis del Comportamiento de Usuarios
+                </div>
+                <div class="func-description">
+                    Monitoriza actividades de usuarios para detectar <span class="highlight">amenazas internas</span> y cuentas comprometidas.
+                </div>
+                <div class="func-details">
+                    <h4>🧠 Técnicas utilizadas:</h4>
+                    <ul>
+                        <li><strong>UEBA:</strong> User and Entity Behavior Analytics</li>
+                        <li><strong>Perfilado de usuarios:</strong> Patrones de comportamiento normal</li>
+                        <li><strong>Análisis de privilegios:</strong> Monitorización de permisos elevados</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>⚡ Ejemplos de anomalías:</h5>
+                    <span class="tag">Acceso fuera de horario</span>
+                    <span class="tag">Descarga masiva de datos</span>
+                    <span class="tag">Múltiples ubicaciones</span>
+                    <span class="tag">Comandos administrativos</span>
+                </div>
+            </div>
+
+            <div class="functionality func-4">
+                <div class="func-title">
+                    <span class="func-icon">🗺️</span>
+                    4. Análisis y Topología de Red
+                </div>
+                <div class="func-description">
+                    Proporciona <span class="highlight">visibilidad completa</span> de la infraestructura de red para identificar vulnerabilidades.
+                </div>
+                <div class="func-details">
+                    <h4>📡 Capacidades:</h4>
+                    <ul>
+                        <li><strong>Mapeo de red:</strong> Visualización de topología completa</li>
+                        <li><strong>Análisis de flujo:</strong> Seguimiento de comunicaciones</li>
+                        <li><strong>Segmentación:</strong> Identificación de zonas de seguridad</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>🔎 Casos de uso:</h5>
+                    <span class="tag">Dispositivos no autorizados</span>
+                    <span class="tag">Comunicaciones laterales</span>
+                    <span class="tag">Puntos de pivote</span>
+                    <span class="tag">Análisis de rutas</span>
+                </div>
+            </div>
+
+            <div class="functionality func-5">
+                <div class="func-title">
+                    <span class="func-icon">⚙️</span>
+                    5. Configuración de Dispositivos
+                </div>
+                <div class="func-description">
+                    Gestiona y monitoriza configuraciones de seguridad para asegurar el <span class="highlight">cumplimiento normativo</span>.
+                </div>
+                <div class="func-details">
+                    <h4>🔧 Funcionalidades:</h4>
+                    <ul>
+                        <li><strong>Gestión centralizada:</strong> Control de configuraciones de seguridad</li>
+                        <li><strong>Detección de cambios:</strong> Alertas sobre modificaciones no autorizadas</li>
+                        <li><strong>Cumplimiento:</strong> Verificación de estándares de seguridad</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>🛠️ Monitorización:</h5>
+                    <span class="tag">Reglas de firewall</span>
+                    <span class="tag">Configuraciones de routers</span>
+                    <span class="tag">Baseline de SO</span>
+                    <span class="tag">Dispositivos IoT</span>
+                </div>
+            </div>
+
+            <div class="functionality func-6">
+                <div class="func-title">
+                    <span class="func-icon">🎯</span>
+                    6. Priorización de Vulnerabilidades
+                </div>
+                <div class="func-description">
+                    Evalúa y clasifica vulnerabilidades según su <span class="highlight">criticidad e impacto</span> para optimizar la remediación.
+                </div>
+                <div class="func-details">
+                    <h4>📊 Criterios de priorización:</h4>
+                    <ul>
+                        <li><strong>Severidad técnica:</strong> Puntuación CVSS</li>
+                        <li><strong>Contexto empresarial:</strong> Importancia del activo</li>
+                        <li><strong>Amenaza activa:</strong> Existencia de exploits conocidos</li>
+                        <li><strong>Exposición:</strong> Accesibilidad del sistema</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>⚠️ Factores de riesgo:</h5>
+                    <span class="tag">Servidor web crítico</span>
+                    <span class="tag">Exploits públicos</span>
+                    <span class="tag">Datos sensibles</span>
+                    <span class="tag">Activos críticos</span>
+                </div>
+            </div>
+
+            <div class="functionality func-7">
+                <div class="func-title">
+                    <span class="func-icon">🧪</span>
+                    7. Análisis de Fallos y Simulación de Exploits
+                </div>
+                <div class="func-description">
+                    Realiza <span class="highlight">pruebas controladas</span> para identificar debilidades y validar medidas de seguridad.
+                </div>
+                <div class="func-details">
+                    <h4>🔬 Tipos de análisis:</h4>
+                    <ul>
+                        <li><strong>Penetration Testing:</strong> Pruebas de intrusión automatizadas</li>
+                        <li><strong>Simulación de ataques:</strong> Recreación de técnicas reales</li>
+                        <li><strong>Análisis de superficie:</strong> Evaluación de puntos de entrada</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>🎭 Simulaciones:</h5>
+                    <span class="tag">Phishing</span>
+                    <span class="tag">Escalación de privilegios</span>
+                    <span class="tag">Ransomware</span>
+                    <span class="tag">Inyección SQL</span>
+                </div>
+            </div>
+
+            <div class="correlation-section">
+                <div class="func-title">
+                    <span class="func-icon">🔗</span>
+                    8. Correlación de Eventos (Event Correlation)
+                </div>
+                <div class="func-description">
+                    Analiza eventos aparentemente no relacionados para identificar <span class="highlight">patrones complejos</span> y amenazas avanzadas.
+                </div>
+                
+                <div class="correlation-types">
+                    <div class="correlation-type">
+                        <h4><span class="emoji">⚡</span>Real-time Correlation</h4>
+                        <p>Análisis instantáneo de eventos mientras ocurren para detección inmediata de amenazas activas.</p>
+                    </div>
+                    <div class="correlation-type">
+                        <h4><span class="emoji">🔄</span>Cross-correlation</h4>
+                        <p>Análisis entre diferentes fuentes de datos para identificar ataques multi-vectoriales.</p>
+                    </div>
+                    <div class="correlation-type">
+                        <h4><span class="emoji">🎯</span>Pattern Correlation</h4>
+                        <p>Identificación de secuencias específicas que indican TTPs conocidas de atacantes.</p>
+                    </div>
+                    <div class="correlation-type">
+                        <h4><span class="emoji">⏰</span>Temporal Correlation</h4>
+                        <p>Análisis basado en ventanas de tiempo para detectar actividades coordinadas.</p>
+                    </div>
+                </div>
+
+                <div class="func-details">
+                    <h4>🎯 Ejemplo de Ataque APT Correlacionado:</h4>
+                    <ol>
+                        <li><strong>Initial compromise:</strong> Malware via email</li>
+                        <li><strong>C&C communication:</strong> Comunicación con servidor de control</li>
+                        <li><strong>Lateral movement:</strong> Movimiento en la red</li>
+                        <li><strong>Privilege escalation:</strong> Escalación de privilegios</li>
+                        <li><strong>Data exfiltration:</strong> Exfiltración de datos</li>
+                    </ol>
+                </div>
+
+                <div class="code-block">
+IF (failed_login_attempts > 5 AND time_window < 60_seconds)
+AND (port_scan_detected = true AND target = same_network)
+THEN alert_level = HIGH 
+AND incident_type = "Brute Force + Reconnaissance"
+                </div>
+
+                <div class="metric-card">
+                    <h4>📊 Métricas de Confianza</h4>
+                    <ul>
+                        <li><strong>Alto (90-100%):</strong> Acción inmediata requerida</li>
+                        <li><strong>Medio (70-89%):</strong> Requiere investigación</li>
+                        <li><strong>Bajo (50-69%):</strong> Monitoreo continuo</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="functionality func-9">
+                <div class="func-title">
+                    <span class="func-icon">🚨</span>
+                    9. Gestión de Incidentes/Alertas de Seguridad
+                </div>
+                <div class="func-description">
+                    Proporciona un <span class="highlight">flujo de trabajo estructurado</span> para manejar incidentes desde detección hasta resolución.
+                </div>
+                <div class="func-details">
+                    <h4>📋 Proceso de gestión:</h4>
+                    <ul>
+                        <li><strong>Detección y clasificación:</strong> Identificación automática</li>
+                        <li><strong>Investigación:</strong> Análisis detallado del incidente</li>
+                        <li><strong>Contención:</strong> Medidas para limitar impacto</li>
+                        <li><strong>Remediación:</strong> Acciones para resolver</li>
+                        <li><strong>Documentación:</strong> Registro completo del proceso</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>🔧 Tipos de incidentes:</h5>
+                    <span class="tag">Malware</span>
+                    <span class="tag">Brechas de datos</span>
+                    <span class="tag">Ataques DDoS</span>
+                    <span class="tag">Phishing</span>
+                    <span class="tag">Amenazas internas</span>
+                </div>
+            </div>
+
+            <div class="functionality func-10">
+                <div class="func-title">
+                    <span class="func-icon">📈</span>
+                    10. Generación de Informes
+                </div>
+                <div class="func-description">
+                    Produce informes comprensivos sobre el <span class="highlight">estado de seguridad</span> para diferentes audiencias organizacionales.
+                </div>
+                <div class="func-details">
+                    <h4>📊 Tipos de informes:</h4>
+                    <ul>
+                        <li><strong>Ejecutivos:</strong> Resúmenes de alto nivel con métricas de negocio</li>
+                        <li><strong>Técnicos:</strong> Informes detallados para equipos de seguridad</li>
+                        <li><strong>Cumplimiento:</strong> Específicos para auditorías y regulaciones</li>
+                        <li><strong>Operacionales:</strong> Métricas de rendimiento y SLA</li>
+                    </ul>
+                </div>
+                <div class="example-box">
+                    <h5>📋 Ejemplos de reportes:</h5>
+                    <span class="tag">PCI DSS</span>
+                    <span class="tag">Dashboards ejecutivos</span>
+                    <span class="tag">Tendencias de amenazas</span>
+                    <span class="tag">Seguros cibernéticos</span>
+                </div>
+            </div>
+
+            <div class="conclusion">
+                <h2>🎯 Conclusión</h2>
+                <p>La combinación de estas funcionalidades en un SIEM proporciona una <strong>plataforma integral</strong> para la gestión proactiva de la seguridad, permitiendo a las organizaciones detectar, analizar y responder a amenazas de manera más efectiva y eficiente.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

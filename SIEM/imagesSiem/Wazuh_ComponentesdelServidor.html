@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Módulo 2 – Wazuh: Componentes del Servidor</title>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #38bdf8;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    .modulo {
+      background-color: #1e293b;
+      border-left: 6px solid #38bdf8;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+      animation: fadeUp 1s ease forwards;
+    }
+
+    .modulo h3 {
+      margin-top: 0;
+      color: #7dd3fc;
+    }
+
+    .modulo ul {
+      padding-left: 1.2rem;
+    }
+
+    code {
+      background-color: #0f172a;
+      color: #93c5fd;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .note {
+      background: #facc15;
+      color: #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛠️ Módulo 2 – Wazuh</h1>
+  <h2>Componentes del Servidor</h2>
+
+  <div class="modulo">
+    <h3>🧾 Servicio de inscripción de agentes</h3>
+    <ul>
+      <li>Registra nuevos agentes en el sistema.</li>
+      <li>Proporciona claves únicas de autenticación a cada agente.</li>
+      <li>Admite autenticación mediante <code>TLS/SSL</code> o contraseña fija.</li>
+    </ul>
+  </div>
+
+  <div class="modulo">
+    <h3>🔗 Servicio de conexión de agentes</h3>
+    <ul>
+      <li>Recibe los datos que envían los agentes.</li>
+      <li>Usa claves compartidas para validar su identidad.</li>
+      <li>Cifra las comunicaciones entre agente y servidor.</li>
+    </ul>
+  </div>
+
+  <div class="modulo">
+    <h3>🧠 Motor de análisis</h3>
+    <ul>
+      <li>Es el "cerebro" del servidor: analiza todos los datos entrantes.</li>
+      <li>Usa <strong>decodificadores</strong> para identificar los tipos de eventos.</li>
+      <li>Aplica <strong>reglas</strong> para detectar patrones sospechosos.</li>
+      <li>Puedes activar respuestas automáticas:
+        <ul>
+          <li>Bloquear una dirección IP.</li>
+          <li>Eliminar malware.</li>
+          <li>Detener procesos en ejecución.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <h2>📊 ¿Cómo muestra Wazuh los datos?</h2>
+
+  <div class="modulo">
+    <h3>🖥️ Interfaz web basada en Kibana</h3>
+    <ul>
+      <li>Visualización de logs y alertas de seguridad.</li>
+      <li>Paneles personalizados y dashboards dinámicos.</li>
+      <li>Filtros por agente, IP, tipo de amenaza, etc.</li>
+    </ul>
+  </div>
+
+  <div class="modulo">
+    <h3>📈 Ejemplos de visualización</h3>
+    <ul>
+      <li>Alertas como <code>Acceso SSH no autorizado</code>.</li>
+      <li>Gráficos por hora, tipo de evento, geolocalización de IPs.</li>
+      <li>Listas de eventos ordenadas por severidad (0 a 15).</li>
+    </ul>
+  </div>
+
+  <div class="modulo">
+    <h3>🔌 Integraciones destacadas</h3>
+    <ul>
+      <li><strong>ElasticSearch</strong> para búsquedas eficientes y almacenamiento.</li>
+      <li><strong>Kibana</strong> para visualización gráfica avanzada.</li>
+      <li>Compatible con <strong>SIEMs externos</strong> como Splunk o Security Onion.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

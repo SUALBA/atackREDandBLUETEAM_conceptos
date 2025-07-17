@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instalación de Watzu en Kali Linux</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1, h2 {
+      color: #38bdf8;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in;
+    }
+    .step {
+      background: #1e293b;
+      border-left: 5px solid #38bdf8;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+      animation: fadeUp 1s ease;
+    }
+    code, pre {
+      background-color: #0f172a;
+      color: #a5f3fc;
+      padding: 0.5rem;
+      display: block;
+      white-space: pre-wrap;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+    .note {
+      background: #facc15;
+      color: #1e293b;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛠️ Instalación de Watzu en Kali Linux</h1>
+  <h2>Paso a paso para usar esta herramienta de reconocimiento activo</h2>
+
+  <div class="step">
+    <h3>1. Actualiza tu sistema</h3>
+    <p>Antes de instalar cualquier herramienta, asegúrate de tener tu sistema actualizado:</p>
+    <pre><code>sudo apt update && sudo apt upgrade -y</code></pre>
+  </div>
+
+  <div class="step">
+    <h3>2. Instala Python y Git (si no lo tienes)</h3>
+    <p>Watzu está hecho en Python 3. Instala lo necesario con:</p>
+    <pre><code>sudo apt install python3 python3-pip git -y</code></pre>
+  </div>
+
+  <div class="step">
+    <h3>3. Clona el repositorio de Watzu</h3>
+    <p>Descarga el proyecto desde GitHub:</p>
+    <pre><code>git clone https://github.com/aryanguenthner/Watzu.git
+cd Watzu</code></pre>
+  </div>
+
+  <div class="step">
+    <h3>4. Instala las dependencias necesarias</h3>
+    <p>Watzu necesita algunos paquetes de Python para funcionar:</p>
+    <pre><code>pip3 install -r requirements.txt</code></pre>
+  </div>
+
+  <div class="step">
+    <h3>5. Ejecuta Watzu</h3>
+    <p>Una vez instaladas las dependencias, puedes lanzar la herramienta con:</p>
+    <pre><code>python3 watzu.py</code></pre>
+  </div>
+
+  <div class="step">
+    <h3>6. (Opcional) Configura tus claves API</h3>
+    <p>Para sacar el máximo provecho de Watzu, puedes usar claves de APIs como Shodan o Hunter.io.</p>
+    <div class="note">⚠️ <strong>Importante:</strong> Algunas funciones no funcionarán sin configurar las claves. Revísalo en la documentación oficial del repositorio.</div>
+  </div>
+
+  <div class="step">
+    <h3>7. ¿Errores comunes?</h3>
+    <p>Si ves errores como <code>ModuleNotFoundError</code>, prueba instalar los módulos manualmente:</p>
+    <pre><code>pip3 install requests beautifulsoup4 lxml</code></pre>
+  </div>
+
+</body>
+</html>
