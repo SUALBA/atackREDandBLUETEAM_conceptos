@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Guía Completa Wazuh & SIEM - Análisis de Logs y Ciberseguridad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #24243e 50%, #313862 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #87ceeb;
+            border-left: 4px solid #ffd700;
+            padding-left: 15px;
+        }
+
+        .section h4 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #98fb98;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .code-block pre {
+            color: #f8f8f2;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        .xml-tag {
+            color: #f92672;
+        }
+
+        .xml-attr {
+            color: #a6e22e;
+        }
+
+        .xml-value {
+            color: #e6db74;
+        }
+
+        .xml-comment {
+            color: #75715e;
+            font-style: italic;
+        }
+
+        .highlight-box {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .info-box {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ffffff;
+        }
+
+        .warning-box {
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .emoji {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+
+        .flow-diagram {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+        }
+
+        .flow-step {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 25px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #ffd700;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table th {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .table tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            animation: fillBar 2s ease-in-out;
+        }
+
+        @keyframes fillBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .skill-level-1 .progress-fill { width: 30%; }
+        .skill-level-2 .progress-fill { width: 60%; }
+        .skill-level-3 .progress-fill { width: 90%; }
+
+        .nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 1000;
+        }
+
+        .nav-menu a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                position: relative;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="#overview">📖 Resumen</a>
+        <a href="#local-rules">🔧 Local Rules</a>
+        <a href="#decoders">🔍 Decoders</a>
+        <a href="#guide">📚 Guía Completa</a>
+        <a href="#career">🚀 Carrera</a>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Guía Completa Wazuh & SIEM</h1>
+            <p>Análisis de Logs y Ciberseguridad Profesional</p>
+        </div>
+
+        <section id="overview" class="section">
+            <h2>🎯 Resumen Ejecutivo</h2>
+            <div class="highlight-box">
+                <strong>¿Qué es Wazuh?</strong> Es una plataforma de seguridad open-source que combina SIEM (Security Information and Event Management) con capacidades de detección de amenazas, monitoreo de integridad y respuesta automatizada.
+            </div>
+            
+            <div class="flow-diagram">
+                <h3>🔄 Flujo de Análisis de Logs</h3>
+                <div class="flow-step">📥 Logs Raw</div>
+                <div class="flow-step">🔍 Decoders</div>
+                <div class="flow-step">⚡ Rules</div>
+                <div class="flow-step">🚨 Alertas</div>
+                <div class="flow-step">🛡️ Respuesta</div>
+            </div>
+        </section>
+
+        <section id="local-rules" class="section">
+            <h2>🔧 Análisis Detallado: local_rules.xml</h2>
+            
+            <div class="info-box">
+                <strong>💡 Propósito:</strong> Este archivo contiene reglas personalizadas para detectar eventos de seguridad específicos en tu entorno.
+            </div>
+
+            <h3>📋 Estructura del Archivo</h3>
+            <div class="code-block">
+                <pre><span class="xml-comment">&lt;!-- Ejemplo de regla personalizada --&gt;</span>
+<span class="xml-tag">&lt;group</span> <span class="xml-attr">name=</span><span class="xml-value">"local,syslog,sshd,"</span><span class="xml-tag">&gt;</span>
+    <span class="xml-comment">&lt;!-- Log de ejemplo: Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh2 --&gt;</span>
+    <span class="xml-tag">&lt;rule</span> <span class="xml-attr">id=</span><span class="xml-value">"100001"</span> <span class="xml-attr">level=</span><span class="xml-value">"5"</span><span class="xml-tag">&gt;</span>
+        <span class="xml-tag">&lt;if_sid&gt;</span>5716<span class="xml-tag">&lt;/if_sid&gt;</span>
+        <span class="xml-tag">&lt;srcip&gt;</span>1.1.1.1<span class="xml-tag">&lt;/srcip&gt;</span>
+        <span class="xml-tag">&lt;description&gt;</span>sshd: authentication failed from IP 1.1.1.1<span class="xml-tag">&lt;/description&gt;</span>
+        <span class="xml-tag">&lt;group&gt;</span>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5<span class="xml-tag">&lt;/group&gt;</span>
+    <span class="xml-tag">&lt;/rule&gt;</span>
+<span class="xml-tag">&lt;/group&gt;</span></pre>
+            </div>
+
+            <h3>🔍 Desglose de Componentes</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4><span class="emoji">🏷️</span>Group Name</h4>
+                    <p><code>local,syslog,sshd</code></p>
+                    <p>Categoriza la regla para facilitar gestión y búsqueda.</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🆔</span>Rule ID</h4>
+                    <p><code>100001</code></p>
+                    <p>Identificador único (100000+ para reglas personalizadas).</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">📊</span>Level</h4>
+                    <p><code>5</code> (Medio)</p>
+                    <p>Escala: 0-15 (0=Ignore, 15=Crítico)</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🔗</span>if_sid</h4>
+                    <p><code>5716</code></p>
+                    <p>Referencia a regla padre (SSH authentication failed).</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🌐</span>srcip</h4>
+                    <p><code>1.1.1.1</code></p>
+                    <p>Filtra eventos de IP específica.</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">📝</span>Description</h4>
+                    <p>Mensaje descriptivo del evento detectado.</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Importante:</strong> Esta regla se activa solo cuando se detecta primero la regla 5716 (fallo SSH genérico) Y la IP origen es 1.1.1.1. Es una regla muy específica para monitorear una IP particular.
+            </div>
+        </section>
+
+        <section id="decoders" class="section">
+            <h2>🔍 Análisis Detallado: wazuh_decoders.xml</h2>
+            
+            <div class="info-box">
+                <strong>💡 Propósito:</strong> Los decoders parsean logs en bruto y extraen campos estructurados que luego pueden ser analizados por las reglas.
+            </div>
+
+            <h3>📋 Estructura del Decoder</h3>
+            <div class="code-block">
+                <pre><span class="xml-tag">&lt;decoder</span> <span class="xml-attr">name=</span><span class="xml-value">"agent-upgrade"</span><span class="xml-tag">&gt;</span>
+    <span class="xml-tag">&lt;parent&gt;</span>wazuh<span class="xml-tag">&lt;/parent&gt;</span>
+    <span class="xml-tag">&lt;prematch</span> <span class="xml-attr">offset=</span><span class="xml-value">"after_parent"</span><span class="xml-tag">&gt;</span>^Agent buffer:<span class="xml-tag">&lt;/prematch&gt;</span>
+    <span class="xml-tag">&lt;regex</span> <span class="xml-attr">offset=</span><span class="xml-value">"after_prematch"</span><span class="xml-tag">&gt;</span>^ '(\S+)'.<span class="xml-tag">&lt;/regex&gt;</span>
+    <span class="xml-tag">&lt;order&gt;</span>level<span class="xml-tag">&lt;/order&gt;</span>
+<span class="xml-tag">&lt;/decoder&gt;</span>
+
+<span class="xml-tag">&lt;decoder</span> <span class="xml-attr">name=</span><span class="xml-value">"agent-upgrade"</span><span class="xml-tag">&gt;</span>
+    <span class="xml-tag">&lt;parent&gt;</span>wazuh<span class="xml-tag">&lt;/parent&gt;</span>
+    <span class="xml-tag">&lt;prematch</span> <span class="xml-attr">offset=</span><span class="xml-value">"after_parent"</span><span class="xml-tag">&gt;</span>^Upgrade procedure |^Custom installation<span class="xml-tag">&lt;/prematch&gt;</span>
+    <span class="xml-tag">&lt;regex</span> <span class="xml-attr">offset=</span><span class="xml-value">"after_prematch"</span><span class="xml-tag">&gt;</span>on agent (\d\d\d)\s\((\S+)\):\s(\w+)<span class="xml-tag">&lt;/regex&gt;</span>
+    <span class="xml-tag">&lt;order&gt;</span>agent.id, agent.name, status<span class="xml-tag">&lt;/order&gt;</span>
+<span class="xml-tag">&lt;/decoder&gt;</span></pre>
+            </div>
+
+            <h3>🔍 Desglose de Componentes</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4><span class="emoji">👨‍👩‍👧‍👦</span>Parent</h4>
+                    <p><code>wazuh</code></p>
+                    <p>Hereda del decoder padre "wazuh". Esto significa que primero debe coincidir el patrón del decoder padre.</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🎯</span>Prematch</h4>
+                    <p><code>^Agent buffer:</code></p>
+                    <p>Patrón que debe existir para que el decoder se active. El <code>^</code> indica inicio de línea.</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🔤</span>Regex</h4>
+                    <p><code>^ '(\S+)'.</code></p>
+                    <p>Expresión regular que captura datos específicos. Los paréntesis <code>()</code> crean grupos de captura.</p>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">📋</span>Order</h4>
+                    <p><code>agent.id, agent.name, status</code></p>
+                    <p>Define los nombres de los campos extraídos por la regex, en orden.</p>
+                </div>
+            </div>
+
+            <h3>💡 Ejemplo de Funcionamiento</h3>
+            <div class="code-block">
+                <pre><span class="xml-comment"><!-- Log de entrada: --></span>
+2024-07-18 10:30:45 wazuh-manager: Upgrade procedure on agent 001 (web-server-01): SUCCESS
+
+<span class="xml-comment"><!-- Procesamiento: --></span>
+1. <span class="xml-attr">Parent decoder</span> "wazuh" coincide con "wazuh-manager"
+2. <span class="xml-attr">Prematch</span> coincide con "Upgrade procedure"
+3. <span class="xml-attr">Regex</span> extrae: 
+   - agent.id = "001"
+   - agent.name = "web-server-01"  
+   - status = "SUCCESS"</pre>
+            </div>
+        </section>
+
+        <section id="guide" class="section">
+            <h2>📚 Guía Completa SIEM & Ciberseguridad</h2>
+            
+            <h3>🎯 Casos de Uso Críticos</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4><span class="emoji">🚨</span>Detección de Amenazas</h4>
+                    <p>Identificación en tiempo real de:</p>
+                    <ul>
+                        <li>Intentos de login fallidos múltiples</li>
+                        <li>Escalación de privilegios</li>
+                        <li>Conexiones desde IPs maliciosas</li>
+                        <li>Comandos sospechosos en sistemas</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">⚡</span>Respuesta Automática</h4>
+                    <p>Acciones automatizadas:</p>
+                    <ul>
+                        <li>Bloqueo de IPs maliciosas</li>
+                        <li>Deshabilitación de cuentas</li>
+                        <li>Aislamiento de sistemas</li>
+                        <li>Ejecución de scripts de limpieza</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">📋</span>Compliance</h4>
+                    <p>Cumplimiento normativo:</p>
+                    <ul>
+                        <li>PCI DSS (pagos)</li>
+                        <li>HIPAA (salud)</li>
+                        <li>SOX (financiero)</li>
+                        <li>GDPR (privacidad)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🛠️ Componentes Arquitectónicos</h3>
+            
+            <h4>🔍 Ejemplo de Decoder SSH</h4>
+            <div class="code-block">
+                <pre><span class="xml-tag">&lt;decoder</span> <span class="xml-attr">name=</span><span class="xml-value">"ssh-login"</span><span class="xml-tag">&gt;</span>
+    <span class="xml-tag">&lt;parent&gt;</span>sshd<span class="xml-tag">&lt;/parent&gt;</span>
+    <span class="xml-tag">&lt;prematch&gt;</span>^Failed password for<span class="xml-tag">&lt;/prematch&gt;</span>
+    <span class="xml-tag">&lt;regex&gt;</span>^Failed password for (\S+) from (\S+) port (\d+)<span class="xml-tag">&lt;/regex&gt;</span>
+    <span class="xml-tag">&lt;order&gt;</span>user,srcip,srcport<span class="xml-tag">&lt;/order&gt;</span>
+<span class="xml-tag">&lt;/decoder&gt;</span></pre>
+            </div>
+
+            <h4>⚡ Ejemplo de Regla SSH</h4>
+            <div class="code-block">
+                <pre><span class="xml-tag">&lt;rule</span> <span class="xml-attr">id=</span><span class="xml-value">"5716"</span> <span class="xml-attr">level=</span><span class="xml-value">"5"</span><span class="xml-tag">&gt;</span>
+    <span class="xml-tag">&lt;if_sid&gt;</span>5700<span class="xml-tag">&lt;/if_sid&gt;</span>
+    <span class="xml-tag">&lt;match&gt;</span>^Failed password<span class="xml-tag">&lt;/match&gt;</span>
+    <span class="xml-tag">&lt;description&gt;</span>sshd: authentication failed<span class="xml-tag">&lt;/description&gt;</span>
+    <span class="xml-tag">&lt;group&gt;</span>authentication_failed,pci_dss_10.2.4<span class="xml-tag">&lt;/group&gt;</span>
+<span class="xml-tag">&lt;/rule&gt;</span></pre>
+            </div>
+
+            <h4>🛡️ Ejemplo de Respuesta Activa</h4>
+            <div class="code-block">
+                <pre><span class="xml-tag">&lt;active-response&gt;</span>
+    <span class="xml-tag">&lt;command&gt;</span>firewall-drop<span class="xml-tag">&lt;/command&gt;</span>
+    <span class="xml-tag">&lt;location&gt;</span>local<span class="xml-tag">&lt;/location&gt;</span>
+    <span class="xml-tag">&lt;rules_id&gt;</span>5720<span class="xml-tag">&lt;/rules_id&gt;</span>
+    <span class="xml-tag">&lt;timeout&gt;</span>600<span class="xml-tag">&lt;/timeout&gt;</span>
+<span class="xml-tag">&lt;/active-response&gt;</span></pre>
+            </div>
+
+            <h3>🔍 Técnicas de Análisis de Logs</h3>
+            
+            <h4>📊 Comandos Esenciales</h4>
+            <div class="code-block">
+                <pre><span class="xml-comment"># Buscar IPs sospechosas</span>
+grep "Failed password" /var/log/auth.log | awk '{print $11}' | sort | uniq -c
+
+<span class="xml-comment"># Monitorear conexiones activas</span>
+netstat -an | grep ESTABLISHED
+
+<span class="xml-comment"># Verificar procesos sospechosos</span>
+ps aux | grep -v grep | grep suspicious
+
+<span class="xml-comment"># Análisis de logs Apache</span>
+tail -f /var/log/apache2/access.log | grep -E "(404|500|403)"</pre>
+            </div>
+
+            <h4>🔤 Regex para Detección</h4>
+            <div class="code-block">
+                <pre><span class="xml-comment"># Detectar IPs privadas en logs públicos</span>
+^(?:192\.168|10\.|172\.(?:1[6-9]|2\d|3[01]))\.
+
+<span class="xml-comment"># Detectar comandos de escalación</span>
+sudo\s+(?:su|passwd|visudo|chmod\s+777)
+
+<span class="xml-comment"># Detectar PowerShell malicioso</span>
+powershell.*(?:downloadstring|invoke-expression|bypass)
+
+<span class="xml-comment"># Detectar SQL Injection</span>
+(union|select|insert|update|delete|drop|exec|script)</pre>
+            </div>
+
+            <h3>📈 Niveles de Severidad</h3>
+            <table class="table">
+                <tr>
+                    <th>Nivel</th>
+                    <th>Descripción</th>
+                    <th>Ejemplo</th>
+                    <th>Acción</th>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Ignorar</td>
+                    <td>Eventos normales</td>
+                    <td>Sin alerta</td>
+                </tr>
+                <tr>
+                    <td>1-4</td>
+                    <td>Información</td>
+                    <td>Login exitoso</td>
+                    <td>Log únicamente</td>
+                </tr>
+                <tr>
+                    <td>5-7</td>
+                    <td>Advertencia</td>
+                    <td>Login fallido</td>
+                    <td>Alerta básica</td>
+                </tr>
+                <tr>
+                    <td>8-11</td>
+                    <td>Error</td>
+                    <td>Múltiples fallos</td>
+                    <td>Notificación</td>
+                </tr>
+                <tr>
+                    <td>12-15</td>
+                    <td>Crítico</td>
+                    <td>Rootkit detectado</td>
+                    <td>Respuesta inmediata</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="career" class="section">
+            <h2>🚀 Carrera en Ciberseguridad</h2>
+            
+            <h3>📊 Ruta de Progresión</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4><span class="emoji">🥉</span>SOC Analyst Tier 1</h4>
+                    <p><strong>Salario:</strong> $35,000 - $50,000</p>
+                    <div class="progress-bar skill-level-1">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <ul>
+                        <li>Monitoreo básico de alertas</li>
+                        <li>Escalación de incidentes</li>
+                        <li>Documentación básica</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4><span class="emoji">🥈</span>SOC Analyst Tier 2</h4>
+                    <p><strong>Salario:</strong> $50,000 - $75,000</p>
+                    <div class="progress-bar skill-level-2">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <ul>
+                        <li>Investigación de incidentes</li>
+                        <li>Análisis de malware</li>
+                        <li>Tuning de reglas</li>
+                    </ul>

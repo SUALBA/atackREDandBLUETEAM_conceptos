@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Completa de Splunk para SOC</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0e0e0e;
+      color: #eee;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    h1, h2, h3 {
+      color: #00ffe0;
+    }
+    button {
+      margin: 0.5rem 0;
+      padding: 0.5rem 1rem;
+      background: #222;
+      border: 1px solid #00ffe0;
+      color: #00ffe0;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    pre {
+      background: #1b1b1b;
+      padding: 1rem;
+      overflow-x: auto;
+      border-left: 3px solid #00ffe0;
+    }
+    .section {
+      margin-bottom: 3rem;
+    }
+    .content {
+      display: none;
+    }
+    .description {
+      color: #bbb;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    a {
+      color: #00ccff;
+    }
+  </style>
+  <script>
+    function toggle(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+</head>
+<body>
+  <h1>📘 Guía Completa de Splunk para Analistas SOC</h1>
+  <p>Material interactivo para entrenarte en Splunk como herramienta de investigación de incidentes de ciberseguridad.</p>
+
+  <div class="section">
+    <h2>🔍 Comandos Básicos y Lógica SPL</h2>
+    <button onclick="toggle('splbasics')">Mostrar / Ocultar</button>
+    <div id="splbasics" class="content">
+      <div class="description">Buscar eventos de una IP en los últimos 60 minutos</div>
+      <pre><code>index=* src_ip="192.168.1.5" earliest=-60m</code></pre>
+
+      <div class="description">Top 10 IPs con errores de login (EventCode 4625)</div>
+      <pre><code>index=windows EventCode=4625
+| top src_ip limit=10</code></pre>
+
+      <div class="description">Buscar ejecución de procesos sospechosos (cmd, powershell)</div>
+      <pre><code>index=windows EventCode=4688
+| search New_Process_Name="*powershell.exe" OR New_Process_Name="*cmd.exe"</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📁 Casos de Uso Típicos en un SOC</h2>
+    <button onclick="toggle('usecases')">Mostrar / Ocultar</button>
+    <div id="usecases" class="content">
+      <div class="description">Detección de descargas de ejecutables</div>
+      <pre><code>index=network sourcetype="stream:http" method=POST uri_path="*.exe"
+| table _time src_ip dest_ip uri_path</code></pre>
+
+      <div class="description">Análisis de acceso remoto (Logon Type 10)</div>
+      <pre><code>index=windows EventCode=4624 Logon_Type=10
+| stats count by user, src_ip</code></pre>
+
+      <div class="description">Actividad DNS sospechosa (DNS Tunneling)</div>
+      <pre><code>index=dns query="*.xyz*" OR query="*.info*"
+| stats count by src_ip, query</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧠 Correlaciones MITRE ATT&CK</h2>
+    <button onclick="toggle('mitre')">Mostrar / Ocultar</button>
+    <div id="mitre" class="content">
+      <div class="description">T1059 - Command Line Execution</div>
+      <pre><code>index=windows EventCode=4688
+| search New_Process_Name="*cmd.exe" OR New_Process_Name="*powershell.exe"</code></pre>
+
+      <div class="description">T1071 - Data Exfiltration Over HTTP</div>
+      <pre><code>index=web sourcetype="stream:http" method=POST
+| search uri_path="*upload*" OR uri_path="*send*"</code></pre>
+
+      <div class="description">T1110 - Brute Force</div>
+      <pre><code>index=windows EventCode=4625
+| stats count by src_ip, user
+| where count &gt; 20</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧪 Laboratorio / Retos</h2>
+    <button onclick="toggle('labs')">Mostrar / Ocultar</button>
+    <div id="labs" class="content">
+      <div class="description">🎯 Encuentra la IP que ejecutó "3791.exe"</div>
+      <pre><code>index=* sourcetype="stream:http" method=POST uri_path="*3791.exe*"
+| table _time src_ip uri_path</code></pre>
+
+      <div class="description">🎯 Detección de lateral movement (Logon Type 3)</div>
+      <pre><code>index=windows EventCode=4624 Logon_Type=3
+| stats count by src_ip, dest_ip, user</code></pre>
+
+      <div class="description">🎯 Cuentas usadas con privilegios elevados</div>
+      <pre><code>index=windows EventCode=4672
+| table _time user src_ip</code></pre>
+    </div>
+  </div>
+  <div class="section">
+    <h2>➕ Contenido Extra: Buenas Prácticas y Consejos</h2>
+    <button onclick="toggle('extras')">Mostrar / Ocultar</button>
+    <div id="extras" class="content">
+      <h3>✅ Empieza con queries simples y usa filtros progresivos</h3>
+      <pre><code>index=* error
+index=web status=500
+index=windows EventCode=4625
+index=* source="/var/log/auth.log"
+index=sysmon Image="cmd.exe"
+index=* sourcetype="stream:http" method=POST
+index=* user!="SYSTEM"
+index=linux action=denied
+index=proxy uri_path="*.exe"
+index=* | search "unauthorized access"</code></pre>
+
+      <h3>✅ Usa table o stats para organizar los resultados</h3>
+      <pre><code>index=* | table _time user src_ip
+index=web | stats count by uri_path
+index=windows EventCode=4624 | stats count by user
+index=* | stats dc(user) as unique_users
+index=sysmon | table _time CommandLine
+index=* | stats avg(bytes) by src_ip
+index=linux | table _time user process
+index=* | stats count by host
+index=* | stats max(cpu) by server
+index=network | table src_ip, dest_ip, protocol</code></pre>
+
+      <h3>✅ Prueba tus búsquedas con differentes rangos de tiempo usando earliest y latest</h3>
+      <pre><code>index=* earliest=-24h@h
+index=* latest=now
+index=* earliest=-7d@d latest=-1d@d
+index=* earliest=-15m latest=now
+index=* earliest=-1h@h
+index=* earliest=-30d@d latest=-7d@d
+index=* earliest=-1mon@mon
+index=* earliest=@w latest=now
+index=* earliest=-6h latest=-3h
+index=* earliest=-5m</code></pre>
+
+      <h3>✅ Correlaciona eventos entre diferentes sourcetype</h3>
+      <pre><code>index=* sourcetype=stream:http OR sourcetype=stream:dns
+index=* sourcetype=windows OR sourcetype=sysmon
+index=* sourcetype=firewall OR sourcetype=proxy
+index=* sourcetype=linux OR sourcetype=osquery
+index=* sourcetype=bro OR sourcetype=suricata
+index=* sourcetype=ossec OR sourcetype=sysmon
+index=* | stats count by sourcetype, src_ip
+index=* sourcetype=endpoint OR sourcetype=security
+index=* sourcetype=auth AND sourcetype=network
+index=* sourcetype=stream:http uri_path="*.exe" AND sourcetype=stream:dns</code></pre>
+
+      <h3>✅ Guarda búsquedas útiles como "Saved Search"</h3>
+      <pre><code># En la UI de Splunk, guarda con Save As > Report > Scheduled Search
+# Ejemplos de búsquedas para guardar:
+index=windows EventCode=4625 | stats count by user
+index=* error | table _time message
+index=firewall action=blocked | stats count by src_ip
+index=auth user!=root | table user src_ip
+index=network | top src_ip
+index=* threat_level=high | stats count by threat_type
+index=windows EventCode=4672 | stats count by user
+index=sysmon Image="powershell.exe"
+index=web uri_path="/admin"
+index=dns query="*.xyz"</code></pre>
+
+      <h3>✅ Usa MITRE ATT&CK como marco para crear detecciones específicas</h3>
+      <pre><code># T1059 - Powershell execution
+index=windows EventCode=4688 New_Process_Name="*powershell.exe"
+
+# T1086 - Scheduled Task
+index=windows Task_Name="*"
+
+# T1218 - Bypass UAC
+index=sysmon CommandLine="*eventvwr.exe*"
+
+# T1003 - Credential Dumping
+index=windows EventCode=4624 user="*admin*"
+
+# T1047 - WMI Execution
+index=windows CommandLine="*wmic*"
+
+# T1105 - Remote File Copy
+index=* uri_path="*upload*"
+
+# T1027 - Obfuscated Scripts
+index=windows CommandLine="*Base64*"
+
+# T1566 - Phishing
+index=web uri_path="/login"
+
+# T1110 - Brute Force
+index=windows EventCode=4625 | stats count by user
+
+# T1033 - System Owner/User Discovery
+index=sysmon | table user host</code></pre>
+    </div>
+  </div>
+
+  <footer style="margin-top: 4rem; border-top: 1px solid #444; padding-top: 1rem; color: #888;">
+    Generado para entrenamiento profesional en Splunk - SOC & Ciberseguridad.
+  </footer>
+</body>
+</html>
+
+  <footer style="margin-top: 4rem; border-top: 1px solid #444; padding-top: 1rem; color: #888;">
+    Generado para entrenamiento profesional en Splunk - SOC & Ciberseguridad.
+  </footer>
+</body>
+</html>

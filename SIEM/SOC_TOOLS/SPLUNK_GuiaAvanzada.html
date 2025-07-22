@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía avanzada de Splunk para SOC con casos reales, técnicas MITRE ATT&CK y laboratorios prácticos">
+  <meta name="keywords" content="Splunk, SOC, Ciberseguridad, DFIR, Threat Hunting, SIEM">
+  <title>Guía Avanzada Splunk para SOC | Orientada a la Ciberseguridad</title>
+  <style>
+    :root {
+      --primary: #00ffe0;
+      --secondary: #00ccff;
+      --dark-bg: #0a0a0a;
+      --light-bg: #1b1b1b;
+      --text: #eee;
+      --text-secondary: #bbb;
+      --danger: #ff4d4d;
+      --warning: #ffcc00;
+      --success: #00cc66;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    h1, h2, h3, h4 {
+      color: var(--primary);
+      margin-top: 1.5em;
+    }
+    
+    button {
+      margin: 0.5rem 0;
+      padding: 0.75rem 1.5rem;
+      background: #222;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    button:hover {
+      background: var(--primary);
+      color: #000;
+    }
+    
+    pre {
+      background: var(--light-bg);
+      padding: 1rem;
+      overflow-x: auto;
+      border-left: 3px solid var(--primary);
+      border-radius: 0 4px 4px 0;
+      font-family: 'Consolas', monospace;
+    }
+    
+    .section {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #333;
+    }
+    
+    .content {
+      display: none;
+      margin-top: 1rem;
+    }
+    
+    .description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    
+    a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    .mitre-matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .mitre-tactic {
+      background: var(--light-bg);
+      padding: 0.75rem;
+      border-left: 3px solid var(--primary);
+      font-size: 0.9rem;
+    }
+    
+    .use-case-card {
+      background: var(--light-bg);
+      border: 1px solid var(--primary);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: #333;
+      color: var(--primary);
+      border-radius: 3px;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .badge-danger {
+      background: #5a1a1a;
+      color: var(--danger);
+    }
+    
+    .badge-warning {
+      background: #5a4a1a;
+      color: var(--warning);
+    }
+    
+    .badge-success {
+      background: #1a5a3a;
+      color: var(--success);
+    }
+    
+    .note {
+      background: rgba(0, 255, 224, 0.1);
+      border-left: 3px solid var(--primary);
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .kpi-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .kpi-card {
+      background: var(--light-bg);
+      padding: 1rem;
+      border-radius: 4px;
+      border-top: 3px solid var(--primary);
+    }
+    
+    .tab-container {
+      margin: 1.5rem 0;
+    }
+    
+    .tab-buttons {
+      display: flex;
+      margin-bottom: -1px;
+    }
+    
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--light-bg);
+      border: 1px solid #333;
+      border-bottom: 1px solid var(--light-bg);
+      cursor: pointer;
+      margin-right: 0.25rem;
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .tab-button.active {
+      background: var(--dark-bg);
+      border-bottom: 1px solid var(--dark-bg);
+      color: var(--primary);
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 1.5rem;
+      background: var(--dark-bg);
+      border: 1px solid #333;
+      border-radius: 0 4px 4px 4px;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    footer {
+      margin-top: 4rem;
+      border-top: 1px solid #444;
+      padding-top: 1.5rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .mitre-matrix {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .kpi-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* En tu sección <style> */
+.section h2::before {
+  content: "➜ ";
+  color: #00ffe0;
+}
+    /* Añade esto a tu <style> */
+.use-case-card[style*="border-color: #00ccff;"] {
+  background: rgba(0, 204, 255, 0.05);
+}
+  </style>
+  <script>
+    function toggle(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function openTab(evt, tabName) {
+      const tabContents = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
+      }
+      
+      const tabButtons = document.getElementsByClassName("tab-button");
+      for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+      }
+      
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>🛡️ Guía Avanzada de Splunk para SOC</h1>
+    <p>Recurso integral para el análisis de seguridad, detección de amenazas y respuesta a incidentes</p>
+    <p><strong>Autor:</strong> [sualba.dev] | <strong>Profesional en Ciberseguridad</strong> | <strong>Fecha:</strong> <span id="current-date"></span></p>
+  </header>
+
+  <div class="section">
+    <h2>🏗️ Arquitectura Splunk para SOC</h2>
+    <button onclick="toggle('architecture')">Mostrar / Ocultar</button>
+    <div id="architecture" class="content">
+      <h3>🔧 Componentes Clave en un SOC:</h3>
+      <ul>
+        <li><strong>Forwarders</strong>: Universal (ligero) y Heavy (con pre-procesamiento)</li>
+        <li><strong>Indexers</strong>: Configuración en clúster para alta disponibilidad</li>
+        <li><strong>Search Heads</strong>: Con capacidad de búsqueda distribuida</li>
+        <li><strong>Deployment Server</strong>: Para gestión centralizada de configuraciones</li>
+        <li><strong>Enterprise Security</strong>: App específica para operaciones SOC</li>
+      </ul>
+      
+      <h3>⚙️ Configuración Óptima para SOC:</h3>
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab(event, 'inputs-conf')">inputs.conf</button>
+          <button class="tab-button" onclick="openTab(event, 'props-conf')">props.conf</button>
+          <button class="tab-button" onclick="openTab(event, 'transforms-conf')">transforms.conf</button>
+        </div>
+        
+        <div id="inputs-conf" class="tab-content active">
+          <pre><code># Ejemplo de inputs.conf para colección de logs de Windows
+[WinEventLog://Security]
+disabled = 0
+start_from = oldest
+current_only = 0
+evt_resolve_ad_obj = 1
+checkpointInterval = 5
+renderXml = false
+
+[monitor:///var/log/*.log]
+disabled = false
+sourcetype = linux_syslog
+index = os_logs
+
+[udp://514]
+connection_host = ip
+sourcetype = syslog
+no_appending_timestamp = true</code></pre>
+        </div>
+        
+        <div id="props-conf" class="tab-content">
+          <pre><code># Ejemplo de props.conf para parsing avanzado
+[source::WinEventLog:Security]
+TRANSFORMS-security = extract_account_name,extract_logon_type
+SHOULD_LINEMERGE = false
+LINE_BREAKER = ([\r\n]+)
+TIME_FORMAT = %Y-%m-%d %H:%M:%S
+MAX_TIMESTAMP_LOOKAHEAD = 32
+
+[linux_syslog]
+TIME_PREFIX = ^\w{3}\s+\d{1,2}\s
+TIME_FORMAT = %b %d %H:%M:%S
+MAX_TIMESTAMP_LOOKAHEAD = 20</code></pre>
+        </div>
+        
+        <div id="transforms-conf" class="tab-content">
+          <pre><code># Ejemplo de transforms.conf para extracción de campos
+[extract_account_name]
+REGEX = Account Name:\s+\w+\\([\w\-]+)
+FORMAT = account_name::$1
+WRITE_META = true
+
+[extract_logon_type]
+REGEX = Logon Type:\s+(\d+)
+FORMAT = logon_type::$1
+WRITE_META = true
+
+[ipv4_extraction]
+REGEX = (?&lt;!\d)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?!\d)
+FORMAT = ip::$1
+WRITE_META = true</code></pre>
+        </div>
+      </div>
+      
+      <h3>📦 Add-ons Esenciales para SOC:</h3>
+      <div class="kpi-container">
+        <div class="kpi-card">
+          <h4>Splunk Add-on for Microsoft Windows</h4>
+          <p>Recolección y normalización de logs de eventos de Windows</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Add-on for Unix and Linux</h4>
+          <p>Recolección y parsing de logs de sistemas *nix</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Add-on for Palo Alto Networks</h4>
+          <p>Integración con firewalls Palo Alto</p>
+        </div>
+        <div class="kpi-card">
+          <h4>CIM (Common Information Model)</h4>
+          <p>Modelo de datos normalizado para correlación</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Enterprise Security</h4>
+          <p>App específica para operaciones de SOC</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Add-on for Tenable</h4>
+          <p>Integración con Nessus/Tenable para vulnerabilidades</p>
+        </div>
+      </div>
+      
+      <div class="note">
+        <strong>💡 Buenas prácticas:</strong> Implementar el Common Information Model (CIM) desde el inicio permite correlación avanzada entre diferentes fuentes de datos.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔍 Threat Hunting Avanzado</h2>
+    <button onclick="toggle('threathunting')">Mostrar / Ocultar</button>
+    <div id="threathunting" class="content">
+      <div class="use-case-card">
+        <span class="badge">T1053.005</span>
+        <h3>Detección de Scheduled Tasks maliciosos</h3>
+        <pre><code>index=windows EventCode=4698
+| search Task_Name="*update*" OR Task_Name="*maintenance*" OR Task_Name="*temp*"
+| stats count by Task_Name, Author, Action_Client_User
+| sort -count
+| where count > 5</code></pre>
+        <p class="description">Los atacantes suelen crear tareas programadas para persistencia. Buscar nombres genéricos que intentan camuflarse con tareas legítimas.</p>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1055</span>
+        <h3>Inyección de procesos</h3>
+        <pre><code>index=sysmon EventID=8
+| stats count by SourceImage, TargetImage, User
+| sort -count
+| where count > threshold
+| eval ratio=count/total_count
+| where ratio > 0.1</code></pre>
+        <p class="description">Busca procesos inyectando código en otros procesos. Ratios altos pueden indicar actividad maliciosa.</p>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1059</span>
+        <h3>PowerShell Obfuscado</h3>
+        <pre><code>index=windows EventCode=4688 New_Process_Name="*powershell.exe*"
+| search CommandLine="* -e *" OR CommandLine="* -enc *" OR CommandLine="*Invoke-Expression*"
+| table _time host CommandLine User</code></pre>
+        <p class="description">PowerShell con argumentos codificados en Base64 es una técnica común de atacantes.</p>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1070</span>
+        <h3>Borrado de Logs</h3>
+        <pre><code>index=windows EventCode=1102
+| stats count by host, User
+| where count > 3</code></pre>
+        <p class="description">Evento 1102 indica limpieza del log de seguridad. Múltiples eventos pueden ser indicio de actividad maliciosa.</p>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1027</span>
+        <h3>Obfuscación en Línea de Comandos</h3>
+        <pre><code>index=windows EventCode=4688
+| search CommandLine="* -e *" OR CommandLine="* -enc *" OR CommandLine="* -bypass *"
+| stats count by CommandLine, host, User</code></pre>
+        <p class="description">Técnicas comunes para evadir detección en ejecución de comandos.</p>
+      </div>
+      
+      <h3>🕵️‍♂️ Metodología de Threat Hunting:</h3>
+      <ol>
+        <li><strong>Hipótesis</strong>: Basada en TTPs conocidos o inteligencia de amenazas</li>
+        <li><strong>Búsqueda</strong>: Consultas Splunk para validar hipótesis</li>
+        <li><strong>Análisis</strong>: Investigación de resultados positivos</li>
+        <li><strong>Documentación</strong>: Registrar hallazgos y nuevas hipótesis</li>
+        <li><strong>Automatización</strong>: Convertir búsquedas útiles en alertas</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🧠 MITRE ATT&CK Matrix - Cobertura Completa</h2>
+    <button onclick="toggle('mitre-matrix')">Mostrar / Ocultar</button>
+    <div id="mitre-matrix" class="content">
+      <h3>🔢 Tácticas Principales y Técnicas Cubiertas:</h3>
+      <div class="mitre-matrix">
+        <div class="mitre-tactic">TA0001: Reconocimiento</div>
+        <div class="mitre-tactic">TA0002: Desarrollo Recursos</div>
+        <div class="mitre-tactic">TA0003: Acceso Inicial</div>
+        <div class="mitre-tactic">TA0004: Ejecución</div>
+        <div class="mitre-tactic">TA0005: Persistencia</div>
+        <div class="mitre-tactic">TA0006: Escalada Privilegios</div>
+        <div class="mitre-tactic">TA0007: Evasión Defensa</div>
+        <div class="mitre-tactic">TA0008: Acceso Credenciales</div>
+        <div class="mitre-tactic">TA0009: Descubrimiento</div>
+        <div class="mitre-tactic">TA0011: Comando y Control</div>
+        <div class="mitre-tactic">TA0010: Exfiltración</div>
+        <div class="mitre-tactic">TA0040: Impacto</div>
+      </div>
+      
+      <h3>🔍 Detecciones por Táctica:</h3>
+      
+      <div class="use-case-card">
+        <span class="badge">T1048</span>
+        <h3>Exfiltración por Protocolo Alternativo (DNS Tunneling)</h3>
+        <pre><code>index=dns 
+| eval query_length=len(query)
+| stats avg(query_length) as avg_len, stdev(query_length) as std_len by src_ip
+| where avg_len > 100 OR std_len > 50
+| sort -avg_len</code></pre>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1071</span>
+        <h3>Exfiltración sobre HTTP</h3>
+        <pre><code>index=web sourcetype="stream:http" 
+| stats sum(bytes_out) as total_bytes by src_ip, dest_ip
+| where total_bytes > 100000000
+| sort -total_bytes</code></pre>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1110</span>
+        <h3>Brute Force</h3>
+        <pre><code>index=windows EventCode=4625
+| bucket _time span=1h
+| stats dc(user) as unique_users, count as failed_logins by src_ip, _time
+| where failed_logins > 20 AND unique_users > 5
+| sort -failed_logins</code></pre>
+      </div>
+      
+      <div class="use-case-card">
+        <span class="badge">T1056</span>
+        <h3>Keylogging</h3>
+        <pre><code>index=sysmon EventID=10
+| stats count by SourceImage, TargetProcess
+| where count > threshold</code></pre>
+      </div>
+      
+      <h3>📊 Dashboard MITRE ATT&CK en Splunk:</h3>
+      <p>Configuración recomendada para visualizar la cobertura de detección:</p>
+      <pre><code>| tstats count from datamodel=Endpoint.Processes where Processes.process=* by Processes.process, Processes.dest
+| `mitre_attack_lookup(process_name_field="Processes.process")`
+| stats count by mitre_attack_technique_id, mitre_attack_technique
+| sort -count</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🕵️ DFIR (Digital Forensics and Incident Response)</h2>
+    <button onclick="toggle('dfir')">Mostrar / Ocultar</button>
+    <div id="dfir" class="content">
+      <h3>⏳ Análisis de Timeline</h3>
+      <pre><code>index=* (host="COMPROMISED_HOST" OR src_ip="ATTACKER_IP") earliest=-7d@d
+| bucket _time span=1h
+| stats count by _time, sourcetype, eventtype
+| timechart span=1h sum(count) by sourcetype</code></pre>
+      
+      <h3>🕵️‍♂️ Búsqueda de Artefactos de Compromiso</h3>
+      <pre><code>index=* (file_hash="KNOWN_MALWARE_HASH" OR 
+       file_name="*pass*.*" OR file_name="*cred*.*" OR 
+       file_path="*\\Temp\\*" OR file_path="*\\AppData\\Local\\Temp\\*" OR
+       file_path="*\\Downloads\\*" OR file_path="*\\Recent\\*")
+| table _time host file_path file_name file_hash user
+| sort -_time</code></pre>
+      
+      <h3>🔗 Análisis de Conexiones de Red</h3>
+      <pre><code>index=network (dest_ip="KNOWN_MALICIOUS_IP" OR dest_port=4444 OR dest_port=8080)
+| stats count by src_ip, dest_ip, dest_port, protocol
+| sort -count</code></pre>
+      
+      <h3>📝 Creación de Playbooks para IR</h3>
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab(event, 'playbook-phishing')">Phishing</button>
+          <button class="tab-button" onclick="openTab(event, 'playbook-ransomware')">Ransomware</button>
+          <button class="tab-button" onclick="openTab(event, 'playbook-lateral')">Lateral Movement</button>
+        </div>
+        
+        <div id="playbook-phishing" class="tab-content active">
+          <h4>Playbook para Incidente de Phishing:</h4>
+          <ol>
+            <li>Identificar email malicioso (index=email)</li>
+            <li>Buscar adjuntos ejecutables (file_name="*.exe")</li>
+            <li>Rastrear ejecución (EventCode=4688)</li>
+            <li>Identificar conexiones C2 (index=network dest_port=443,80)</li>
+            <li>Contener host afectado</li>
+          </ol>
+        </div>
+        
+        <div id="playbook-ransomware" class="tab-content">
+          <h4>Playbook para Ransomware:</h4>
+          <ol>
+            <li>Detectar actividad de cifrado (EventCode=4656 con acceso a muchos archivos)</li>
+            <li>Identificar proceso responsable (New_Process_Name)</li>
+            <li>Buscar conexiones a dominios sospechosos (index=dns)</li>
+            <li>Aislar host inmediatamente</li>
+            <li>Preservar evidencias para análisis forense</li>
+          </ol>
+        </div>
+        
+        <div id="playbook-lateral" class="tab-content">
+          <h4>Playbook para Lateral Movement:</h4>
+          <ol>
+            <li>Identificar logon remoto (EventCode=4624 Logon_Type=3)</li>
+            <li>Correlacionar con ejecución de comandos (EventCode=4688)</li>
+            <li>Rastrear uso de credenciales (EventCode=4648)</li>
+            <li>Identificar todos los hosts comprometidos</li>
+            <li>Resetear credenciales afectadas</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🤖 Automatización y Respuesta (SOAR)</h2>
+    <button onclick="toggle('soar')">Mostrar / Ocultar</button>
+    <div id="soar" class="content">
+      <h3>🚨 Alertas Automatizadas</h3>
+      <div class="use-case-card">
+        <h4>Detección de Ransomware</h4>
+        <pre><code>index=windows (EventCode=4656 Object_Name="*.docx" Access_Mask="0x2") OR
+(EventCode=4688 New_Process_Name="*vssadmin.exe*" CommandLine="*delete shadows*") OR
+(EventCode=4688 New_Process_Name="*cmd.exe*" CommandLine="*cipher* /d")
+| stats count by host, user
+| where count > 5
+| `sendalert(actions="isolate_host,create_ticket")`</code></pre>
+      </div>
+      
+      <h3>⚡ Workflows de Respuesta</h3>
+      <div class="kpi-container">
+        <div class="kpi-card">
+          <h4>1. Detección</h4>
+          <p>Búsquedas programadas que generan notables</p>
+        </div>
+        <div class="kpi-card">
+          <h4>2. Triage</h4>
+          <p>Clasificación automática por severidad</p>
+        </div>
+        <div class="kpi-card">
+          <h4>3. Investigación</h4>
+          <p>Búsquedas contextuales automáticas</p>
+        </div>
+        <div class="kpi-card">
+          <h4>4. Contención</h4>
+          <p>Acciones automáticas (aislamiento, etc.)</p>
+        </div>
+        <div class="kpi-card">
+          <h4>5. Remediation</h4>
+          <p>Guías paso a paso para el analista</p>
+        </div>
+        <div class="kpi-card">
+          <h4>6. Reporte</h4>
+          <p>Generación automática de reportes</p>
+        </div>
+      </div>
+      
+      <h3>🔗 Integraciones con Ecosistema de Seguridad</h3>
+      <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openTab(event, 'integ-edr')">EDR/XDR</button>
+          <button class="tab-button" onclick="openTab(event, 'integ-ti')">Threat Intel</button>
+          <button class="tab-button" onclick="openTab(event, 'integ-ticketing')">Ticketing</button>
+        </div>
+        
+        <div id="integ-edr" class="tab-content active">
+          <pre><code># Ejemplo de integración con CrowdStrike
+| sendalert param.action=isolate param.target=$host$ 
+  param.provider=crowdstrike param.severity=high
+
+# Ejemplo de búsqueda en EDR
+| savedsearch "Endpoint - Process Execution"
+| search process_name="powershell.exe"
+| lookup threat_intel indicator=process_hash output=threat_score
+| where threat_score > 70</code></pre>
+        </div>
+        
+        <div id="integ-ti" class="tab-content">
+          <pre><code># Enrichment con Threat Intelligence
+| lookup threat_intel ip as src_ip 
+| search threat_severity="high" OR threat_severity="critical"
+| table _time src_ip threat_description threat_severity
+
+# Búsqueda de IOCs
+| inputlookup ioc_list.csv
+| search indicator_type="ip"
+| join type=left src_ip 
+  [ search index=network | stats count by src_ip ]</code></pre>
+        </div>
+        
+        <div id="integ-ticketing" class="tab-content">
+          <pre><code># Creación automática de tickets
+| sendalert param.action=create_ticket 
+  param.title="Incidente de seguridad: $alert_name$"
+  param.description="Severidad: $severity$ | Hosts afectados: $host$"
+  param.priority=if($severity$="high", "P1", "P2")
+  param.provider=servicenow</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<div class="section">
+  <h2>🟣 Técnicas Purple Team con Splunk</h2>
+  <!-- Botón para mostrar/ocultar (¡IMPORTANTE!) -->
+  <button onclick="toggle('purpleteam')">Mostrar / Ocultar</button>
+  <!-- Contenido (con el ID que coincide con el botón) -->
+  <div id="purpleteam" class="content">
+    <div class="use-case-card">
+      <h3>Simulación de Ataque + Detección</h3>
+      <pre><code># Simulación: Ejecución de Mimikatz (T1003)
+| makeresults 
+| eval command="Invoke-Mimikatz -Command '\"sekurlsa::logonpasswords\"'"
+| table command
+
+# Detección correspondiente:
+index=sysmon EventID=10 (TargetImage="*lsass.exe" OR CallTrace="*mimikatz*")
+| stats count by SourceImage, User</code></pre>
+      <p class="description">Ejemplo de cómo simular un ataque y su detección en Splunk.</p>
+    </div>
+
+    <div class="use-case-card">
+      <h3>Ejemplo: Lateral Movement (Pass-the-Hash)</h3>
+      <pre><code># Simulación (T1550.002):
+| makeresults
+| eval action="Ejecución de Pass-the-Hash con credenciales robadas"
+
+# Detección:
+index=windows EventCode=4624 Logon_Type=3
+| stats count by src_ip, user, dest_host
+| where count > threshold</code></pre>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📊 Reporting Profesional</h2>
+  <!-- Botón para mostrar/ocultar como en las demás secciones -->
+  <button onclick="toggle('reporting')">Mostrar / Ocultar</button>
+  
+  <div id="reporting" class="content">
+    <div class="use-case-card">
+      <h3>Generación Automatizada de Reportes</h3>
+      <pre><code>index=notable earliest=-7d@d
+| stats 
+    count as "Total_Incidentes",
+    count(eval(severity="high")) as "Criticos",
+    count(eval(status="open")) as "Pendientes",
+    avg(_time - first_time) as "MTTR_Horas"
+| eval "MTTR_Horas"=round(MTTR_Horas/3600,2)
+| eval "Periodo"="Semana ".strftime(now(), "%V de %Y")
+| rename Total_Incidentes as "Total Incidentes",
+         Criticos as "Críticos",
+         Pendientes as "Pendientes",
+         MTTR_Horas as "MTTR (Horas)"</code></pre>
+      <p class="description">Consulta lista para usar en reportes semanales del SOC.</p>
+    </div>
+
+    <!-- Mención futura integrada -->
+    <div class="use-case-card" style="border-color: #00ccff;">
+      <h3 style="color: #00ccff;">🚀 Próximas Mejoras</h3>
+      <ul>
+        <li>Exportación automática a PDF/Word</li>
+        <li>Plantillas pre-diseñadas para diferentes tipos de incidentes</li>
+        <li>Integración con herramientas de ticketing (ServiceNow, Jira)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <div class="section">
+    <h2>📊 KPIs y Métricas para SOC</h2>
+    <button onclick="toggle('kpis')">Mostrar / Ocultar</button>
+    <div id="kpis" class="content">
+      <div class="kpi-container">
+        <div class="kpi-card">
+          <h4>MTTD (Mean Time to Detect)</h4>
+          <pre><code>index=notable 
+| eval detect_time=_time - first_time 
+| stats avg(detect_time) as mttd</code></pre>
+        </div>
+        <div class="kpi-card">
+          <h4>MTTR (Mean Time to Respond)</h4>
+          <pre><code>index=notable 
+| eval response_time=resolve_time - _time 
+| stats avg(response_time) as mttr by severity</code></pre>
+        </div>
+        <div class="kpi-card">
+          <h4>Tasa de Falsos Positivos</h4>
+          <pre><code>index=notable 
+| stats count(eval(status="false_positive")) as false_positives, 
+       count as total_alerts 
+| eval fp_rate=false_positives/total_alerts*100</code></pre>
+        </div>
+        <div class="kpi-card">
+          <h4>Cobertura MITRE ATT&CK</h4>
+          <pre><code>| tstats count from datamodel=Endpoint 
+| `mitre_attack_lookup` 
+| stats dc(mitre_attack_technique_id) as techniques_covered 
+| eval total_techniques=183 
+| eval coverage=techniques_covered/total_techniques*100</code></pre>
+        </div>
+        <div class="kpi-card">
+          <h4>Alertas por Severidad</h4>
+          <pre><code>index=notable earliest=-7d@d 
+| timechart span=1d count by severity</code></pre>
+        </div>
+        <div class="kpi-card">
+          <h4>Top TTPs Detectados</h4>
+          <pre><code>index=notable earliest=-30d@d 
+| stats count by mitre_attack_technique 
+| sort -count limit=10</code></pre>
+        </div>
+      </div>
+      
+      <h3>📈 Dashboard de Performance del SOC</h3>
+      <pre><code>index=notable earliest=-30d@d
+| eval time_to_respond=resolve_time - _time
+| stats 
+    avg(time_to_respond) as avg_response_time,
+    median(time_to_respond) as median_response_time,
+    perc95(time_to_respond) as p95_response_time,
+    count(eval(status="closed")) as closed_alerts,
+    count(eval(status="false_positive")) as false_positives,
+    count as total_alerts
+| eval 
+    fp_rate=false_positives/total_alerts*100,
+    closure_rate=closed_alerts/total_alerts*100</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎓 Certificaciones Splunk Recomendadas</h2>
+    <button onclick="toggle('certs')">Mostrar / Ocultar</button>
+    <div id="certs" class="content">
+      <div class="kpi-container">
+        <div class="kpi-card">
+          <h4>Splunk Certified User</h4>
+          <p>Conceptos básicos de búsqueda y reporting</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Certified Power User</h4>
+          <p>Búsquedas avanzadas y transformaciones</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Certified Admin</h4>
+          <p>Administración de despliegues Splunk</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Certified Architect</h4>
+          <p>Diseño de arquitecturas empresariales</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Enterprise Security Certified Admin</h4>
+          <p>Especializado en operaciones SOC</p>
+        </div>
+        <div class="kpi-card">
+          <h4>Splunk Certified Developer</h4>
+          <p>Desarrollo de apps y customizaciones</p>
+        </div>
+      </div>
+      
+      <h3>📚 Recursos de Preparación:</h3>
+      <ul>
+        <li>Splunk Education (cursos oficiales)</li>
+        <li>Splunk Docs (documentación técnica)</li>
+        <li>Pluralsight/LinkedIn Learning (cursos online)</li>
+        <li>Boss of the SOC (BOTS) datasets para práctica</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📚 Recursos y Referencias</h2>
+    <button onclick="toggle('resources')">Mostrar / Ocultar</button>
+    <div id="resources" class="content">
+      <h3>Libros Recomendados:</h3>
+      <ul>
+        <li>"Splunk Operational Intelligence Cookbook"</li>
+        <li>"Blue Team Handbook: SOC, SIEM, and Threat Hunting"</li>
+        <li>"The Practice of Network Security Monitoring"</li>
+      </ul>
+      
+      <h3>Cursos Avanzados:</h3>
+      <ul>
+        <li>SANS SEC555: SIEM with Tactical Analytics</li>
+        <li>Splunk Enterprise Security Administration</li>
+        <li>MITRE ATT&CK Defender (MAD) Certification</li>
+      </ul>
+      
+      <h3>Datasets para Práctica:</h3>
+      <ul>
+        <li>Boss of the SOC (BOTS) datasets</li>
+        <li>MITRE Engenuity ATT&CK Evaluations data</li>
+        <li>Sample data de Splunk (tutorial datasets)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+  <h2>🎯 Conclusión y Próximos Pasos</h2>
+  <button onclick="toggle('conclusion')">Mostrar / Ocultar</button>
+  <div id="conclusion" class="content">
+    <div class="use-case-card" style="background: rgba(0, 255, 224, 0.05);">
+      <h3>🚀 Tu Kit Completo para SOC con Splunk</h3>
+      <p>Esta guía cubre desde lo básico hasta técnicas avanzadas de:</p>
+      <ul>
+        <li>Detección de amenazas</li>
+        <li>Análisis forense</li>
+        <li>Automatización SOC</li>
+        <li>Mejores prácticas</li>
+      </ul>
+      <p><strong>Próximos pasos para seguir avaanzando:</strong></p>
+      <ol>
+        <li>Practicar con datasets como BOTS de Splunk</li>
+        <li>Certificarme en Splunk Enterprise Security</li>
+        <li>Implementar estas técnicas en un laboratorio</li>
+      </ol>
+    </div>
+  </div>
+</div>
+ 
+  <footer>
+    <p>Guía Avanzada de Splunk para SOC - © 2025 [sualba.dev] - Avanzando en Ciberseguridad</p>
+    <p>Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.</p>
+  </footer>
+
+  <script>
+    // Mostrar fecha actual
+    const now = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').textContent = now.toLocaleDateString('es-ES', options);
+    
+    // Abrir primera pestaña por defecto
+    document.querySelector('.tab-button').click();
+  </script>
+</body>
+</html>

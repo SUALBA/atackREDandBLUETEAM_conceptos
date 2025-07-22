@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía Interactiva Wazuh: Decoders y Reglas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      background: #0e1a2b;
+      color: #f1f1f1;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1, h2, h3 {
+      color: #00d4ff;
+    }
+    code {
+      background: #1b2b3a;
+      color: #9ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+    pre {
+      background: #1b2b3a;
+      padding: 1em;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    section {
+      margin-bottom: 3rem;
+    }
+    .highlight {
+      color: #ffb300;
+      font-weight: bold;
+    }
+    .tip {
+      background: #243447;
+      padding: 0.75em;
+      border-left: 4px solid #00d4ff;
+      border-radius: 5px;
+      margin: 1em 0;
+    }
+    .mitre {
+      background: #162331;
+      padding: 0.5em;
+      font-size: 0.9em;
+      color: #c0c0c0;
+    }
+    footer {
+      margin-top: 5rem;
+      font-size: 0.9em;
+      text-align: center;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛡️ Guía Interactiva Wazuh: Decoders y Reglas Personalizadas</h1>
+    <p>Prepárate para tu examen con este resumen completo y profesional sobre el uso de Wazuh para análisis personalizado de logs.</p>
+  </header>
+
+  <section>
+    <h2>✅ 1. Formato del log personalizado</h2>
+    <pre><code>ownapp:WARNING,10.0.30.4,10.0.30.65,35178,8080,tcp,123456,5
+ownapp:DANGER,10.0.30.4,10.0.30.65,35178,8080,tcp,123456,5</code></pre>
+    <p>Este log tiene 8 campos clave: <span class="highlight">mensaje</span>, <span class="highlight">IP origen,IP destino</span>, <span class="highlight">puerto origen, puerto destino</span>, <span class="highlight">protocolo</span>, <span class="highlight">ID evento</span>, y <span class="highlight">estado (severidad)</span>.</p>
+  </section>
+
+  <section>
+    <h2>💡 2. Decoder personalizado en XML</h2>
+    <pre><code>&lt;decoder name="ownapp"&gt;
+  &lt;prematch&gt;ownapp:&lt;/prematch&gt;
+  &lt;regex offset="after_prematch"&gt;(\S*),(\S*),(\S*),(\S*),(\S*),(\S*),(\S*),(\S*)&lt;/regex&gt;
+  &lt;order&gt;mensaje,iporigen,ipdestino,puertoorigen,puertodestino,protocolo,id,estado&lt;/order&gt;
+&lt;/decoder&gt;</code></pre>
+    <div class="tip">🧠 Este decoder extrae los campos separados por comas después del prefijo <code>ownapp:</code>. El orden es esencial para que las reglas funcionen correctamente.</div>
+  </section>
+
+  <section>
+    <h2>📅 3. Reglas en <code>local_rules.xml</code></h2>
+    <h3>3.1 Regla base:</h3>
+    <pre><code>&lt;rule id="100003" level="1"&gt;
+  &lt;decoded_as&gt;ownapp&lt;/decoded_as&gt;
+  &lt;description&gt;Tipifica los avisos de ownapp&lt;/description&gt;
+&lt;/rule&gt;</code></pre>
+
+    <h3>3.2 Regla para WARNING:</h3>
+    <pre><code>&lt;rule id="100004" level="2"&gt;
+  &lt;if_sid&gt;100003&lt;/if_sid&gt;
+  &lt;match&gt;WARNING&lt;/match&gt;
+  &lt;description&gt;Riesgo bajo en ownapp&lt;/description&gt;
+  &lt;mitre&gt;
+    &lt;id&gt;T1548.003&lt;/id&gt;
+  &lt;/mitre&gt;
+&lt;/rule&gt;</code></pre>
+
+    <h3>3.3 Regla crítica para DANGER + estado 5:</h3>
+    <pre><code>&lt;rule id="100005" level="10"&gt;
+  &lt;if_sid&gt;100003&lt;/if_sid&gt;
+  &lt;match&gt;DANGER&lt;/match&gt;
+  &lt;field name="estado"&gt;5&lt;/field&gt;
+  &lt;description&gt;Alerta crítica desde ownapp: DANGER con severidad 5&lt;/description&gt;
+  &lt;mitre&gt;
+    &lt;id&gt;T1046&lt;/id&gt;
+  &lt;/mitre&gt;
+&lt;/rule&gt;</code></pre>
+
+    <div class="tip">💡 Puedes extender reglas usando condiciones múltiples, campos personalizados, acciones, y más.</div>
+  </section>
+
+  <section>
+    <h2>⚙️ 4. Pruebas con <code>wazuh-logtest</code></h2>
+    <p>Ejecuta la herramienta interactiva:</p>
+    <pre><code>sudo /var/ossec/bin/wazuh-logtest</code></pre>
+    <p>Y pega el log para probar:</p>
+    <pre><code>ownapp:DANGER,10.0.30.4,10.0.30.65,35178,8080,tcp,123456,5</code></pre>
+    <p>Wazuh te mostrará el decoder y la regla aplicada.</p>
+  </section>
+
+  <section>
+    <h2>🔍 5. Campos clave en reglas Wazuh</h2>
+    <ul>
+      <li><code>&lt;match&gt;</code>: Coincidencia con contenido del log</li>
+      <li><code>&lt;field name="campo"&gt;valor&lt;/field&gt;</code>: Filtro por campos decodificados</li>
+      <li><code>&lt;if_sid&gt;</code>: Dependencia con reglas anteriores</li>
+      <li><code>&lt;mitre&gt;&lt;id&gt;</code>: Asociación con tácticas ATT&CK</li>
+      <li><code>&lt;level&gt;</code>: Nivel de alerta (1 = informativo, 10+ = crítico)</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📚 6. Consejos finales</h2>
+    <ul>
+      <li>Practica la estructura exacta de un decoder XML</li>
+      <li>Recuerda usar <code>offset="after_prematch"</code> para ignorar prefijos</li>
+      <li>Usa <code>wazuh-logtest</code> para validar tus reglas</li>
+      <li>Domina el uso de <code>&lt;if_sid&gt;</code> y niveles de alerta</li>
+      <li>Conecta las reglas con la matriz MITRE para dar contexto real</li>
+    </ul>
+    <div class="tip">🧪 Crea logs simulados para practicar: cambia IPs, puertos, severidades y tipos de mensaje.</div>
+  </section>
+
+  <footer>
+    <p>Creado con ❤️ para estudiar a fondo Wazuh · </p>
+  </footer>
+</body>
+</html>
