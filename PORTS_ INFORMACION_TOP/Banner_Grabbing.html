@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Grabbing y Peticiones de Protocolo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #7209b7;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--accent);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        
+        .card h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2rem;
+        }
+        
+        .card h2 i {
+            background: var(--accent);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 40px 0;
+            color: var(--secondary);
+            font-size: 2.5rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .protocol-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .protocol-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .protocol-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .protocol-card h3 i {
+            color: var(--info);
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-top: 3px solid var(--info);
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .tool-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .tool-card h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .risk-mitigation {
+            display: flex;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .risks, .mitigations {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .risks {
+            background: linear-gradient(135deg, #fff5f7 0%, #f8e3e8 100%);
+            border-left: 4px solid var(--warning);
+        }
+        
+        .mitigations {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid var(--success);
+        }
+        
+        .risks h3, .mitigations h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 2px dashed var(--accent);
+        }
+        
+        .conclusion h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .conclusion-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid var(--info);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .resource-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+        }
+        
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .protocol-grid, .tool-grid, .resources {
+                grid-template-columns: 1fr;
+            }
+            
+            .risk-mitigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shield-alt"></i> Banner Grabbing y Peticiones de Protocolo</h1>
+            <p>Técnicas esenciales en ciberseguridad para identificación de servicios y vulnerabilidades</p>
+        </header>
+
+        <div class="card">
+            <h2><i class="fas fa-brain"></i> ¿Qué es una "petición típica del protocolo"?</h2>
+            <p>Cuando un escáner como <strong>nmap</strong>, un pentester o una herramienta de hacking necesita identificar un servicio en un puerto abierto, envía una <strong>solicitud estándar</strong> que un cliente legítimo usaría para iniciar comunicación. Esto permite obtener el banner del servicio que revela su identidad y versión.</p>
+            
+            <div class="mermaid">
+                graph LR
+                A[Cliente] -->|Envía petición típica| B(Servidor)
+                B -->|Responde con banner| A
+            </div>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-network-wired"></i> Ejemplos por Protocolo</h2>
+        
+        <div class="protocol-grid">
+            <div class="protocol-card">
+                <h3><i class="fas fa-globe"></i> HTTP (Puertos 80, 8080...)</h3>
+                <p><strong>Petición típica:</strong></p>
+                <div class="code-block">
+GET / HTTP/1.1<br>
+Host: 192.168.1.10
+                </div>
+                <p><strong>Respuesta del servidor:</strong></p>
+                <div class="code-block">
+HTTP/1.1 200 OK<br>
+Server: Apache/2.4.18 (Ubuntu)<br>
+Content-Type: text/html
+                </div>
+                <p><strong>✅ Identificación:</strong> Servidor web Apache versión 2.4.18 en Ubuntu</p>
+            </div>
+            
+            <div class="protocol-card">
+                <h3><i class="fas fa-lock"></i> SSH (Puerto 22)</h3>
+                <p><strong>Banner automático:</strong></p>
+                <div class="code-block">
+SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.8
+                </div>
+                <p><strong>✅ Identificación:</strong> Protocolo SSH 2.0, OpenSSH versión 7.2p2</p>
+            </div>
+            
+            <div class="protocol-card">
+                <h3><i class="fas fa-file-upload"></i> FTP (Puerto 21)</h3>
+                <p><strong>Respuesta de conexión:</strong></p>
+                <div class="code-block">
+220 (vsFTPd 2.3.4)
+                </div>
+                <p><strong>✅ Identificación:</strong> vsFTPd versión 2.3.4</p>
+            </div>
+            
+            <div class="protocol-card">
+                <h3><i class="fas fa-envelope"></i> SMTP (Puerto 25)</h3>
+                <p><strong>Petición típica:</strong></p>
+                <div class="code-block">
+EHLO dominio.local
+                </div>
+                <p><strong>Respuesta:</strong></p>
+                <div class="code-block">
+250-smtp.victim.com<br>
+250-SIZE 35882577<br>
+250-STARTTLS<br>
+250-AUTH LOGIN PLAIN<br>
+250 Postfix
+                </div>
+                <p><strong>✅ Identificación:</strong> Servidor Postfix con soporte para TLS y autenticación</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-tools"></i> Herramientas y Técnicas de Banner Grabbing</h2>
+            
+            <h3><i class="fas fa-terminal"></i> ¿Qué hace Nmap?</h3>
+            <p>Comando:</p>
+            <div class="code-block">
+sudo nmap -sV -O 192.168.1.1
+            </div>
+            
+            <p><strong>Proceso:</strong></p>
+            <ol>
+                <li>Detecta puertos abiertos</li>
+                <li>Envía peticiones específicas por protocolo</li>
+                <li>Analiza respuestas para identificar servicios</li>
+                <li>Realiza fingerprinting del SO</li>
+            </ol>
+            
+            <h3><i class="fas fa-code"></i> Ejemplo con Netcat</h3>
+            <div class="code-block">
+nc 192.168.1.10 80<br>
+<span class="comment"># Luego escribes:</span><br>
+GET / HTTP/1.1<br>
+Host: 192.168.1.10<br>
+<span class="comment"># (Presiona ENTER dos veces)</span>
+            </div>
+            
+            <p><strong>Salida:</strong></p>
+            <div class="code-block">
+HTTP/1.1 200 OK<br>
+Server: nginx/1.18.0<br>
+Date: Thu, 24 Jul 2025 14:30:00 GMT<br>
+Content-Type: text/html
+            </div>
+            
+            <h3><i class="fas fa-wrench"></i> Otras Herramientas</h3>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <i class="fab fa-linux"></i>
+                    <h3>curl</h3>
+                    <p>curl -I http://192.168.1.10</p>
+                    <p>Muestra cabeceras HTTP</p>
+                </div>
+                
+                <div class="tool-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h3>telnet</h3>
+                    <p>telnet 192.168.1.10 21</p>
+                    <p>Interacción con FTP/SMTP</p>
+                </div>
+                
+                <div class="tool-card">
+                    <i class="fas fa-search"></i>
+                    <h3>whatweb</h3>
+                    <p>whatweb 192.168.1.10</p>
+                    <p>Detección de tecnologías web</p>
+                </div>
+                
+                <div class="tool-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>ncat</h3>
+                    <p>ncat -C 192.168.1.10 25</p>
+                    <p>Conexión persistente con CRLF</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-exclamation-triangle"></i> Importancia en Ciberseguridad</h2>
+            
+            <div class="risk-mitigation">
+                <div class="risks">
+                    <h3><i class="fas fa-radiation"></i> Riesgos Principales</h3>
+                    <ul>
+                        <li><strong>Exposición de vulnerabilidades</strong><br>Identificación de versiones con CVEs conocidos<br>Ejemplo: OpenSSH 7.2p2 → CVE-2018-15473</li>
+                        <li><strong>Revelación excesiva de información</strong><br>Ejemplo: Server: Apache/2.4.18 (Ubuntu) mod_ssl/2.4.18 OpenSSL/1.0.2g</li>
+                        <li><strong>Facilita ataques dirigidos</strong><br>Desarrollo de exploits específicos<br>Búsqueda en bases de datos de vulnerabilidades</li>
+                    </ul>
+                </div>
+                
+                <div class="mitigations">
+                    <h3><i class="fas fa-shield-virus"></i> Técnicas de Mitigación</h3>
+                    <div class="mermaid">
+graph LR
+    A[Servidor Expuesto] --> B{Hardening}
+    B --> C[Modificar Banners]
+    B --> D[Actualizar Software]
+    B --> E[Firewall de Aplicación]
+    C --> F[Reducción de Fingerprinting]
+    D --> G[Parcheo de Vulnerabilidades]
+    E --> H[Bloqueo de Escaneos]
+                    </div>
+                    <p><strong>Configuraciones recomendadas:</strong></p>
+                    <ul>
+                        <li><strong>Apache:</strong> ServerTokens Prod, ServerSignature Off</li>
+                        <li><strong>Nginx:</strong> server_tokens off;</li>
+                        <li><strong>SSH:</strong> DebianBanner no, Banner personalizado</li>
+                        <li><strong>FTP:</strong> Configurar banners genéricos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="conclusion">
+            <h2><i class="fas fa-lightbulb"></i> Conclusión</h2>
+            <div class="conclusion-content">
+                <p>El banner grabbing es una técnica fundamental en pruebas de penetración, auditorías de seguridad y reconocimiento inicial.</p>
+                
+                <p><strong>Mejores prácticas:</strong></p>
+                <ul>
+                    <li>Mantener servicios actualizados</li>
+                    <li>Minimizar información en banners</li>
+                    <li>Usar WAF y sistemas de detección de escaneos</li>
+                    <li>Nunca exponer versiones exactas en producción</li>
+                </ul>
+                
+                <p>🔐 <strong>Sabías que:</strong> El 65% de los ataques exitosos explotan servicios con versiones vulnerables identificadas mediante banner grabbing (Informe Verizon DBIR 2025)</p>
+            </div>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-book"></i> Recursos Adicionales</h2>
+        
+        <div class="resources">
+            <div class="resource-card">
+                <h3><i class="fas fa-link"></i> Nmap Version Detection</h3>
+                <p>https://nmap.org/book/man-version-detection.html</p>
+            </div>
+            
+            <div class="resource-card">
+                <h3><i class="fas fa-link"></i> OWASP Banner Grabbing</h3>
+                <p>https://owasp.org/www-community/Fingerprinting</p>
+            </div>
+            
+            <div class="resource-card">
+                <h3><i class="fas fa-link"></i> MITRE CVE Database</h3>
+                <p>https://cve.mitre.org</p>
+            </div>
+            
+            <div class="resource-card">
+                <h3><i class="fas fa-link"></i> Manual de Hardening</h3>
+                <p>https://www.cisecurity.org</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Documentación sobre Banner Grabbing | Técnicas de Ciberseguridad</p>
+            <p>sualba.dev © 2025 - Todos los derechos reservados</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'neutral',
+                securityLevel: 'loose'
+            });
+        });
+    </script>
+</body>
+</html>
