@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reglas Snort + Wazuh en Homelab</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #f5f5f5;
+      margin: 0;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4cafef;
+      border-bottom: 3px solid #4cafef;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: #222;
+    }
+    nav button {
+      background: #333;
+      border: none;
+      color: #fff;
+      padding: 12px 18px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+    nav button:hover, nav button.active {
+      background: #4cafef;
+      color: black;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    h2 {
+      color: #4cafef;
+    }
+    pre {
+      background: #1e1e1e;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    code { color: #00ffcc; }
+  </style>
+</head>
+<body>
+
+<header>🛡️ Catálogo Interactivo de Reglas Snort para Homelab con Kali</header>
+
+<nav>
+  <button data-target="basico" class="active">🌐 Tráfico Básico</button>
+  <button data-target="escaneos">🔍 Escaneos</button>
+  <button data-target="servicios">🖥️ Servicios</button>
+  <button data-target="descargas">📂 Descargas</button>
+  <button data-target="explotacion">⚔️ Explotación</button>
+  <button data-target="backdoors">👾 Backdoors</button>
+</nav>
+
+<section id="basico" class="active">
+  <h2>🌐 Tráfico Básico</h2>
+  <pre><code>
+alert icmp any any -> any any (msg:"Ping ICMP detectado"; sid:2000101; rev:1;)
+alert ip any any -> any any (msg:"Tráfico IP detectado"; sid:2000102; rev:1;)
+alert udp any any -> any 53 (msg:"Consulta DNS detectada"; sid:2000103; rev:1;)
+alert tcp any any -> any 443 (msg:"Tráfico HTTPS detectado"; sid:2000104; rev:1;)
+  </code></pre>
+</section>
+
+<section id="escaneos">
+  <h2>🔍 Escaneos y Reconocimiento</h2>
+  <pre><code>
+alert tcp any any -> any any (flags:S; msg:"Escaneo SYN detectado"; sid:2000201; rev:1;)
+alert tcp any any -> any any (flags:SF; msg:"Escaneo FIN detectado"; sid:2000202; rev:1;)
+alert tcp any any -> any any (flags:FPU; msg:"Escaneo Xmas detectado"; sid:2000203; rev:1;)
+alert tcp any any -> any any (flags:F; msg:"Escaneo FIN único detectado"; sid:2000204; rev:1;)
+  </code></pre>
+</section>
+
+<section id="servicios">
+  <h2>🖥️ Ataques a Servicios Comunes</h2>
+  <pre><code>
+alert tcp any any -> any 21 (msg:"Conexión FTP detectada"; sid:2000301; rev:1;)
+alert tcp any any -> any 22 (msg:"Conexión SSH detectada"; sid:2000302; rev:1;)
+alert tcp any any -> any 23 (msg:"Conexión Telnet detectada"; sid:2000303; rev:1;)
+alert tcp any any -> any 25 (msg:"Conexión SMTP detectada"; sid:2000304; rev:1;)
+alert tcp any any -> any 3389 (msg:"Conexión RDP detectada"; sid:2000305; rev:1;)
+
+
+
+rev:1 → cuando creas una regla nueva
+
+rev:2, rev:3, etc. → cada vez que la editas y mejoras
+
+No cambies el SID (es el identificador único), pero sí incrementa rev para llevar control de cambios.
+📌 Buenas prácticas con rev
+🔹 Empieza siempre en rev:1
+(como hice en tu set inicial).
+
+🔹 Incrementa el número cada vez que modifiques la regla:
+
+cambias la condición (ej. de any any a un puerto específico)
+
+añades opciones como content, flags, dsize, etc.
+
+mejoras el mensaje o haces la detección más fina
+
+🔹 Lleva un registro
+Puedes añadir un comentario en el local.rules:
+
+
+# Revisión 2: mejorada para solo ICMP Echo Request
+alert icmp any any -> any any (msg:"ICMP Echo Request detectado"; icmp_type:8; sid:2000101; rev:2;)
+📌 Resumen
+Todas tus reglas están en rev:1 porque son las primeras versiones.
+
+Cuando las modifiques (más específicas, con nuevos patrones, etc.),
+aumenta el número de rev.
+
+Esto te permite mantener historial de cambios sin perder el SID original.
+
+
+
+
+  </code></pre>
+</section>
+
+<section id="descargas">
+  <h2>📂 Descargas y Tráfico Sospechoso</h2>
+  <pre><code>
+alert tcp any any -> any any (msg:"Descarga ejecutable detectada"; content:".exe"; nocase; sid:2000401; rev:1;)
+alert tcp any any -> any any (msg:"Descarga PDF detectada"; content:".pdf"; nocase; sid:2000402; rev:1;)
+alert tcp any any -> any any (msg:"Descarga ZIP detectada"; content:".zip"; nocase; sid:2000403; rev:1;)
+alert tcp any any -> any any (msg:"Archivo JS detectado"; content:".js"; nocase; sid:2000404; rev:1;)
+
+alert icmp any any -> any any (msg:"ICMP Ping detectado"; sid:2000101; rev:1;)
+  Decides hacerla más precisa, por ejemplo, filtrando solo paquetes ICMP Echo Request (rev:2):
+alert icmp any any -> any any (msg:"ICMP Echo Request detectado"; icmp_type:8; sid:2000101; rev:2;)
+
+  </code></pre>
+</section>
+
+<section id="explotacion">
+  <h2>⚔️ Intentos de Explotación (con revisiones)</h2>
+  <pre><code>
+alert tcp any any -> any 80 (msg:"Intento SQL Injection (SELECT)"; content:"SELECT"; nocase; sid:2000501; rev:1;)
+alert tcp any any -> any 80 (msg:"Intento SQL Injection (UNION)"; content:"UNION"; nocase; sid:2000502; rev:1;)
+alert tcp any any -> any 80 (msg:"XSS detectado"; content:"&lt;script&gt;"; nocase; sid:2000503; rev:1;)
+alert tcp any any -> any 80 (msg:"Comando Linux detectado"; content:"/bin/sh"; nocase; sid:2000504; rev:1;)
+ 
+
+# ========================
+# Ejemplo SQL Injection
+# ========================
+
+# rev:1 → Detección básica de SELECT
+alert tcp any any -> any 80 (msg:"SQL Injection detectada (SELECT)"; content:"SELECT"; nocase; sid:2000501; rev:1;)
+
+# rev:2 → Añadimos UNION para ampliar cobertura
+alert tcp any any -> any 80 (msg:"SQL Injection detectada (SELECT o UNION)"; content:"UNION"; nocase; sid:2000501; rev:2;)
+
+# rev:3 → Mejoramos con condición múltiple (OR)
+alert tcp any any -> any 80 (msg:"SQL Injection avanzada detectada"; content:"SELECT"; nocase; sid:2000501; rev:3;)
+alert tcp any any -> any 80 (msg:"SQL Injection avanzada detectada"; content:"UNION"; nocase; sid:2000501; rev:3;)
+
+# ========================
+# Ejemplo ICMP Ping
+# ========================
+
+# rev:1 → Básico
+alert icmp any any -> any any (msg:"ICMP Ping detectado"; sid:2000101; rev:1;)
+
+# rev:2 → Más específico: solo Echo Request
+alert icmp any any -> any any (msg:"ICMP Echo Request detectado"; icmp_type:8; sid:2000101; rev:2;)
+
+# rev:3 → Incluimos tamaño mínimo de paquete
+alert icmp any any -> any any (msg:"ICMP Echo Request sospechoso (payload grande)"; icmp_type:8; dsize:>100; sid:2000101; rev:3;)
+
+# ========================
+# Ejemplo XSS
+# ========================
+
+# rev:1 → Detectar &lt;script&gt;
+alert tcp any any -> any 80 (msg:"XSS detectado"; content:"&lt;script&gt;"; nocase; sid:2000503; rev:1;)
+
+# rev:2 → Añadir detección de onerror=
+alert tcp any any -> any 80 (msg:"XSS detectado (onerror)"; content:"onerror="; nocase; sid:2000503; rev:2;)
+
+# rev:3 → Añadir detección de alert
+alert tcp any any -> any 80 (msg:"XSS detectado (alert)"; content:"alert("; nocase; sid:2000503; rev:3;))
+  </code></pre>
+</section>
+
+
+<section id="backdoors">
+  <h2>👾 Backdoors y Herramientas Ofensivas</h2>
+  <pre><code>
+alert tcp any any -> any any (msg:"Posible Netcat detectado"; content:"nc "; nocase; sid:2000601; rev:1;)
+alert tcp any any -> any any (msg:"Metasploit payload detectado"; content:"Meterpreter"; nocase; sid:2000602; rev:1;)
+alert tcp any any -> any any (msg:"Nmap detectado en payload"; content:"Nmap"; nocase; sid:2000603; rev:1;)
+alert tcp any any -> any any (msg:"Shell reversa detectada"; content:"bash -i"; nocase; sid:2000604; rev:1;)
+  </code></pre>
+</section>
+
+<script>
+  // función para cambiar de pestaña
+  function showSection(id) {
+    document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+    document.querySelector(`nav button[data-target="${id}"]`).classList.add("active");
+    document.getElementById(id).classList.add("active");
+  }
+
+  // inicializar el primer tab como activo
+  document.addEventListener("DOMContentLoaded", () => {
+    showSection("basico");
+  });
+
+  // asignar eventos a botones
+  document.querySelectorAll("nav button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showSection(btn.getAttribute("data-target"));
+    });
+  });
+</script>
+
+</body>
+</html>

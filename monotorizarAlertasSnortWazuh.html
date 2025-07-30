@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snort + Wazuh IDS/IPS Guide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #f5f5f5;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #1e1e1e;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 3px solid #4cafef;
+    }
+    nav {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 10px;
+    }
+    nav button {
+      background: #333;
+      border: none;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+    nav button:hover {
+      background: #4cafef;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    pre {
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    code {
+      color: #00ffcc;
+    }
+    h2 {
+      color: #4cafef;
+    }
+    .tips {
+      background: #2e2e2e;
+      padding: 10px;
+      border-left: 4px solid #4cafef;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>🛡️ Guía Interactiva: Snort + Wazuh IDS/IPS</header>
+
+<nav>
+  <button onclick="showSection('intro')">Introducción</button>
+  <button onclick="showSection('snort')">Snort</button>
+  <button onclick="showSection('wazuh')">Wazuh</button>
+  <button onclick="showSection('integracion')">Integración</button>
+  <button onclick="showSection('recursos')">Recursos</button>
+</nav>
+
+<section id="intro" class="active">
+  <h2>Introducción</h2>
+  <p>Este documento interactivo explica cómo instalar, configurar y monitorizar alertas de red con <strong>Snort</strong> (IDS/IPS) y <strong>Wazuh</strong> (SIEM).</p>
+  <div class="tips">⚡ Ideal para tu homelab y estudios de ciberseguridad defensiva.</div>
+</section>
+
+<section id="snort">
+  <h2>Snort - Instalación y Configuración</h2>
+  <p><strong>Snort</strong> es un sistema de detección de intrusos (IDS) que analiza el tráfico de red.</p>
+
+  <h3>Instalación en Debian</h3>
+  <pre><code>sudo apt-get install snort -y
+snort -v  # Verificar instalación</code></pre>
+
+  <h3>Configurar snort.conf</h3>
+  <pre><code># Edita /etc/snort/snort.conf
+alert_syslog: LOG_AUTH LOG_ALERT
+output alert_fast: stdout</code></pre>
+
+  <h3>Agregar regla de prueba</h3>
+  <pre><code># /etc/snort/rules/local.rules
+alert icmp any any -> any any (msg:"ICMP connection attempt"; sid:1000010; rev:1;)</code></pre>
+
+  <div class="tips">💡 Ejecuta un ping para probar la regla ICMP y verifica que se genere la alerta.</div>
+</section>
+
+<section id="wazuh">
+  <h2>Wazuh - Instalación del Agente</h2>
+  <p>Wazuh es un SIEM que recolecta, analiza y correlaciona logs de múltiples fuentes.</p>
+
+  <h3>Instalar Agente en Debian</h3>
+  <pre><code># Descargar e instalar el agente
+curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | sudo apt-key add -
+sudo apt-get install wazuh-agent -y</code></pre>
+
+  <h3>Configurar ossec.conf</h3>
+  <pre><code>&lt;localfile&gt;
+  &lt;log_format&gt;snort-full&lt;/log_format&gt;
+  &lt;location&gt;/var/log/snort/snort.alert.fast&lt;/location&gt;
+&lt;/localfile&gt;</code></pre>
+
+  <pre><code>sudo systemctl restart wazuh-agent</code></pre>
+
+  <div class="tips">✅ Una vez configurado, las alertas de Snort aparecerán en el Dashboard de Wazuh.</div>
+</section>
+
+<section id="integracion">
+  <h2>Integración Snort + Wazuh</h2>
+  <ol>
+    <li>Snort detecta tráfico sospechoso.</li>
+    <li>Genera logs en <code>/var/log/snort/snort.alert.fast</code>.</li>
+    <li>El agente Wazuh los envía al servidor Wazuh.</li>
+    <li>Wazuh los muestra en el Dashboard con alertas detalladas.</li>
+  </ol>
+
+  <h3>Flujo Visual</h3>
+  <pre><code>[ Tráfico de Red ] → [ Snort IDS ] → [ Logs Snort ] → [ Wazuh Agent ] → [ Wazuh SIEM Dashboard ]</code></pre>
+
+  <div class="tips">🔐 Esto permite monitorizar ataques en tiempo real y aplicar defensa proactiva.</div>
+</section>
+
+<section id="recursos">
+  <h2>Recursos Extra</h2>
+  <ul>
+    <li><a href="https://snort.org" target="_blank">Documentación oficial Snort</a></li>
+    <li><a href="https://documentation.wazuh.com" target="_blank">Documentación oficial Wazuh</a></li>
+    <li><a href="https://securitywithblue.medium.com/" target="_blank">Guías paso a paso</a></li>
+  </ul>
+  <div class="tips">📘 Recomendación: prueba también <strong>Suricata</strong> y compáralo con Snort para tu homelab.</div>
+</section>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+</script>
+
+</body>
+</html>

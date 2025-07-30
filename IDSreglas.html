@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuleta IDS - Ciberseguridad</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #0d7377, #14ffec);
+      color: #0d1117;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    .section {
+      background: #161b22;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 15px;
+      box-shadow: 0 0 12px rgba(20,255,236,0.2);
+    }
+    .section h2 {
+      margin: 0;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #14ffec;
+    }
+    .content {
+      display: none;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+    .section.active .content {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #0d1117;
+    }
+    table, th, td {
+      border: 1px solid #14ffec;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #0d7377;
+    }
+    code {
+      background: #21262d;
+      color: #14ffec;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>🔐 Chuleta IDS - Ciberseguridad</header>
+  <div class="container">
+
+    <div class="section">
+      <h2>1️⃣ Esquema para distinguir reglas IDS</h2>
+      <div class="content">
+        <table>
+          <tr><th>Elemento</th><th>Qué mirar</th><th>Ejemplo</th></tr>
+          <tr><td>Puerto</td><td>Indica servicio</td><td><code>$HOME_NET 21</code> = FTP</td></tr>
+          <tr><td>Flags TCP</td><td>Detecta escaneos</td><td><code>flags:S</code> = SYN scan</td></tr>
+          <tr><td>Content</td><td>Palabra o patrón</td><td><code>content:"USER"</code></td></tr>
+          <tr><td>Threshold</td><td>Intentos repetidos</td><td><code>count 30, seconds 30</code></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2️⃣ Mapa comparativo de ataques</h2>
+      <div class="content">
+        <table>
+          <tr><th>Ataque</th><th>Patrones IDS</th><th>Ejemplo</th></tr>
+          <tr><td>Fuerza Bruta</td><td><code>LOGIN</code> + threshold</td><td>IMAP</td></tr>
+          <tr><td>Escaneo</td><td><code>flow:stateless</code> + flags</td><td>Xmas Scan</td></tr>
+          <tr><td>Acceso fichero</td><td><code>/etc/passwd</code></td><td>HTTP URI</td></tr>
+          <tr><td>XSS</td><td><code>&lt;script&gt;</code> o Base64</td><td>PHNjcmlwdD</td></tr>
+          <tr><td>SMB Exploit</td><td>Puerto 445 + CVE</td><td>EternalBlue</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>3️⃣ Firmas y patrones frecuentes</h2>
+      <div class="content">
+        <ul>
+          <li><b>EternalBlue:</b> puerto 445, <code>cve,2017-0144</code></li>
+          <li><b>IMAP brute force:</b> LOGIN + threshold</li>
+          <li><b>robots.txt:</b> <code>http_uri; content:"/robots.txt"</code></li>
+          <li><b>XSS Base64:</b> <code>PHNjcmlwdD</code> → &lt;script&gt;</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>4️⃣ Firmas frecuentes en Base64</h2>
+      <div class="content">
+        <table>
+          <tr><th>Base64</th><th>Decodificado</th><th>Uso</th></tr>
+          <tr><td><code>PHNjcmlwdD</code></td><td>&lt;script&gt;</td><td>XSS</td></tr>
+          <tr><td><code>U0VMRUNUICogRlJPTQ</code></td><td>SELECT * FROM</td><td>SQLi</td></tr>
+          <tr><td><code>aW5qZWN0</code></td><td>inject</td><td>Inyección</td></tr>
+          <tr><td><code>ZGVsZXRl</code></td><td>delete</td><td>SQLi destructivo</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5️⃣ Flags TCP en escaneos</h2>
+      <div class="content">
+        <table>
+          <tr><th>Escaneo</th><th>Flags</th><th>Descripción</th></tr>
+          <tr><td>SYN</td><td><code>flags:S</code></td><td>SYN sin completar</td></tr>
+          <tr><td>FIN</td><td><code>flags:F</code></td><td>FIN sin sesión</td></tr>
+          <tr><td>Null</td><td><code>flags:0</code></td><td>Ningún flag</td></tr>
+          <tr><td>Xmas</td><td><code>flags:FS</code></td><td>FIN, PSH, URG</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>6️⃣ Ubicación ideal del IDS</h2>
+      <div class="content">
+        <p>📍 El IDS se coloca <b>detrás del firewall</b>, con visibilidad a la DMZ y la red interna.</p>
+        <pre>
+Internet → Modem → Firewall → [ IDS ] → { DMZ: WebServer , Green: LAN }
+        </pre>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>7️⃣ Detectando Meterpreter Reverse Shell</h2>
+      <div class="content">
+        <ul>
+          <li>Conexiones salientes a puertos inusuales (ej: 4444).</li>
+          <li>Payloads con patrones típicos de meterpreter.</li>
+          <li>Sesiones persistentes y repetitivas.</li>
+          <li>HTTP/HTTPS mal formado o sospechoso.</li>
+          <li>IPs de C2 conocidas.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll('.section h2');
+    sections.forEach(h2 => {
+      h2.addEventListener('click', () => {
+        h2.parentElement.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>

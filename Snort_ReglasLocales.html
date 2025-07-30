@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛡️ Reglas Locales de Snort</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans">
+  <header class="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-center shadow-lg">
+    <h1 class="text-4xl font-bold">🛡️ Reglas Locales de Snort: Defensa con Estilo 🚀</h1>
+    <p class="mt-2 text-lg">Guía visual e intuitiva para detectar ataques comunes</p>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 space-y-6">
+
+    <!-- Plantilla de regla -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-purple-400 flex items-center gap-2">
+        <i class="ph ph-magnifying-glass"></i> Regla 1: Detectar escaneo Nmap 🕵️
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> $HOME_NET any 
+(msg: "NMAP Scan Detected"; sid:1000001; flags:S; 
+threshold:type threshold, track by_dst, count 5, seconds 60)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-purple-500 hover:bg-purple-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 <b>Explicación:</b> Detecta múltiples paquetes SYN → típico de Nmap.</p>
+        <p>⚡ <b>Consecuencias:</b> Un atacante mapea tus servicios, primer paso de intrusión.</p>
+        <p>🎯 <b>Conclusión:</b> Verifica servicios expuestos y aplica firewall + IDS.</p>
+      </div>
+    </div>
+
+    <!-- Regla 2 -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-blue-400 flex items-center gap-2">
+        <i class="ph ph-folder-simple"></i> Regla 2: Acceso a .git expuesto 🔑
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> $HOME_NET 80 
+(msg:"Access to hidden folder"; sid:1000002; 
+content:"/.git/"; http_uri; classtype:web-application-attack;)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 Busca accesos a la carpeta <b>.git/</b> expuesta.</p>
+        <p>⚡ Riesgo de robo de <b>código fuente, contraseñas y configuraciones.</b></p>
+        <p>🎯 Bloquea siempre <b>.git</b> con .htaccess o Nginx.</p>
+      </div>
+    </div>
+
+    <!-- Regla 3 -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-red-400 flex items-center gap-2">
+        <i class="ph ph-lock-simple"></i> Regla 3: Login FTP anónimo 🚨
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> $HOME_NET 21 
+(msg:"Anonymous FTP access"; content:"USER anonymous"; 
+classtype:suspicious-login; sid:10000003; rev:1;)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-red-500 hover:bg-red-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 Detecta login FTP con usuario <b>anonymous</b>.</p>
+        <p>⚡ Riesgo de descarga o subida no autorizada.</p>
+        <p>🎯 Usa <b>SFTP</b> o usuarios autenticados, nunca FTP anónimo.</p>
+      </div>
+    </div>
+
+    <!-- Regla 3b -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-orange-400 flex items-center gap-2">
+        <i class="ph ph-upload-simple"></i> Regla 3b: Subida de archivos por FTP 💾
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> $HOME_NET 21 
+(msg:"Try to upload a file"; content:"STOR"; sid:1000006;)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-orange-500 hover:bg-orange-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 Detecta comando <b>STOR</b> (subida FTP).</p>
+        <p>⚡ Riesgo de webshells o malware.</p>
+        <p>🎯 Desactiva subida si no es necesaria, monitorea actividad.</p>
+      </div>
+    </div>
+
+    <!-- Regla 4 -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-green-400 flex items-center gap-2">
+        <i class="ph ph-terminal-window"></i> Regla 4: Fuerza Bruta SSH 🔐
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> $HOME_NET 22 
+(msg:"Potential SSH Brute Force"; sid:1000004; flow:to_server; flags:S; 
+detection_filter:track by_src, count 2, seconds 60; classtype:attempted-dos;)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-green-500 hover:bg-green-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 Detecta múltiples intentos SSH desde una IP.</p>
+        <p>⚡ Indica fuerza bruta → riesgo de acceso no autorizado.</p>
+        <p>🎯 Usa <b>fail2ban</b> o bloqueos automáticos.</p>
+      </div>
+    </div>
+
+    <!-- Regla 5 -->
+    <div class="bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 class="text-2xl font-bold text-yellow-400 flex items-center gap-2">
+        <i class="ph ph-warning"></i> Regla 5: Inyección de comandos en puerto 5011 ⚔️
+      </h2>
+      <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto text-green-400 mt-3">
+alert tcp any any -> any 5011 
+(msg:"Posible inyección de comandos por el puerto 5011"; 
+content:"|3B|"; sid:1000008;)</pre>
+      <button onclick="toggleInfo(this)" class="mt-3 bg-yellow-500 hover:bg-yellow-700 px-4 py-2 rounded text-sm">
+        Ver explicación
+      </button>
+      <div class="hidden mt-3 text-gray-300 space-y-2">
+        <p>📖 Busca el carácter <b>;</b> usado en inyecciones.</p>
+        <p>⚡ Permite ejecutar múltiples comandos.</p>
+        <p>🎯 Escapa entradas y audita servicios en el puerto 5011.</p>
+      </div>
+    </div>
+
+    <!-- Reflexión final -->
+    <div class="bg-gradient-to-r from-purple-700 to-blue-700 rounded-2xl p-6 shadow-lg text-center">
+      <h2 class="text-3xl font-bold mb-3">🌈 Reflexiones Finales</h2>
+      <p>Estas reglas convierten tu IDS en un <b>perro guardián digital 🐕‍🦺</b>.</p>
+      <p class="mt-2">Detectan escaneos, accesos indebidos y ataques comunes, dándote tiempo de <b>reaccionar antes del daño real</b>.</p>
+    </div>
+
+  </main>
+
+  <script>
+    function toggleInfo(button) {
+      const info = button.nextElementSibling;
+      info.classList.toggle("hidden");
+    }
+  </script>
+</body>
+</html>
