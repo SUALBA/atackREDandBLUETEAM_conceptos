@@ -62,3 +62,9 @@ Un **Web Application Firewall (WAF)** es un tipo de firewall diseñado específi
 ```regex
 # Bloquea peticiones que intentan hacer una inyección SQL
 GET .*?(\%27)|(\')|(\-\-)|(\%23)|(#)
+```
+
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+    Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

@@ -133,3 +133,7 @@ snort --daq afpacket -Q -c /etc/snort/snort.conf -i eth0:eth1
 IDS e IPS son piezas clave de una defensa en profundidad. Usados correctamente, **detectan y neutralizan amenazas antes de causar daño**. Su valor real no está solo en la tecnología, sino en cómo se integran en una estrategia de seguridad bien diseñada.
 
 🔐 **El verdadero poder está en la combinación: visibilidad + respuesta automatizada + análisis humano.**
+
+ ***
+ © 2025 [sualba.dev] Todos los derechos reservados
+ Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

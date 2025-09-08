@@ -206,6 +206,7 @@ alert tcp $EXTERNAL_NET any -> $HOME_NET 3306 (msg:"MySQL Access Attempt"; sid:1
 ```
 🧠 **Explicación:** Detecta intentos de acceso externo a un servidor MySQL (puerto 3306). Puede ser un ataque de reconocimiento o explotación.
 
+
 ---
 
 ## 🔹 Regla 12
@@ -233,4 +234,6 @@ alert tcp any any -> $HOME_NET 25 (msg:"SMTP Connection Detected"; content:"EHLO
 ```
 🧠 **Explicación:** Detecta conexiones al puerto 25 (SMTP) con comando 'EHLO'. Útil para monitorear servidores de correo saliente en uso o potencial abuso para spam.
 
----
+***
+sualba.dev @2025 Todos los derechos reservados.
+  

@@ -108,3 +108,7 @@ Algunos destacados:
 
     .sudo_as_admin_successful → marca que ya usaste sudo con éxito una vez.
 
+
+
+****
+sualba.dev © 2025 - Todos los derechos reservados

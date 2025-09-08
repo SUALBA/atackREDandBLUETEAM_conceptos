@@ -95,3 +95,5 @@ Y presionas ENTER dos veces.
 ✅
 ✅ En entornos reales, se recomienda ocultar o modificar banners para evitar fingerprinting.
 
+****
+sualba.dev © 2025 - Todos los derechos reservados

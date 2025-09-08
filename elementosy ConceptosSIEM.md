@@ -102,3 +102,6 @@ El SIEM te permitió:
 Un SIEM es **esencial en cualquier estrategia de ciberseguridad moderna**. Permite no solo detectar amenazas, sino también responder a tiempo, proteger activos críticos y cumplir con normativas legales y de seguridad.
 
 > **🔐 SIEM = Visibilidad + Inteligencia + Respuesta inmediata**
+
+***
+sualba.dev © 2025 Todos los derechos reservados

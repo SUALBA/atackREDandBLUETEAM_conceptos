@@ -112,4 +112,7 @@ En ciberseguridad, dominar la terminal de Linux es una habilidad esencial. Aquí
 
 ---
 
-> 🧠 **Recuerda**: la terminal es tu mejor aliada en ciberseguridad. Dominar estos comandos no solo te ayuda a aprobar el examen, sino a **pensar como analista de seguridad**.
+> 🧠 **Recuerda**: la terminal es tu mejor aliada en ciberseguridad. Dominar estos comandos no solo te ayuda a mejorar en tu camino ciber, sino a **pensar como analista de seguridad**.
+
+
+sualba.dev © 2025 - Todos los derechos reservados

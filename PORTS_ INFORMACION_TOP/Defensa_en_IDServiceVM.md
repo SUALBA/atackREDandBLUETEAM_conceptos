@@ -190,3 +190,7 @@ alert tcp any any -> any 80 (msg:"[ALERTA] Inyección de comandos"; content:";ca
 
 **Fin del documento**
 📁 Archivo de uso personal para repaso, replicación o actualización futura.
+
+
+****
+sualba.dev © 2025 - Todos los derechos reservados

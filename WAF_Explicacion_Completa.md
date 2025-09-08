@@ -102,3 +102,4 @@ El WAF es una herramienta indispensable en la defensa de aplicaciones web modern
 > 🔐 Una buena estrategia de seguridad no se basa en un solo sistema, sino en capas. Un WAF debe complementarse con escaneo de vulnerabilidades, pruebas de penetración, cifrado, y gestión de identidad.
 
 ---
+>© 2025 [sualba.dev] Todos los derechos reservadosEste material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

@@ -460,3 +460,8 @@ Este Cheat Sheet de ModSecurity es tu aliado para recordar rápidamente
 cómo crear, ajustar y aplicar reglas WAF.
 
 💡 Tip: La diferencia entre un admin básico y un profesional WAF está en el fine-tuning de reglas y la correlación con ELK/Security Onion.
+
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

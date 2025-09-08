@@ -115,3 +115,7 @@
 ---
 
 > 💡 **Perfect for**: Cualquier escenario donde necesites pausar, avanzar o detener un flujo de audio/vídeo de forma dinámica.
+
+  ***
+  >© 2025 [sualba.dev] Todos los derechos reservados
+    Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

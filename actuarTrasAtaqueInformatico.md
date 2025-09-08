@@ -31,3 +31,6 @@ Aunque el ataque a vuestra máquina es ilegal, responder con otro ataque (“hac
 
 > **Conclusión**  
 > Aunque la tentación de “contraatacar” sea fuerte, esa acción es ilegal y puede acarrear penas de multa o prisión. La estrategia adecuada es reforzar vuestra defensa, recopilar evidencias y denunciar el incidente ante las autoridades.  
+
+
+sualba.dev © 2025 - Todos los derechos reservados

@@ -153,3 +153,6 @@ Gracias a este sistema, España puede responder de manera **coordinada, legal y 
  ┌────────────────────┐
  │  Resolución/Informe│
  └────────────────────┘
+
+****
+sualba.dev © 2025 - Todos los derechos reservados

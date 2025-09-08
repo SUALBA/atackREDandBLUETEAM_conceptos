@@ -140,3 +140,6 @@ Puerto 445 (SMB) usado en entorno interno sin justificación clara.
   - `445` → SMB
   - `3389` → RDP
 - Asócialos a técnicas MITRE relevantes para subir nivel profesional de tus reglas.
+
+***
+sualba.dev © 2025 Todos los derechos reservados

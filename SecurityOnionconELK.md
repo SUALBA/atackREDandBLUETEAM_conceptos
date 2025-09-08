@@ -52,9 +52,8 @@ Selecciona HVM mode para máximo rendimiento.
 Ejecuta el asistente de configuración:
 
 bash
-Copiar
-Editar
 sudo so-setup
+
 Pasos:
 
 Selecciona el modo:
@@ -77,15 +76,14 @@ Habilita Elastic Stack (ES, Logstash, Kibana).
 Navega desde tu navegador a:
 
 cpp
-Copiar
-Editar
-https://<IP_DE_SECURITY_ONION>
-Login con usuario:
 
+https://<IP_DE_SECURITY_ONION>
+
+Login con usuario:
 nginx
-Copiar
-Editar
+
 soadmin
+
 📌 5. Verificación de ELK (Elastic Stack)
 Security Onion trae ya preconfigurado:
 
@@ -98,9 +96,9 @@ Kibana (SO Dashboards) → interfaz gráfica para búsqueda.
 Ejemplo: buscar logs de Suricata en Kibana.
 
 kibana
-Copiar
-Editar
+
 event.module: suricata AND event.action: alert
+
 📌 6. Integración de Suricata + Zeek + Wazuh
 Suricata (IDS/IPS): analiza tráfico y genera alertas.
 
@@ -111,11 +109,11 @@ Wazuh: monitorización de host y correlación de alertas.
 Comandos útiles:
 
 bash
-Copiar
-Editar
+
 sudo so-status      # Ver estado de los servicios
 sudo so-allow       # Permitir acceso remoto a Kibana
 sudo so-elasticsearch-query '*'  # Probar búsqueda en ES
+
 📌 7. Crear Dashboards en Kibana
 Filtra por IDS → event.module:suricata.
 
@@ -134,21 +132,16 @@ En tu servidor con Apache/Nginx + ModSecurity:
 Configura el logging en JSON:
 
 apache
-Copiar
-Editar
+
 SecAuditLogFormat JSON
 SecAuditLog /var/log/modsec_audit.log
 Envía los logs a Security Onion vía Filebeat:
 
 bash
-Copiar
-Editar
 sudo apt install filebeat
 Configura filebeat.yml:
 
 yaml
-Copiar
-Editar
 filebeat.inputs:
 - type: log
   enabled: true
@@ -160,17 +153,14 @@ output.logstash:
 Reinicia Filebeat:
 
 bash
-Copiar
-Editar
 sudo systemctl restart filebeat
+
 Verifica en Kibana → los logs de ModSecurity aparecerán en tiempo real.
 
 📌 9. Buenas Prácticas de Profesional
 Usar reglas Suricata actualizadas:
 
 bash
-Copiar
-Editar
 sudo so-rule-update
 Configurar alertas automáticas → integración con Slack, email o TheHive.
 
@@ -187,3 +177,7 @@ Cheat Sheet Suricata: Suricata Rules Reference
 
 ✅ Con Security Onion + ELK + ModSecurity, tienes un SOC casero nivel profesional.
 Esto te permite practicar detección, análisis y respuesta ante incidentes como lo harías en un Blue Team real.
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

@@ -86,5 +86,6 @@ Suele formar parte de la cadena de ataque de un APT o de un test de penetración
 - 🧠 Para **formación**: estudiar APTs reales (MITRE) y entrenar detección con herramientas como Sysmon + ELK.
 
 ---
+sualba.dev © 2025 - Todos los derechos reservados
 
 

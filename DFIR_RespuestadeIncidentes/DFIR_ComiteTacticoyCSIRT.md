@@ -119,3 +119,8 @@ La **prevención y preparación** no se limita a herramientas tecnológicas, sin
 Un **CSIRT bien definido y respaldado por un Comité Táctico** es la clave para responder con eficacia y resiliencia ante incidentes de seguridad.
 
 > 🛡️ *“En ciberseguridad, la preparación es tan importante como la respuesta.”*
+
+
+
+****
+sualba.dev © 2025 - Todos los derechos reservados

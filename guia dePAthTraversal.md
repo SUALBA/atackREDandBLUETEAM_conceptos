@@ -204,3 +204,7 @@ Primero `PHPSESSID`, luego `security=low`.
 * Wikipedia: [https://es.wikipedia.org/wiki/Path\_traversal](https://es.wikipedia.org/wiki/Path_traversal)
 * sqlmap: [https://github.com/sqlmapproject/sqlmap](https://github.com/sqlmapproject/sqlmap)
 * Snyk Security: [https://security.snyk.io/](https://security.snyk.io/)
+
+
+***
+sualba.dev © 2025 Todos los derechos reservados

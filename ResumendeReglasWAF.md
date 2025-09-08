@@ -153,3 +153,8 @@ o	DMZ: red intermedia donde se colocan servidores expuestos.
 
 
 ![WAF Badge](https://img.shields.io/badge/WAF-Security-blue?style=for-the-badge&logo=shield)
+
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+    Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

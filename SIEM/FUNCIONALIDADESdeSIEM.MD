@@ -320,3 +320,7 @@ Produce informes comprensivos sobre el estado de seguridad, tendencias, cumplimi
 ## Conclusión
 
 La combinación de estas funcionalidades en un SIEM proporciona una plataforma integral para la gestión proactiva de la seguridad, permitiendo a las organizaciones detectar, analizar y responder a amenazas de manera más efectiva y eficiente.
+
+***
+© 2025 [sualba.dev] -Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

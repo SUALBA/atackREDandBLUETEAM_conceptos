@@ -191,3 +191,9 @@ PC Host  Kali VM  Otros Dispositivos
     Adaptador puente (para trabajar en la LAN real).
 
 4.Activa Cable conectado.
+
+
+
+****
+sualba.dev © 2025 - Todos los derechos reservados
+

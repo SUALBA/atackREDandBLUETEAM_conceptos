@@ -28,11 +28,10 @@ Aunque el escaneo no cause daño directo, es el primer paso de un ataque.
 
 📁 Regla 2: Acceso a .git expuesto 🔑
 snort
-Copiar
-Editar
 alert tcp any any -> $HOME_NET 80 \
 (msg:"Access to hidden folder"; sid:1000002; \
 content:"/.git/"; http_uri; classtype:web-application-attack;)
+
 📖 Explicación
 Busca accesos a la carpeta oculta .git/ en servidores web.
 
@@ -51,11 +50,10 @@ Configuraciones críticas
 
 🔑 Regla 3: Login FTP anónimo 🚨
 snort
-Copiar
-Editar
 alert tcp any any -> $HOME_NET 21 \
 (msg:"Anonymous FTP access"; content:"USER anonymous"; \
 classtype:suspicious-login; sid:10000003; rev:1;)
+
 📖 Explicación
 Detecta intentos de login FTP con el usuario anonymous.
 
@@ -72,10 +70,9 @@ Si necesitas compartir archivos, usa SFTP o servicios autenticados.
 
 📂 Regla 3b: Intento de subir archivos por FTP 💾
 snort
-Copiar
-Editar
 alert tcp any any -> $HOME_NET 21 \
 (msg:"Try to upload a file"; content:"STOR"; sid:1000006;)
+
 📖 Explicación
 Detecta el comando STOR de FTP → subir archivos.
 
@@ -89,11 +86,10 @@ Monitorea el uso de STOR y considera deshabilitar la subida de archivos si no es
 
 🔒 Regla 4: Fuerza Bruta SSH 🔐
 snort
-Copiar
-Editar
 alert tcp any any -> $HOME_NET 22 \
 (msg:"Potential SSH Brute Force"; sid:1000004; flow:to_server; flags:S; \
 detection_filter:track by_src, count 2, seconds 60; classtype:attempted-dos;)
+
 📖 Explicación
 Analiza intentos de conexión SSH.
 
@@ -109,10 +105,9 @@ Implementa fail2ban o iptables para bloquear IPs que fallen muchas veces.
 
 🧨 Regla 5: Inyección de comandos en puerto 5011 ⚔️
 snort
-Copiar
-Editar
 alert tcp any any -> any 5011 \
 (msg:"Posible inyección de comandos por el puerto 5011"; content:"|3B|"; sid:1000008;)
+
 📖 Explicación
 Busca el carácter ; (0x3B en hex).
 
@@ -175,3 +170,8 @@ Perfecta si quieres un entorno todo en uno.
 🎯 Recomendación personal:
 Si buscas algo fácil y rápido → Snorby o BASE.
 Si quieres nivel profesional → monta Security Onion con ELK.
+
+
+*********************************************
+>© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

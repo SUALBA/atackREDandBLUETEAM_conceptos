@@ -141,6 +141,9 @@ ejemplo:
 ls -lah
 → lista larga, incluye ocultos, con tamaños legibles.
 
+***
+ © 2025 [sualba.dev] Todos los derechos reservados.
+  Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.
 
 
 

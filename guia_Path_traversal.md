@@ -217,4 +217,5 @@ location ~ \.\. {
 > 💡 **Recuerda**: La seguridad es un proceso continuo, no un destino. Mantén tus sistemas actualizados y revisa regularmente las configuraciones de seguridad.
 
 ---
-*📅 Documento actualizado: Julio 2025*
+© 2025 [sualba.dev] Todos los derechos reservados
+    Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

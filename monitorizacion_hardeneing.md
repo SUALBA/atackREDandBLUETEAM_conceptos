@@ -116,3 +116,7 @@ Uso de herramientas que automatizan la revisión y aplicación de buenas prácti
 ---
 
 > ¡Ánimo! Con esta guía tienes una base sólida para monitorizar, proteger y endurecer sistemas como un profesional.
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

@@ -106,3 +106,7 @@ Es una herramienta esencial en auditorías web y parte de la caja de herramienta
 ---
 
 > _Práctica realizada en entorno controlado con fines educativos ._  
+
+***
+© 2025 [sualba.dev] Todos los derechos reservados</p>
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

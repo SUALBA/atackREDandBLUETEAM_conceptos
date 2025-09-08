@@ -741,6 +741,237 @@ alert tcp any any -> $HOME_NET any (
                     </div>
                 </div>
 
-                <h3>🕵️ Detección de Patrones Sospechosos</h3>
-                <div class="alert-box alert-danger">
-                    <strong>🎯 Orígenes a Vigilar:
+                           <!-- Detección de Patrones Sospechosos -->
+            <section id="patrones" class="section">
+                <h2>🔍 4. Detección de Patrones Sospechosos</h2>
+
+                <h3>📥 Descarga de Archivos Ejecutables</h3>
+                <div class="code-block">
+                    <pre>alert tcp any any -> $HOME_NET any (
+    msg:"Descarga de archivo ejecutable detectada";
+    flow:to_client,established;
+    content:".exe"; nocase;
+    sid:1000002; rev:1;
+)</pre>
+                </div>
+
+                <h3>🧪 Tráfico con Palabras Clave Maliciosas</h3>
+                <div class="code-block">
+                    <pre>alert tcp any any -> $HOME_NET 80 (
+    msg:"Intento de acceso sospechoso con palabra clave";
+    flow:to_server,established;
+    content:"/cmd.exe"; nocase; http_uri;
+    sid:1000003; rev:1;
+)</pre>
+                </div>
+
+                <h3>📂 Transferencia de Archivos Comprimidos</h3>
+                <div class="code-block">
+                    <pre>alert tcp any any -> $HOME_NET any (
+    msg:"Transferencia de archivo ZIP detectada";
+    flow:to_client,established;
+    content:".zip"; nocase;
+    sid:1000004; rev:1;
+)</pre>
+                </div>
+
+                <h3>🕵️ Posibles Intentos de SQL Injection</h3>
+                <div class="code-block">
+                    <pre>alert tcp any any -> $HOME_NET 80 (
+    msg:"Posible intento de SQL Injection";
+    flow:to_server,established;
+    content:"' OR '1'='1"; nocase;
+    sid:1000005; rev:1;
+)</pre>
+                </div>
+
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ Nota:</strong> Estas reglas son ejemplos básicos. En entornos reales, se recomienda usar reglas de proveedores como <em>Emerging Threats</em> o <em>Snort VRT</em>, que cubren un espectro mucho más amplio de amenazas.
+                </div>
+            </section>
+
+                 
+            
+
+                                    <!-- Prevención de Ataques -->
+            <section id="prevencion" class="section">
+                <h2>🛡️ 5. Prevención de Ataques</h2>
+
+                <h3>🚫 Modos Preventivos</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>✋ Drop</h4>
+                        <p>Descarta el paquete sin notificar al emisor.</p>
+                        <div class="code-block">
+                            <pre>drop tcp any any -> $HOME_NET 22 (msg:"Bloqueo SSH"; sid:2000001; rev:1;)</pre>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>❌ Reject</h4>
+                        <p>Descarta el paquete y envía un reset al emisor.</p>
+                        <div class="code-block">
+                            <pre>reject icmp any any -> $HOME_NET any (msg:"Bloqueo ICMP"; sid:2000002; rev:1;)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>⚡ Integración con Firewalls</h3>
+                <div class="example-box">
+                    <h4>SNORT + pfSense</h4>
+                    <p>En pfSense, SNORT puede bloquear automáticamente IPs sospechosas mediante la opción <strong>Block Offenders</strong>. Esto convierte el IDS en IPS.</p>
+                </div>
+
+                <div class="alert-box alert-success">
+                    <strong>✅ Mejores Prácticas:</strong>
+                    <ul>
+                        <li>Aplicar reglas de bloqueo solo en interfaces expuestas (WAN/DMZ)</li>
+                        <li>Usar listas blancas para evitar falsos positivos</li>
+                        <li>Integrar con listas negras actualizadas (Emerging Threats, Abuse.ch, etc.)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Ejemplos Prácticos -->
+            <section id="ejemplos" class="section">
+                <h2>💡 6. Ejemplos Prácticos</h2>
+
+                <h3>📧 Detección de Spam</h3>
+                <div class="code-block">
+                    <pre>alert tcp any 25 -> $HOME_NET any (
+    msg:"Posible SPAM detectado";
+    content:"X-Spam-Status"; nocase;
+    sid:2000003; rev:1;
+)</pre>
+                </div>
+
+                <h3>🛑 Detección de Escaneo de Puertos</h3>
+                <div class="code-block">
+                    <pre>alert tcp any any -> $HOME_NET any (
+    msg:"Posible escaneo de puertos";
+    flags:S;
+    threshold:type both, track by_src, count 20, seconds 10;
+    sid:2000004; rev:1;
+)</pre>
+                </div>
+
+                <h3>💻 Detección de Acceso Web Sospechoso</h3>
+                <div class="code-block">
+                    <pre>alert tcp $EXTERNAL_NET any -> $WEB_SERVERS 80 (
+    msg:"Acceso sospechoso a /admin";
+    flow:to_server,established;
+    content:"/admin"; http_uri;
+    sid:2000005; rev:1;
+)</pre>
+                </div>
+            </section>
+
+            <!-- Configuración Avanzada -->
+            <section id="configuracion" class="section">
+                <h2>⚙️ 7. Configuración Avanzada</h2>
+
+                <h3>📂 Organización de Reglas</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>📁 Directorios de Reglas</h4>
+                        <p><code>/etc/snort/rules/</code> contiene las reglas personalizadas y las descargadas.</p>
+                    </div>
+                    <div class="card">
+                        <h4>📝 snort.conf</h4>
+                        <p>Archivo principal de configuración donde se definen variables de red, preprocessors y rutas de reglas.</p>
+                    </div>
+                </div>
+
+                <h3>⚡ Preprocesadores Clave</h3>
+                <div class="code-block">
+                    <pre>preprocessor http_inspect: global iis_unicode_map unicode.map 1252
+preprocessor sfportscan: proto { all } memcap 10000000 sense_level medium
+preprocessor frag3_engine: policy first detect_anomalies
+preprocessor stream5_global: track_tcp yes, track_udp yes</pre>
+                </div>
+
+                <div class="alert-box alert-info">
+                    <strong>ℹ️ Tip:</strong> Los preprocesadores permiten normalizar el tráfico antes de aplicar reglas, reduciendo evasion techniques.
+                </div>
+            </section>
+
+            <!-- Monitoreo y Dashboard -->
+            <section id="monitoreo" class="section">
+                <h2>📊 8. Monitoreo y Dashboard</h2>
+
+                <h3>📈 Interfaz de pfSense</h3>
+                <p>SNORT en pfSense incluye dashboards interactivos:</p>
+                <ul>
+                    <li><strong>Alerts</strong>: muestra alertas en tiempo real</li>
+                    <li><strong>Blocked</strong>: IPs bloqueadas automáticamente</li>
+                    <li><strong>Pass Lists</strong>: gestión de listas blancas</li>
+                    <li><strong>SID Mgmt</strong>: habilitación/deshabilitación de reglas</li>
+                </ul>
+
+                <h3>📊 Integración con SIEM</h3>
+                <div class="example-box">
+                    <h4>SNORT + ELK Stack</h4>
+                    <p>Los logs de SNORT pueden enviarse a <strong>Elasticsearch</strong> para análisis avanzado, <strong>Logstash</strong> para procesamiento y <strong>Kibana</strong> para visualización.</p>
+                </div>
+
+                <div class="alert-box alert-warning">
+                    <strong>⚠️ Precaución:</strong> El almacenamiento de logs sin rotación puede saturar el sistema. Se recomienda configurar <code>logrotate</code> o bases de datos dedicadas.
+                </div>
+            </section>
+
+            <!-- Conclusión -->
+            <section id="conclusion" class="section">
+                <h2>✅ Conclusiones y Recomendaciones</h2>
+                <ul>
+                    <li>SNORT es una herramienta poderosa de detección y prevención de intrusiones.</li>
+                    <li>Debe configurarse con reglas actualizadas y preprocesadores adecuados.</li>
+                    <li>La integración con firewalls y SIEMs aumenta su efectividad.</li>
+                    <li>Es fundamental ajustar la sensibilidad para evitar falsos positivos.</li>
+                </ul>
+            </section>
+
+            <!-- Recursos -->
+            <section id="recursos" class="section">
+                <h2>📚 Recursos Adicionales</h2>
+                <ul>
+                    <li><a href="https://www.snort.org/" target="_blank">Sitio Oficial de SNORT</a></li>
+                    <li><a href="https://docs.snort.org/" target="_blank">Documentación de SNORT</a></li>
+                    <li><a href="https://pfsense.org/" target="_blank">pfSense + SNORT</a></li>
+                    <li><a href="https://www.emergingthreats.net/" target="_blank">Reglas Emerging Threats</a></li>
+                    <li><a href="https://www.sans.org/" target="_blank">SANS Institute - Seguridad en Redes</a></li>
+                </ul>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>🛡️ Guía completa de SNORT - Seguridad en Redes</p>
+            <p>© 2025 - Elaborado por sualba.dev Reservados todos los derechos</p>
+        </footer>
+    </div>
+
+    <button id="backToTop" class="back-to-top">⬆️</button>
+
+    <script>
+        // Barra de progreso scroll
+        window.addEventListener('scroll', function() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        });
+
+        // Botón volver arriba
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

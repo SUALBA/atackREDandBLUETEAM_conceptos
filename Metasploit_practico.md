@@ -1,8 +1,7 @@
-Metasploit: Directo al código – Guía Práctica
+Metasploit: Directo al código – Guía Práctica de instalación.
 
-Esta guía en Markdown recopila de forma íntegra los puntos desarrollados, con ejemplos claros para tu blog.
 
-1. Instalación de Metasploit
+# * Instalación de Metasploit *
 
 Descripción: Cómo descargar e instalar Metasploit Framework en Windows.
 
@@ -147,3 +146,6 @@ Consulta la documentación oficial de Metasploit.
 
 Explora módulos en GitHub: metasploit-framework/modules.
 
+***
+© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

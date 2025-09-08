@@ -127,3 +127,5 @@ La **gestión de ciberincidentes** es un proceso continuo que combina:
 - **Respuesta rápida** para minimizar impacto.
 - **Aprendizaje post-incidente** para fortalecer la resiliencia.
 
+****
+sualba.dev © 2025 - Todos los derechos reservados

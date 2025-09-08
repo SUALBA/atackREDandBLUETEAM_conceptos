@@ -133,3 +133,8 @@ Se encarga de trasladar los datos procesados al motor de búsqueda/indexación (
 [Filebeat → Wazuh Indexer (Elasticsearch)]
      ↓
 [Dashboard de visualización]
+```
+
+***
+ © 2025 [sualba.dev] Todos los derechos reservados.
+  Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

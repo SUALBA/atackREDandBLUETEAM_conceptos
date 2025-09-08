@@ -98,3 +98,8 @@ Su finalidad es **minimizar el impacto ⚡**, restaurar los servicios lo antes p
    ┌──────▼────────┐
    │ Post-Incidente│
    └───────────────┘
+
+
+
+
+sualba.dev © 2025 - Todos los derechos reservados

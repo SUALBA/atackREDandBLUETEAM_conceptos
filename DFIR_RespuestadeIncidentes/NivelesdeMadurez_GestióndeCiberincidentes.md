@@ -100,3 +100,10 @@ Nivel 2   -> Repetible: prácticas ad-hoc
 Nivel 3   -> Definido: procedimientos documentados
 Nivel 4   -> Gestionado: monitoreo y pruebas continuas
 Nivel 5   -> Optimizado: mejora continua + métricas
+
+
+
+
+
+****
+sualba.dev © 2025 - Todos los derechos reservados

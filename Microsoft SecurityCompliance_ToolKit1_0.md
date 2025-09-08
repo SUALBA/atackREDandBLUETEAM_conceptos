@@ -23,3 +23,7 @@ El **Microsoft Security Compliance Toolkit 1.0** es un conjunto de herramientas 
    ```powershell
    # Ejemplo de descarga desde Microsoft
    Invoke-WebRequest -Uri "https://aka.ms/securitybaseline" -OutFile "C:\baselines.zip"
+
+***
+>© 2025 [sualba.dev] Todos los derechos reservados
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

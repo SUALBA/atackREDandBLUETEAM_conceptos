@@ -153,3 +153,5 @@ Resultado ✅: la web sigue funcionando sin interrupciones para los usuarios rea
 Conocer su funcionamiento, tipos de amenazas y herramientas disponibles es esencial para cualquier profesional de ciberseguridad o administrador de redes.
 
 ---
+>© 2025 [sualba.dev] Todos los derechos reservados
+    Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

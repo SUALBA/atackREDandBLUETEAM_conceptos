@@ -127,3 +127,7 @@ Para cada alerta detectada:
 
 Implementar un sistema de monitorización eficaz es una **columna vertebral de la seguridad defensiva**. Permite no solo **anticiparse a fallos**, sino también **responder a ciberataques en tiempo real**.
 
+ ***
+ © 2025 [sualba.dev] Todos los derechos reservados</p>
+Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.
+

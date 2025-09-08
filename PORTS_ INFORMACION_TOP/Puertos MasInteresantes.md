@@ -88,3 +88,6 @@ Te ayuda a reconocer la superficie de ataque rápidamente.
 Si ves un puerto inusual (como un 5011 por ejemplo), sabes que no es un servicio estándar → puede ser vulnerable, personalizado o mal configurado.
 
 Te permite asociar vulnerabilidades conocidas (CVE) a servicios concretos.
+
+***
+sualba.dev @2025 Todos los derechos reservados

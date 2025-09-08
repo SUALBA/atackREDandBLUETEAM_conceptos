@@ -418,3 +418,7 @@ HTTPS legítimo pero desde puerto de origen inusual puede encubrir shell o C2.
 - Identifica puertos alternativos y protocolos inusuales.
 - Aplica lógica condicional múltiple en las reglas.
 - Justifica tu nivel de alerta con técnicas MITRE ATT&CK.
+
+***
+ © 2025 [sualba.dev] Todos los derechos reservados.
+  Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.

@@ -139,3 +139,6 @@ Este ejercicio demuestra la importancia de:
 ---
 
 **Nota**: Este análisis se realizó en un entorno controlado para fines educativos como parte de un Bootcamp en Ciberseguridad.
+
+***
+sualba.dev © 2025 - Todos los derechos reservados

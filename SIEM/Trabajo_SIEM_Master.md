@@ -1,8 +1,6 @@
 # 🛡️ SIEM: Security Information and Event Management
 
-**Autora:** sualba.dev  
-**Trabajo de Máster en Ciberseguridad**  
-**Fecha:** Julio 2025
+
 
 ---
 
@@ -133,3 +131,7 @@ La implementación de una plataforma SIEM aporta:
 - IBM QRadar: https://www.ibm.com/qradar  
 - Splunk SIEM: https://www.splunk.com/en_us/solutions/siem.html  
 - Wazuh Documentation: https://documentation.wazuh.com
+
+***
+ © 2025 [sualba.dev] Todos los derechos reservados.
+  Este material forma parte de mi portfolio profesional y ha sido desarrollado como parte de mi formación en ciberseguridad.
